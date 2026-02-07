@@ -1,0 +1,12 @@
+{"scripts": {
+    "gen:ui": "node scripts/generate-component.mjs"
+  },
+	"devDependencies": {
+		"@types/node": "^24.10.11"
+	},
+	"pnpm": {
+    "overrides": {
+      "vite": "npm:rolldown-vite@7.2.5"
+    }
+  }
+}

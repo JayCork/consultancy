@@ -1,0 +1,50 @@
+.base {
+  background-color: var(--color-surface-0);
+  min-height: 100vh;
+  max-width: 40vw;
+}
+
+.unorderedList{
+  padding: 0; 
+}
+
+.item {
+  display: flex;
+  min-height: 3rem;
+  list-style-type: none;
+  background-color: antiquewhite;
+  padding: 0;
+  align-items: center;
+}
+
+.itemStart {
+  flex: 1;
+}
+
+.itemEnd {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+.badge {
+  background-color: red;
+  color: white;
+  border-radius: 9999px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+.item:hover {
+  background-color: #9e7c38;
+}
+.link {
+  color: black;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  text-decoration: none;
+  width: 100%;
+  display: block;
+  background: none;
+  transition: background 0.2s;
+}

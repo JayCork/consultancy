@@ -1,0 +1,6 @@
+@import "./tokens.module.css";
+
+:global(html) {
+  font-family: 'Inter', Arial, sans-serif;
+}
+

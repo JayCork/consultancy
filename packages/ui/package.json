@@ -1,0 +1,28 @@
+{
+  "name": "@consultansy/ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.2",
+  "devDependencies": {
+    "@storybook/addon-a11y": "^10.2.7",
+    "@storybook/addon-docs": "^10.2.7",
+    "solid-js": "^1.9.11",
+    "storybook": "^10.2.7",
+    "storybook-css-modules": "^1.0.8",
+    "storybook-solidjs-vite": "^10.0.9",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "lucide-solid": "^0.563.0"
+  }
+}

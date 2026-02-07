@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+minimumReleaseAge: 1440
+# minimumReleaseAgeExclude:
+#   - 'example'
+trustPolicy: no-downgrade
+# trustPolicyExclude:
+#   - 'example'
+blockExoticSubdeps: true

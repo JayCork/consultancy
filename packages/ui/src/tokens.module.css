@@ -1,0 +1,8 @@
+:root {
+  --color-primary: #007bff;
+  --color-surface-0: rgba(0, 123, 255, 0.1);
+  --color-surface-1: rgba(0, 123, 255, 0.2);
+  --spacing-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --length-min-touch-target: 2.75rem;
+}

@@ -1,0 +1,67 @@
+.base {
+  /* Styles for NavItem */
+}
+
+.unorderedList {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  gap: 0.5rem;
+  margin-block-start: 0;
+  padding-inline-start: 0;
+
+}
+
+
+.item {
+  display: flex;
+  min-height: var(--length-min-touch-target);
+  list-style-type: none;
+  background-color: var(--color-surface-0);
+  padding: 0;
+  align-items: center;
+}
+
+.itemStart {
+  flex: 1;
+}
+
+.itemEnd {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+.badge {
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+.item:hover {
+  background-color: var(--color-surface-1);
+}
+
+
+.link {
+  color: black;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  text-decoration: none;
+  width: 100%;
+  display: block;
+  background: none;
+  transition: background 0.2s;
+}
+
+
+.link {
+  color: black;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  text-decoration: none;
+}

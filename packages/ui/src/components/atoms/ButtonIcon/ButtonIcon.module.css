@@ -1,0 +1,10 @@
+.base {
+  background: none;
+  border: none;
+  height: var(--length-min-touch-target);
+  width: var(--length-min-touch-target);
+}
+
+.base:hover{
+  background-color: antiquewhite;
+}

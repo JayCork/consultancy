@@ -1,0 +1,12 @@
+.base {
+  /* Styles for Dashboard */
+}
+
+.app{
+  display: flex;
+  height: 100vh;
+}
+
+.main {
+  flex: 1;
+}
