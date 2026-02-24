@@ -5,9 +5,9 @@
     "jsxImportSource": "solid-js",
     "types": ["vite/client", "solid-js"],
     "paths": {
+      "@consultancy/ui": ["./src/index.ts"],
       "@consultancy/ui/*": ["./src/*"]
-  }
+    }
   },
-  "include": ["src"],
-  
+  "include": ["src"]
 }

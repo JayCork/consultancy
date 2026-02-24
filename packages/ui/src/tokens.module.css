@@ -1,8 +1,31 @@
 :root {
+  color-scheme: light dark;
+
+  /* Colors */
   --color-primary: #007bff;
+  --color-secondary: #ff4081;
+  --color-surface-primary-light: hsl(0, 0%, 100%);
+  --color-surface-primary-dark: hsl(0, 0%, 10%);
+  --color-on-surface-primary-light: hsl(0, 0%, 0%);
+  --color-on-surface-primary-dark: hsl(0, 0%, 100%);
+  --color-surface-secondary-light: hsl(0, 0%, 95%);
+  --color-on-surface-secondary-light: hsl(0, 0%, 20%);
+  --color-on-surface-secondary-dark: hsl(0, 0%, 80%);
+  --color-surface-secondary-dark: hsl(0, 0%, 20%);
+
   --color-surface-0: rgba(0, 123, 255, 0.1);
   --color-surface-1: rgba(0, 123, 255, 0.2);
+
+  /* Spacing */
   --spacing-md: 1rem;
+
+  /* Rounding */
+  --rounding-base: 4px;
+
+  /* Typography */
   --font-size-lg: 1.25rem;
+  --font-size-base: 1rem;
+
+  /* Lengths */
   --length-min-touch-target: 2.75rem;
 }

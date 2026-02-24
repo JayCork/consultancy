@@ -3,8 +3,15 @@
   border: none;
   height: var(--length-min-touch-target);
   width: var(--length-min-touch-target);
+  color: light-dark(
+    var(--color-on-surface-primary-light),
+    var(--color-on-surface-primary-dark)
+  );
 }
 
-.base:hover{
-  background-color: antiquewhite;
+.base:hover {
+  background-color: light-dark(
+    var(--color-surface-primary-light),
+    var(--color-surface-primary-dark)
+  );
 }

@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import solid from 'vite-plugin-solid'
+import { defineConfig } from "vite";
+import solid from "vite-plugin-solid";
 
 export default defineConfig({
   plugins: [solid()],
@@ -7,10 +7,10 @@ export default defineConfig({
     port: 5173,
     proxy: {
       // Directs frontend /api calls to the Hono backend
-      '/api': {
-        target: 'http://localhost:3000',
+      "/api": {
+        target: "http://localhost:3000",
         changeOrigin: true,
       },
     },
   },
-})
+});

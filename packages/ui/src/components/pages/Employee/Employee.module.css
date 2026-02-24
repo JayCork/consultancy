@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+.card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+}
+.area {
+  background-color: light-dark(
+    var(--color-surface-secondary-light),
+    var(--color-surface-secondary-dark)
+  );
+  color: light-dark(
+    var(--color-on-surface-secondary-light),
+    var(--color-on-surface-secondary-dark)
+  );
+  padding: var(--spacing-md);
+  width: fit-content;
+  border-radius: var(--rounding-base);
+}
+
+.feedItem {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--rounding-base);
+}

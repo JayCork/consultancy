@@ -1,0 +1,6 @@
+.container {
+  border-radius: 8px;
+  outline: #cac4d0 solid 1px;
+  padding: 4px 8px;
+  width: fit-content;
+}

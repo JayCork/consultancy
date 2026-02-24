@@ -1,4 +1,1 @@
-
-export {
-  StarInput,
-} from './StarInput/StarInput';
+export { StarInput } from "./StarInput/StarInput";

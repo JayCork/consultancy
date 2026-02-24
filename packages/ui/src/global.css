@@ -1,13 +1,12 @@
 :global(.body) {
-  font-family: 'Times New Roman', Times, serif;
-    text-decoration: none;
-
+  font-family: "Times New Roman", Times, serif;
+  text-decoration: none;
 }
 a {
   color: inherit;
 }
 :global(html) {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
 }
 
 a {

@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -8,16 +8,26 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const category = process.argv[2]; // atoms, molecules, templates, etc.
 const componentName = process.argv[3];
 
-const validCategories = ['atoms', 'molecules', 'organisms', 'templates', 'pages'];
+const validCategories = [
+  "atoms",
+  "molecules",
+  "organisms",
+  "templates",
+  "pages",
+];
 
 if (!category || !componentName || !validCategories.includes(category)) {
   console.error(`Usage: pnpm gen:ui <category> <ComponentName>`);
-  console.error(`Valid categories: ${validCategories.join(', ')}`);
+  console.error(`Valid categories: ${validCategories.join(", ")}`);
   process.exit(1);
 }
 
 // Target path: packages/ui/src/components/atoms/TextArea
-const targetDir = path.resolve(__dirname, `../packages/ui/src/components/${category}`, componentName);
+const targetDir = path.resolve(
+  __dirname,
+  `../packages/ui/src/components/${category}`,
+  componentName,
+);
 
 if (fs.existsSync(targetDir)) {
   console.error(`Component ${componentName} already exists in ${category}!`);
@@ -61,12 +71,18 @@ export const Default: Story = {
 `;
 
 // --- Write Files ---
-fs.writeFileSync(path.join(targetDir, `${componentName}.module.css`), cssContent);
+fs.writeFileSync(
+  path.join(targetDir, `${componentName}.module.css`),
+  cssContent,
+);
 fs.writeFileSync(path.join(targetDir, `${componentName}.tsx`), tsxContent);
-fs.writeFileSync(path.join(targetDir, `${componentName}.stories.tsx`), storyContent);
+fs.writeFileSync(
+  path.join(targetDir, `${componentName}.stories.tsx`),
+  storyContent,
+);
 
 // --- Handle Central Export ---
-// This assumes you have an index.ts in each category folder, 
+// This assumes you have an index.ts in each category folder,
 // or one main index.ts in src.
 const indexPath = path.resolve(__dirname, `../packages/ui/src/index.ts`);
 if (fs.existsSync(indexPath)) {

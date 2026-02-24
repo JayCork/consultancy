@@ -1,0 +1,18 @@
+[19:19:20.147] [INFO] storybook v10.2.7
+[19:19:21.324] [DEBUG] Getting package.json info for C:/Users/Zolf4/Documents/GitHub/consultancy/packages/ui/package.json...
+[19:19:22.692] [INFO] Starting...
+[19:19:22.938] [DEBUG] Starting preview..
+[19:19:26.780] [ERROR] Failed to build the preview
+[19:19:26.782] [ERROR] [38;2;241;97;97mReferenceError: __dirname is not defined[39m
+    at Object.viteFinal (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/packages/ui/.storybook/main.ts:11:43)
+    at file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/storybook@10.2.7_@testing-l_62b3faf3066f1128f2553cb59513c313/node_modules/storybook/dist/_node-chunks/chunk-JBMAY2U2.js:10114:36
+    at async createViteServer (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/@storybook+builder-vite@10._2b1e1f8745b9dfb72157cf2cfe64e0be/node_modules/@storybook/builder-vite/dist/index.js:1898:21)
+    at async Module.start (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/@storybook+builder-vite@10._2b1e1f8745b9dfb72157cf2cfe64e0be/node_modules/@storybook/builder-vite/dist/index.js:1923:17)
+    at async storybookDevServer (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/storybook@10.2.7_@testing-l_62b3faf3066f1128f2553cb59513c313/node_modules/storybook/dist/core-server/index.js:7207:83)
+    at async buildOrThrow (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/storybook@10.2.7_@testing-l_62b3faf3066f1128f2553cb59513c313/node_modules/storybook/dist/core-server/index.js:4504:12)
+    at async buildDevStandalone (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/storybook@10.2.7_@testing-l_62b3faf3066f1128f2553cb59513c313/node_modules/storybook/dist/core-server/index.js:7577:66)
+    at async withTelemetry (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/storybook@10.2.7_@testing-l_62b3faf3066f1128f2553cb59513c313/node_modules/storybook/dist/_node-chunks/chunk-TQNBPEAH.js:218:12)
+    at async dev (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/storybook@10.2.7_@testing-l_62b3faf3066f1128f2553cb59513c313/node_modules/storybook/dist/bin/core.js:2734:3)
+    at async _Command.<anonymous> (file:///C:/Users/Zolf4/Documents/GitHub/consultancy/node_modules/.pnpm/storybook@10.2.7_@testing-l_62b3faf3066f1128f2553cb59513c313/node_modules/storybook/dist/bin/core.js:2803:92)
+[19:19:26.790] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.

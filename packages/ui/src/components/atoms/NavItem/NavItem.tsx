@@ -10,7 +10,7 @@ interface NavItemProps {
   notifications?: number;
 }
 
-export const NavItem = (props: NavItemProps) => {
+const NavItem = (props: NavItemProps) => {
   return (
     <li class={styles.item}>
       <div class={styles.itemStart}>
@@ -49,3 +49,5 @@ export const NavItem = (props: NavItemProps) => {
     // </div>
   );
 };
+
+export default NavItem;

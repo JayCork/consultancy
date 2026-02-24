@@ -1,6 +1,13 @@
 @import "./tokens.module.css";
 
 :global(html) {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
+  background-color: light-dark(
+    var(--color-surface-secondary-light),
+    var(--color-surface-secondary-dark)
+  );
+  color: light-dark(
+    var(--color-on-surface-primary-light),
+    var(--color-on-surface-primary-dark)
+  );
 }
-

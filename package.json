@@ -1,10 +1,13 @@
-{"scripts": {
+{
+  "scripts": {
     "gen:ui": "node scripts/generate-component.mjs"
   },
-	"devDependencies": {
-		"@types/node": "^24.10.11"
-	},
-	"pnpm": {
+  "devDependencies": {
+    "@types/node": "^24.10.11",
+    "eslint-config-prettier": "10.1.8",
+    "prettier": "3.8.1"
+  },
+  "pnpm": {
     "overrides": {
       "vite": "npm:rolldown-vite@7.2.5"
     }

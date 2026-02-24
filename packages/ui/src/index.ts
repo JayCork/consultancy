@@ -1,4 +1,5 @@
-export * as atoms from './components/atoms';
+export * as atoms from "./components/atoms";
+export { Select } from "./components/atoms/Select/Select";
 // export * as molecules from './components/molecules';
 // export * as templates from './components/templates';    export * from "./components/pages/Dashboard/Dashboard";
 export * from "./components/atoms/NavItem/NavItem";
