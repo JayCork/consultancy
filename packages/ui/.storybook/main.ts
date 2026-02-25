@@ -13,9 +13,12 @@ interface StorybookConfig {
 export default {
   stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
 
-  addons: ["storybook-css-modules"],
+  addons: ["storybook-css-modules","@storybook/addon-docs" ],
 
   framework: "storybook-solidjs-vite",
+    docs: {
+    defaultName: 'Documentation',
+  },
   viteFinal: async (
     config: import("vite").UserConfig,
   ): Promise<import("vite").UserConfig> => {

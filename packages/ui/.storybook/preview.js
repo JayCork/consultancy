@@ -10,7 +10,6 @@ const preview = {
         date: /Date$/i,
       },
     },
-    tags: ["autodocs"],
   },
   tags: ["autodocs"],
 };

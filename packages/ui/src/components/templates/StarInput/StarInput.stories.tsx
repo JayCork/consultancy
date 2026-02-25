@@ -4,6 +4,7 @@ import { StarInput } from "./StarInput";
 const meta: Meta<typeof StarInput> = {
   component: StarInput,
   title: "Templates/StarInput",
+  tags: ["!autodocs"],
 };
 
 export default meta;

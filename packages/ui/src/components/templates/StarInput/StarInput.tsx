@@ -1,4 +1,4 @@
-import { Chip, TextArea, Select } from "@consultancy/ui/components/atoms";
+import { Chip, Select, TextArea } from "../../atoms";
 import styles from "./StarInput.module.css";
 
 interface StarInputProps {

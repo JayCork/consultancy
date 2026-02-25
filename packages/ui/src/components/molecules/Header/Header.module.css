@@ -1,5 +1,6 @@
-.base {
-  background-color: white;
+.container {
+  background-color: light-dark(var(--color-surface-variant-light), var(--color-surface-variant-dark ));
+  color: light-dark(var(--color-on-surface-light), var(--color-on-surface-dark));
   display: flex;
   align-items: center;
   justify-content: space-between;

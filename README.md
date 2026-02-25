@@ -1,7 +1,23 @@
+
+## Getting Started
+
+### Prerequisits
+- pnpm 10
+
+
+# Packages
+- @consultancy/ui storybook 
+
 # Scripts
 
+## Create a story
 ```
 pnpm gen:ui atoms InputField
+```
+
+## Start Storybook
+```
+pnpm --filter @consultancy/ui storybook 
 ```
 
 # Format
