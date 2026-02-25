@@ -1,7 +1,8 @@
+import { JSX } from "solid-js/jsx-runtime";
 import styles from "./ButtonIcon.module.css";
 
 interface ButtonIconProps {
-  // Define your props here
+  children: JSX.Element;
 }
 
 export const ButtonIcon = (props: ButtonIconProps) => {

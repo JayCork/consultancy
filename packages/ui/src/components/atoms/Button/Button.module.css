@@ -1,0 +1,19 @@
+.container {
+  background-color: var(--primary-light);
+  background-color: light-dark(var(--primary-500), var(--primary-600));
+  border: none;
+  border-radius: var(--radius-small);
+  height: var(--size-touch-min);
+  width: fit-content;
+  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
+  cursor: pointer;
+}
+
+.container:focus {
+  outline: 2px solid pink;
+  outline-offset: 2px;
+}
+
+.container:hover {
+  background-color: light-dark(var(--primary-600), var(--primary-800));
+}
