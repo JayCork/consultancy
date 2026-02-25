@@ -9,21 +9,21 @@
 }
 .area {
   background-color: light-dark(
-    var(--color-surface-secondary-light),
-    var(--color-surface-secondary-dark)
+    var(--surface-variant-light),
+    var(--surface-variant-dark)
   );
   color: light-dark(
-    var(--color-on-surface-secondary-light),
-    var(--color-on-surface-secondary-dark)
+    var(--on-surface-variant-light),
+    var(--on-surface-variant-dark)
   );
   padding: var(--spacing-md);
   width: fit-content;
-  border-radius: var(--rounding-base);
+  border-radius: var(--radius-small);
 }
 
 .feedItem {
   display: flex;
   gap: var(--spacing-md);
   padding: var(--spacing-md);
-  border-radius: var(--rounding-base);
+  border-radius: var(--radius-small);
 }

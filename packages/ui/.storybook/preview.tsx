@@ -1,8 +1,8 @@
-import "../src/styles.module.css";
-import "../src/global.css";
+import "../../tokens/index.css";
+import type { Preview } from "storybook-solidjs-vite";
+import { JSX } from "solid-js";
 
-/** @type { import('storybook-solidjs-vite').Preview } */
-const preview = {
+const preview: Preview = {
   parameters: {
     controls: {
       matchers: {
@@ -10,7 +10,6 @@ const preview = {
         date: /Date$/i,
       },
     },
-    tags: ["autodocs"],
   },
   tags: ["autodocs"],
 };

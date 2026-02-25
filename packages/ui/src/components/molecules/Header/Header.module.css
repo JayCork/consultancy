@@ -1,5 +1,9 @@
-.base {
-  background-color: white;
+.container {
+  background-color: var(--surface-variant-light);
+  background-color: light-dark(
+    var(--surface-variant-light),
+    var(--surface-variant-dark)
+  );
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -13,10 +17,13 @@
 }
 
 .logoContainer {
-  width: var(--length-min-touch-target);
-  height: var(--length-min-touch-target);
-  background-color: var(--color-surface-0);
-  border-radius: 9999px;
+  width: var(--size-touch-min);
+  height: var(--size-touch-min);
+  background-color: light-dark(
+    var(--surface-variant-light),
+    var(--surface-variant-dark)
+  );
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;

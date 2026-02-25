@@ -19,7 +19,7 @@ export const Default: Story = {
         padding: "0",
         maxWidth: "1200px",
         margin: "0 auto",
-        background: "var(--color-surface-0, #f5f5f5)",
+        background: "var(--surface-light, #f5f5f5)",
         minHeight: "100vh",
         boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
         borderRadius: "1rem",

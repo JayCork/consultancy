@@ -1,17 +1,11 @@
 .base {
   background: none;
   border: none;
-  height: var(--length-min-touch-target);
-  width: var(--length-min-touch-target);
-  color: light-dark(
-    var(--color-on-surface-primary-light),
-    var(--color-on-surface-primary-dark)
-  );
+  height: var(--size-touch-min);
+  width: var(--size-touch-min);
+  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
 }
 
 .base:hover {
-  background-color: light-dark(
-    var(--color-surface-primary-light),
-    var(--color-surface-primary-dark)
-  );
+  background-color: light-dark(var(--surface-lightt), var(--surface-dark));
 }

@@ -1,6 +1,6 @@
 import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
-import { Select } from "./Select";
+import Select from "./Select";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -28,5 +28,12 @@ export const Default: Story = {
       { label: "Option 2", value: "option2" },
       { label: "Option 3", value: "option3" },
     ],
+  },
+};
+
+export const WithDescription: Story = {
+  args: {
+    ...Default.args,
+    description: "This is a description for the select component.",
   },
 };

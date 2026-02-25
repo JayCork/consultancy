@@ -1,0 +1,19 @@
+/* packages/tokens/globals.css */
+
+:root {
+  color-scheme: light dark;
+  font-family: "Inter", Arial, sans-serif;
+}
+
+html {
+  background-color: aqua;
+  background-color: light-dark(var(--surface-light), var(--surface-dark));
+  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
+}
+
+body {
+  background-color: light-dark(var(--surface-light), var(--surface-dark));
+  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
+  min-height: 100dvh;
+  margin: 0;
+}

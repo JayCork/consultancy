@@ -12,7 +12,7 @@ interface NavItemProps {
 
 const NavItem = (props: NavItemProps) => {
   return (
-    <li class={styles.item}>
+    <li class={styles.container}>
       <div class={styles.itemStart}>
         <a href={props.href} class={styles.link}>
           {props.icon && <props.icon />}

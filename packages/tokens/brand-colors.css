@@ -1,0 +1,41 @@
+:root {
+  --primary-100: oklch(0.9639 0.01875 250);
+  --primary-200: oklch(0.916 0.045312500000000006 250);
+  --primary-300: oklch(0.8506 0.08281250000000001 250);
+  --primary-400: oklch(0.7855 0.12187500000000004 250);
+  --primary-500: oklch(0.6104 0.14375000000000004 250);
+  --primary-600: oklch(0.5215 0.12343750000000003 250);
+  --primary-700: oklch(0.5215 0.12343750000000003 250);
+  --primary-800: oklch(0.4092 0.09687500000000002 250);
+  --primary-900: oklch(0.2988 0.07031250000000001 250);
+
+  --surface-light: hsl(0, 0%, 100%);
+  --surface-dark: hsl(0, 0%, 10%);
+
+  --on-surface-light: hsl(0, 0%, 0%);
+  --on-surface-dark: hsl(0, 0%, 100%);
+
+  --surface-variant-light: hsl(0, 0%, 95%);
+  --surface-variant-dark: hsl(0, 0%, 20%);
+
+  --on-surface-variant-light: hsl(0, 0%, 20%);
+  --on-surface-variant-dark: hsl(0, 0%, 80%);
+
+  --surface-container-light: hsl(0, 0%, 100%);
+  --surface-container-dark: hsl(0, 0%, 10%);
+
+  --on-surface-container-light: hsl(0, 0%, 0%);
+  --on-surface-container-dark: hsl(0, 0%, 100%);
+
+  --surface-container-highest-light: hsl(0, 0%, 100%);
+  --surface-container-highest-dark: hsl(0, 0%, 10%);
+
+  --on-surface-container-highest-light: hsl(0, 0%, 0%);
+  --on-surface-container-highest-dark: hsl(0, 0%, 100%);
+
+  --surface-container-lowest-light: hsl(0, 0%, 100%);
+  --surface-container-lowest-dark: hsl(0, 0%, 10%);
+
+  --on-surface-container-lowest-light: hsl(0, 0%, 0%);
+  --on-surface-container-lowest-dark: hsl(0, 0%, 100%);
+}

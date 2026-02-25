@@ -1,5 +1,4 @@
 import CircleUser from "lucide-solid/icons/user-circle";
-import { Button } from "../../../stories/Button";
 import { ButtonIcon } from "../../atoms/ButtonIcon/ButtonIcon";
 import styles from "./Header.module.css";
 import { Hexagon } from "lucide-solid";
@@ -10,7 +9,7 @@ interface HeaderProps {
 
 export const Header = (props: HeaderProps) => {
   return (
-    <header class={styles.base}>
+    <header class={styles.container}>
       <div class={styles.start}>
         <div class={styles.logoContainer}>
           <Hexagon />

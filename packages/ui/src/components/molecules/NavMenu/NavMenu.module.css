@@ -1,5 +1,8 @@
 .base {
-  background-color: var(--color-surface-0);
+  background-color: light-dark(
+    var(--surface-container-highest-light),
+    var(--surface-container-highest-dark)
+  );
   min-height: 100vh;
   max-width: 40vw;
 }
@@ -12,7 +15,7 @@
   display: flex;
   min-height: 3rem;
   list-style-type: none;
-  background-color: antiquewhite;
+  background-color: rgb(211, 151, 72);
   padding: 0;
   align-items: center;
 }

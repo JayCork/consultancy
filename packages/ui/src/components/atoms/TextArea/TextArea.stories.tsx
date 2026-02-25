@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
-import { TextArea } from "./TextArea";
+import TextArea from "./TextArea";
 
 const meta: Meta<typeof TextArea> = {
   component: TextArea,

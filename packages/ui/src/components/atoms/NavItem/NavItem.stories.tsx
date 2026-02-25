@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
-import { NavItem } from "./NavItem";
+import NavItem from "./NavItem";
 import { LayoutDashboardIcon } from "lucide-solid";
 
 const meta: Meta<typeof NavItem> = {
