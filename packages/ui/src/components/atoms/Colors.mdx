@@ -19,11 +19,27 @@ import { Meta, ColorPalette, ColorItem } from "@storybook/addon-docs/blocks";
     ]}
   />
   <ColorItem
+    title="Secondary"
+    subtitle="Brand secondary shades"
+    colors={[
+      "var(--secondary-100)",
+      "var(--secondary-200)",
+      "var(--secondary-300)",
+      "var(--secondary-400)",
+      "var(--secondary-500)",
+      "var(--secondary-600)",
+      "var(--secondary-700)",
+      "var(--secondary-800)",
+      "var(--secondary-900)"
+    ]}
+  />
+  <ColorItem
     title="Surface"
     subtitle="Light & Dark"
     colors={[
       "var(--surface-light)",
-      "var(--surface-dark)"
+      "var(--surface-dark)",
+      
     ]}
   />
   <ColorItem
@@ -97,5 +113,42 @@ import { Meta, ColorPalette, ColorItem } from "@storybook/addon-docs/blocks";
       "var(--on-surface-container-lowest-light)",
       "var(--on-surface-container-lowest-dark)"
     ]}
+  />
+
+  {/* Custom Palette */}
+  <ColorItem
+    title="Deep Obsidian"
+    subtitle="Deep, neutral foundation"
+    colors={["oklch(18% 0.04 258)"]}
+  />
+  <ColorItem
+    title="Midnight Surface"
+    subtitle="Elevated card surfaces"
+    colors={["oklch(28% 0.05 258)"]}
+  />
+  <ColorItem
+    title="Electric Violet"
+    subtitle={'High-chroma "Growth" accent'}
+    colors={["oklch(62% 0.24 295)"]}
+  />
+  <ColorItem
+    title="Cyan Flare"
+    subtitle="Bright, vibrating success color"
+    colors={["oklch(78% 0.16 215)"]}
+  />
+  <ColorItem
+    title="Aurora Mint"
+    subtitle="Minty achievement highlight"
+    colors={["oklch(82% 0.18 165)"]}
+  />
+  <ColorItem
+    title="Text Primary"
+    subtitle="Near-white with a hint of cool"
+    colors={["oklch(98% 0.01 258)"]}
+  />
+  <ColorItem
+    title="Text Muted"
+    subtitle="Softened secondary info"
+    colors={["oklch(70% 0.03 258)"]}
   />
 </ColorPalette>
