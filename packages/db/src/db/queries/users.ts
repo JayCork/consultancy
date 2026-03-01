@@ -24,4 +24,13 @@ const getUserByClearance = async (clearance: ClearanceLevel) => {
   return users;
 };
 
+export const getUserById = async (id: string) => {
+  const user = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.id, id))
+    .limit(1);
+  return user[0];
+};
+
 export { getAllUsers, getUserByClearance };

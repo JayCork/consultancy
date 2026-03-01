@@ -1,3 +1,3 @@
-import { getUserByClearance, getAllUsers } from "./users";
+import { getUserByClearance, getAllUsers, getUserById } from "./users";
 
-export { getUserByClearance, getAllUsers };
+export { getUserByClearance, getAllUsers, getUserById };

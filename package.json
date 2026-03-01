@@ -8,13 +8,12 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.11",
+    "eslint": "^10.0.2",
     "eslint-config-prettier": "10.1.8",
     "prettier": "3.8.1",
-    "tsx": "^4.21.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "vite": "npm:rolldown-vite@7.2.5"
-    }
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vite": "npm:rolldown-vite@7.2.5",
+    "vitest": "^4.0.18"
   }
 }
