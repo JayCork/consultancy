@@ -1,7 +1,12 @@
 import { uuid, pgTable, varchar, timestamp } from "drizzle-orm/pg-core";
-import { projectsTable, skillsTable, usersTable } from "./schema";
+import {
+  projectsTable,
+  skillsLevelTable,
+  skillsTable,
+  usersTable,
+} from "./schema";
 
-export const evidenceTable = pgTable("evidence_entries ", {
+export const evidenceTable = pgTable("evidence_entries", {
   id: uuid().primaryKey().defaultRandom(),
   author_id: uuid()
     .notNull()
@@ -18,4 +23,7 @@ export const evidenceTable = pgTable("evidence_entries ", {
     .notNull()
     .references(() => projectsTable.id),
   created_at: timestamp().defaultNow(),
+  level_id: uuid()
+    .notNull()
+    .references(() => skillsLevelTable.id),
 });

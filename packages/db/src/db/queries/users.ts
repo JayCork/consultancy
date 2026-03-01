@@ -1,0 +1,32 @@
+import { clearancesTable, usersTable } from "../schema/schema";
+import { eq, and, or, isNull, gt, InferSelectModel } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
+import "dotenv/config";
+import { clearanceLevelsEnum } from "../enums";
+
+const db = drizzle(process.env.DATABASE_URL!);
+type ClearanceLevel = InferSelectModel<typeof clearancesTable>["level"];
+
+const getAllUsers = async () => {
+  const users = await db.select().from(usersTable);
+  return users;
+};
+
+const getUserByClearance = async (clearance: ClearanceLevel) => {
+  const users = await db
+    .select()
+    .from(usersTable)
+    .innerJoin(clearancesTable, eq(usersTable.id, clearancesTable.user_id))
+    .where(
+      and(
+        eq(clearancesTable.level, clearance),
+        or(
+          isNull(clearancesTable.expires_at),
+          gt(clearancesTable.expires_at, new Date()),
+        ),
+      ),
+    );
+  return users;
+};
+
+export { getAllUsers, getUserByClearance };

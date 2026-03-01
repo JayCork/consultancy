@@ -67,3 +67,12 @@ docker start drizzle-postgres
 ---
 
 For more details, see the [official Postgres Docker documentation](https://hub.docker.com/_/postgres).
+
+## Seeding the Database
+
+To seed the database with initial data, you can use the `seed.ts` script:
+
+```ts-node
+pnpm tsx src/index.ts
+
+```
