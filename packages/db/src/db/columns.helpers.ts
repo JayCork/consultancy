@@ -1,13 +1,4 @@
-import { SQL, sql } from "drizzle-orm";
-import {
-  uuid,
-  real,
-  pgTable,
-  varchar,
-  timestamp,
-  boolean,
-} from "drizzle-orm/pg-core";
-import { evidenceTable } from "./evidence";
+import { varchar, timestamp } from "drizzle-orm/pg-core";
 
 export const timestamps = {
   updated_at: timestamp(),

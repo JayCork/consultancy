@@ -1,11 +1,16 @@
 {
   "scripts": {
-    "gen:ui": "node scripts/generate-component.mjs"
+    "gen:ui": "node scripts/generate-component.mjs",
+    "dev": "pnpm --parallel -r dev",
+    "dev:api": "pnpm --filter @consultancy/api dev",
+    "dev:web": "pnpm --filter @consultancy/web dev",
+    "dev:ui": "pnpm --filter @consultancy/ui storybook"
   },
   "devDependencies": {
     "@types/node": "^24.10.11",
     "eslint-config-prettier": "10.1.8",
-    "prettier": "3.8.1"
+    "prettier": "3.8.1",
+    "tsx": "^4.21.0"
   },
   "pnpm": {
     "overrides": {

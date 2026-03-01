@@ -1,5 +1,9 @@
+import "dotenv/config";
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
+import { getAllUsers } from "@consultancy/db";
+
+const PORT = process.env.PORT || 5173;
 
 const app = new Hono();
 
@@ -11,7 +15,12 @@ app.get("/api/health", (c) => {
   });
 });
 
-console.log("Hono API running on http://localhost:5173");
-serve({ fetch: app.fetch, port: 5173 });
+app.get("/api/users", async (c) => {
+  const users = await getAllUsers();
+  return c.json({ ok: true, data: users });
+});
+
+console.debug(`Hono API running on http://localhost:${PORT}`);
+serve({ fetch: app.fetch, port: Number(PORT) });
 
 export default app;
