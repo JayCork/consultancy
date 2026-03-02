@@ -1,37 +1,34 @@
 import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 import styles from "./NavMenu.module.css";
-import { For, Show } from "solid-js";
+import { For, JSX, Show } from "solid-js";
 import { Library, TreePine } from "lucide-solid/icons/index";
 import { NavItem } from "../../atoms";
 
 interface NavMenuProps {
   // Define your props here
+  title: string;
+  items?: {
+    id: number;
+    href: string;
+    icon?: any;
+    label: string;
+    notifications?: number;
+  }[];
 }
 
 export const NavMenu = (props: NavMenuProps) => {
-  const data = () => [
-    {
-      id: 1,
-      href: "#",
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      notifications: 3,
-    },
-    { id: 2, href: "#evidence-locker", name: "You're evidence", icon: Library },
-    { id: 3, href: "#career-hub", name: "Career Hub", icon: TreePine },
-  ];
-
   return (
     <nav class={styles.base}>
-      <div>
-        <h2>Menu</h2>
+      <div class={styles.tenant}>
+        <h2>{props.title}</h2>
+        <div class={styles.divider} />
       </div>
       <ul class={styles.unorderedList}>
-        <For each={data()}>
+        <For each={props.items}>
           {(item, index) => (
             <NavItem
               href={item.href}
-              name={item.name}
+              label={item.label}
               icon={item?.icon}
               notifications={item?.notifications}
             />

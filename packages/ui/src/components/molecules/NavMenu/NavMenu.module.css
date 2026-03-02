@@ -11,6 +11,15 @@
   padding: 0;
 }
 
+.divider {
+  height: 1px;
+  background-color: light-dark(
+    var(--surface-container-lowest-light),
+    var(--surface-container-lowest-dark)
+  );
+  margin: 0.5rem 0;
+}
+
 .item {
   display: flex;
   min-height: 3rem;

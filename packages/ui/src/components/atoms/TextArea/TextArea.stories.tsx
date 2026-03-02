@@ -5,19 +5,25 @@ const meta: Meta<typeof TextArea> = {
   component: TextArea,
   title: "Atoms/TextArea",
   tags: ["autodocs"],
+  args: {
+    name: "Example TextArea",
+  },
 };
 
 export default meta;
 type Story = StoryObj<typeof TextArea>;
 
 export const Default: Story = {
-  args: {
-    name: "default-textarea",
-  },
+  args: {},
 };
 export const WithDescription: Story = {
   args: {
-    name: "textarea-with-description",
     description: "This is a description for the textarea.",
+  },
+};
+
+export const WithPlaceholder: Story = {
+  args: {
+    placeholder: "Enter your text here...",
   },
 };

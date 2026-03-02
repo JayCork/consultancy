@@ -1,11 +1,9 @@
-import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 import styles from "./NavItem.module.css";
-import { For, Show } from "solid-js";
-import { Library, TreePine } from "lucide-solid/icons/index";
+import { Show } from "solid-js";
 
 interface NavItemProps {
   href: string;
-  name: string;
+  label: string;
   icon?: any;
   notifications?: number;
 }
@@ -15,8 +13,10 @@ const NavItem = (props: NavItemProps) => {
     <li class={styles.container}>
       <div class={styles.itemStart}>
         <a href={props.href} class={styles.link}>
-          {props.icon && <props.icon />}
-          {props.name}
+          <Show when={props.icon}>
+            <span class={styles.icon}>{props.icon}</span>
+          </Show>
+          {props.label}
         </a>
       </div>
       <div class={styles.itemEnd}>
@@ -34,7 +34,7 @@ const NavItem = (props: NavItemProps) => {
     //           <div class={styles.itemStart}>
     //             <a href={item.href} class={styles.link}>
     //               {item.icon && <item.icon />}
-    //               {item.name}
+    //               {item.label}
     //             </a>
     //           </div>
     //           <div class={styles.itemEnd}>
