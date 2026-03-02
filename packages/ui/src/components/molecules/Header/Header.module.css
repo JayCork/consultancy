@@ -27,6 +27,13 @@
     var(--surface-variant-dark)
   );
   border-radius: var(--radius-pill);
+  width: var(--size-touch-min);
+  height: var(--size-touch-min);
+  background-color: light-dark(
+    var(--surface-variant-light),
+    var(--surface-variant-dark)
+  );
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
