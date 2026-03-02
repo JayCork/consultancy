@@ -1,6 +1,12 @@
 .container {
   border-radius: 8px;
   outline: #cac4d0 solid 1px;
+  outline: light-dark(var(--surface-variant-light), var(--surface-variant-dark))
+    solid 1px;
+  color: light-dark(
+    var(--on-surface-variant-light),
+    var(--on-surface-variant-dark)
+  );
   padding: 4px 8px;
   width: fit-content;
 }

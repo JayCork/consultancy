@@ -1,5 +1,4 @@
 import CircleUser from "lucide-solid/icons/user-circle";
-import { Button } from "../../../stories/Button";
 import { ButtonIcon } from "../../atoms/ButtonIcon/ButtonIcon";
 import styles from "./Header.module.css";
 import { Hexagon } from "lucide-solid";

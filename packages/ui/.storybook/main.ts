@@ -11,13 +11,11 @@ interface StorybookConfig {
 }
 
 export default {
-  stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
-
-  addons: ["storybook-css-modules","@storybook/addon-docs" ],
-
   framework: "storybook-solidjs-vite",
-    docs: {
-    defaultName: 'Documentation',
+  stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)", "../src/**/*.mdx"],
+  addons: ["storybook-css-modules", "@storybook/addon-docs"],
+  docs: {
+    defaultName: "Documentation",
   },
   viteFinal: async (
     config: import("vite").UserConfig,
@@ -25,8 +23,12 @@ export default {
     return mergeConfig(config, {
       resolve: {
         alias: {
-          "@consultancy/ui": path.resolve(new URL("../src", import.meta.url).pathname),
-          "@consultancy/ui/*": path.resolve(new URL("../src/*", import.meta.url).pathname),
+          "@consultancy/ui": path.resolve(
+            new URL("../src", import.meta.url).pathname,
+          ),
+          "@consultancy/ui/*": path.resolve(
+            new URL("../src/*", import.meta.url).pathname,
+          ),
         },
       },
     });
