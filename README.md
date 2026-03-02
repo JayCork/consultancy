@@ -1,23 +1,25 @@
-
 ## Getting Started
 
 ### Prerequisits
+
 - pnpm 10
 
-
 # Packages
-- @consultancy/ui storybook 
+
+- @consultancy/ui storybook
 
 # Scripts
 
 ## Create a story
+
 ```
 pnpm gen:ui atoms InputField
 ```
 
 ## Start Storybook
+
 ```
-pnpm --filter @consultancy/ui storybook 
+pnpm --filter @consultancy/ui storybook
 ```
 
 # Format
@@ -36,4 +38,12 @@ Use glob patterns to format specific files:
 
 ```bash
 pnpm exec prettier "src/components/atoms/**/*.tsx" --write
+```
+
+## API
+
+To start the API server:
+
+```
+pnpm --filter @consultancy/api dev
 ```

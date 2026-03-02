@@ -1,0 +1,10 @@
+{
+  "extends": "../../packages/config/base.json",
+  "compilerOptions": {
+    "baseUrl": "../../",
+    "paths": {
+      "@consultancy/db": ["packages/db/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}
