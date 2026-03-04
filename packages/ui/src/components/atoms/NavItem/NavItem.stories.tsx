@@ -13,7 +13,7 @@ type Story = StoryObj<typeof NavItem>;
 export const Default: Story = {
   args: {
     href: "#",
-    name: "Menu Item",
+    label: "Menu Item",
     // icon: LayoutDashboardIcon,
   },
 };
@@ -21,7 +21,7 @@ export const Default: Story = {
 export const WithLeadingIcon: Story = {
   args: {
     href: "#",
-    name: "Menu Item",
+    label: "Menu Item",
     icon: LayoutDashboardIcon,
   },
 };
@@ -29,7 +29,7 @@ export const WithLeadingIcon: Story = {
 export const WithNotifications: Story = {
   args: {
     href: "#",
-    name: "Menu Item",
+    label: "Menu Item",
     notifications: 5,
   },
 };

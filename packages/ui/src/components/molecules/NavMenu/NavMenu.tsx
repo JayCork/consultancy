@@ -10,31 +10,39 @@ interface NavMenuProps {
   items?: {
     id: number;
     href: string;
-    icon?: any;
     label: string;
+    icon?: any;
     notifications?: number;
   }[];
 }
 
 export const NavMenu = (props: NavMenuProps) => {
   return (
-    <nav class={styles.base}>
-      <div class={styles.tenant}>
-        <h2>{props.title}</h2>
-        <div class={styles.divider} />
+    <aside class={styles.container}>
+      <div class={styles.appContainer}>
+        {/* App-level controls (top section) */}
+        <span>App</span>
       </div>
-      <ul class={styles.unorderedList}>
-        <For each={props.items}>
-          {(item, index) => (
-            <NavItem
-              href={item.href}
-              label={item.label}
-              icon={item?.icon}
-              notifications={item?.notifications}
-            />
-          )}
-        </For>
-      </ul>
-    </nav>
+      <nav class={styles.nav} aria-label="Main navigation">
+        <ul class={styles.navList}>
+          <For each={props.items}>
+            {(item, index) => (
+              <li class={styles.navItem}>
+                <NavItem
+                  href={item.href}
+                  label={item.label}
+                  icon={item?.icon}
+                  notifications={item?.notifications}
+                />
+              </li>
+            )}
+          </For>
+        </ul>
+      </nav>
+      <div class={styles.userSettings}>
+        {/* User settings (bottom section) */}
+        <span>Logout</span>
+      </div>
+    </aside>
   );
 };

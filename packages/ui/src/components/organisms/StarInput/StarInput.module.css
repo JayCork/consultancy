@@ -1,8 +1,7 @@
-.base {
-  display: grid;
+.container {
+  display: flex;
   gap: 1rem;
-  grid-template-columns: repeat(2, 1fr);
-}
+  flex-direction: column;}
 
 .grid {
   display: grid;
@@ -15,4 +14,11 @@
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
 }

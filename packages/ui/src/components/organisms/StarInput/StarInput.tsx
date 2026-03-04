@@ -1,4 +1,5 @@
 import { Chip, Select, TextArea } from "../../atoms";
+import Button from "../../atoms/Button/Button";
 import styles from "./StarInput.module.css";
 
 interface StarInputProps {
@@ -7,7 +8,7 @@ interface StarInputProps {
 
 export const StarInput = (props: StarInputProps) => {
   return (
-    <div class={styles.base}>
+    <div class={styles.container}>
       <div class={styles.grid}>
         <TextArea
           name="Situation"
@@ -45,8 +46,10 @@ export const StarInput = (props: StarInputProps) => {
         <Chip label="Tag 2" />
         <Chip label="Tag 3" />
       </div>
-      <button class={styles.button}>Cancel</button>
-      <button class={styles.button}>Submit</button>
+      <div class={styles.actions}>
+        <Button label="Cancel" />
+        <Button label="Submit" />
+      </div>
     </div>
   );
 };

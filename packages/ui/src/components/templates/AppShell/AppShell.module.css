@@ -1,0 +1,21 @@
+.appShell{
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.mainContent {
+  flex: 1;
+  overflow-y: auto;
+    padding: 1.5rem;
+
+  background-color: light-dark(
+    var(--surface-light),
+    var(--surface-dark)
+  );
+  color: light-dark(
+    var(--on-surface-light),
+    var(--on-surface-dark)
+  );
+}
