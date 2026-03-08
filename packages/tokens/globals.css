@@ -7,14 +7,15 @@
 
 html {
   background-color: light-dark(
-    var(--surface-variant-light),
-    var(--surface-variant-dark)
+    var(--color-background-light),
+    var(--color-background-dark)
   );
-color: light-dark(var(--on-surface-light), var(--on-surface-dark));}
+  color: var(--color-text-primary);
+}
 
 body {
-  background-color: light-dark(var(--surface-light), var(--surface-dark));
-  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
   min-height: 100dvh;
   margin: 0;
 }

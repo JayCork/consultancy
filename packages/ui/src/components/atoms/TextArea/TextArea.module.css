@@ -1,18 +1,11 @@
 .base {
   display: flex;
   width: 100%;
-  background-color: light-dark(
-    var(--surface-light),
-    var(--surface-dark)
-  );
+  background-color: var(--color-surface-variant);
   margin-top: 0.5rem;
 }
 
-.label, .description {
-  color: light-dark(
-    var(--on-surface-light),
-    var(--on-surface-dark)
-  );
+.label,
+.description {
+  color: var(--color-text-primary);
 }
-
-

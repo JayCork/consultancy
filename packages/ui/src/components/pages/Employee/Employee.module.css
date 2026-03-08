@@ -18,12 +18,12 @@
   );
   padding: var(--spacing-md);
   width: fit-content;
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-sm);
 }
 
 .feedItem {
   display: flex;
   gap: var(--spacing-md);
   padding: var(--spacing-md);
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-sm);
 }

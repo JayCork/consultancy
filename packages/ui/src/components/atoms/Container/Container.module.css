@@ -4,4 +4,6 @@
     var(--surface-container-light),
     var(--surface-container-dark)
   );
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
 }

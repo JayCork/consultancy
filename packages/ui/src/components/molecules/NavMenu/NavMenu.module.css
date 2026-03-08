@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 100vh;
   min-width: 14vw;
+  background-color: var(--color-surface);
 }
 
 .appContainer {
@@ -12,10 +13,7 @@
 
 .nav {
   flex: 0 0 auto;
-  background-color: light-dark(
-    var(--surface-light),
-    var(--surface-dark)
-  );
+  color: var(--color-on-surface);
   padding: 0;
 }
 
@@ -32,8 +30,5 @@
 .userSettings {
   margin-top: auto;
   padding: 1rem;
-  background-color: light-dark(
-    var(--surface-light),
-    var(--surface-dark)
-  );
+  background-color: light-dark(var(--surface-light), var(--surface-dark));
 }
