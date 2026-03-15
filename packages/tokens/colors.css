@@ -1,7 +1,5 @@
-
 :root {
   color-scheme: light dark;
-
 
   /* ===========================================================================
      COLOUR — BACKGROUNDS
@@ -10,157 +8,211 @@
   =========================================================================== */
 
   --color-background-light: oklch(98% 0.008 80);
-  --color-background-dark:  oklch(14% 0.008 80);
-  --color-background: light-dark(var(--color-background-light), var(--color-background-dark));
+  --color-background-dark: oklch(14% 0.008 80);
+  --color-background: light-dark(
+    var(--color-background-light),
+    var(--color-background-dark)
+  );
 
-  --color-surface-light: oklch(96% 0.010 80);
-  --color-surface-dark:  oklch(18% 0.008 80);
-  --color-surface: light-dark(var(--color-surface-light), var(--color-surface-dark));
+  --color-surface-light: oklch(96% 0.01 80);
+  --color-surface-dark: oklch(18% 0.008 80);
+  --color-surface: light-dark(
+    var(--color-surface-light),
+    var(--color-surface-dark)
+  );
 
-  --color-container-light: oklch(100% 0.000 0);
-  --color-container-dark:  oklch(22% 0.008 80);
-  --color-container: light-dark(var(--color-container-light), var(--color-container-dark));
+  --color-container-light: oklch(100% 0 0);
+  --color-container-dark: oklch(22% 0.008 80);
+  --color-container: light-dark(
+    var(--color-container-light),
+    var(--color-container-dark)
+  );
 
-  --color-overlay-light: oklch(94% 0.010 80);
-  --color-overlay-dark:  oklch(26% 0.008 80);
-  --color-overlay: light-dark(var(--color-overlay-light), var(--color-overlay-dark));
+  --color-overlay-light: oklch(94% 0.01 80);
+  --color-overlay-dark: oklch(26% 0.008 80);
+  --color-overlay: light-dark(
+    var(--color-overlay-light),
+    var(--color-overlay-dark)
+  );
 
   /* Scrim — used behind modals/drawers */
   --color-scrim-light: oklch(0% 0 0 / 40%);
-  --color-scrim-dark:  oklch(0% 0 0 / 60%);
+  --color-scrim-dark: oklch(0% 0 0 / 60%);
   --color-scrim: light-dark(var(--color-scrim-light), var(--color-scrim-dark));
-
 
   /* ===========================================================================
      COLOUR — PRIMARY (Amber / Ochre — growth, energy, warmth)
   =========================================================================== */
 
-  --color-primary:           oklch(68% 0.16 65);   /* core brand */
-  --color-primary-hover:     oklch(62% 0.16 65);   /* darker on hover */
-  --color-primary-active:    oklch(55% 0.16 65);   /* pressed state */
-  --color-primary-subtle:    oklch(92% 0.08 65);   /* light tint backgrounds */
-  --color-on-primary:        oklch(20% 0.08 65);   /* text/icons ON primary */
+  --color-primary: oklch(68% 0.16 65); /* core brand */
+  --color-primary-hover: oklch(62% 0.16 65); /* darker on hover */
+  --color-primary-active: oklch(55% 0.16 65); /* pressed state */
+  --color-primary-subtle: oklch(92% 0.08 65); /* light tint backgrounds */
+  --color-on-primary: oklch(20% 0.08 65); /* text/icons ON primary */
 
   /* Primary container — for chips, tags, highlighted nav items */
   --color-primary-container-light: oklch(90% 0.09 65);
-  --color-primary-container-dark:  oklch(32% 0.12 65);
-  --color-primary-container: light-dark(var(--color-primary-container-light), var(--color-primary-container-dark));
+  --color-primary-container-dark: oklch(32% 0.12 65);
+  --color-primary-container: light-dark(
+    var(--color-primary-container-light),
+    var(--color-primary-container-dark)
+  );
 
   --color-on-primary-container-light: oklch(25% 0.12 65);
-  --color-on-primary-container-dark:  oklch(90% 0.09 65);
-  --color-on-primary-container: light-dark(var(--color-on-primary-container-light), var(--color-on-primary-container-dark));
-
+  --color-on-primary-container-dark: oklch(90% 0.09 65);
+  --color-on-primary-container: light-dark(
+    var(--color-on-primary-container-light),
+    var(--color-on-primary-container-dark)
+  );
 
   /* ===========================================================================
      COLOUR — ACCENT (Teal — skills, data, progress indicators)
   =========================================================================== */
 
-  --color-accent:          oklch(60% 0.13 195);
-  --color-accent-hover:    oklch(54% 0.13 195);
-  --color-accent-active:   oklch(48% 0.13 195);
-  --color-accent-subtle:   oklch(90% 0.06 195);
-  --color-on-accent:       oklch(98% 0.005 195);
+  --color-accent: oklch(60% 0.13 195);
+  --color-accent-hover: oklch(54% 0.13 195);
+  --color-accent-active: oklch(48% 0.13 195);
+  --color-accent-subtle: oklch(90% 0.06 195);
+  --color-on-accent: oklch(98% 0.005 195);
 
   --color-accent-container-light: oklch(88% 0.07 195);
-  --color-accent-container-dark:  oklch(28% 0.10 195);
-  --color-accent-container: light-dark(var(--color-accent-container-light), var(--color-accent-container-dark));
+  --color-accent-container-dark: oklch(28% 0.1 195);
+  --color-accent-container: light-dark(
+    var(--color-accent-container-light),
+    var(--color-accent-container-dark)
+  );
 
-  --color-on-accent-container-light: oklch(20% 0.10 195);
-  --color-on-accent-container-dark:  oklch(88% 0.07 195);
-  --color-on-accent-container: light-dark(var(--color-on-accent-container-light), var(--color-on-accent-container-dark));
-
+  --color-on-accent-container-light: oklch(20% 0.1 195);
+  --color-on-accent-container-dark: oklch(88% 0.07 195);
+  --color-on-accent-container: light-dark(
+    var(--color-on-accent-container-light),
+    var(--color-on-accent-container-dark)
+  );
 
   /* ===========================================================================
      COLOUR — TEXT
      Four levels of hierarchy. Always check contrast against target surface.
   =========================================================================== */
 
-  --color-text-primary-light: oklch(20% 0.015 80);   /* headings, key content ~14:1 */
-  --color-text-primary-dark:  oklch(92% 0.010 80);
-  --color-text-primary: light-dark(var(--color-text-primary-light), var(--color-text-primary-dark));
+  --color-text-primary-light: oklch(
+    20% 0.015 80
+  ); /* headings, key content ~14:1 */
+  --color-text-primary-dark: oklch(92% 0.01 80);
+  --color-text-primary: light-dark(
+    var(--color-text-primary-light),
+    var(--color-text-primary-dark)
+  );
 
-  --color-text-secondary-light: oklch(42% 0.015 80);  /* labels, supporting text ~5:1 */
-  --color-text-secondary-dark:  oklch(68% 0.010 80);
-  --color-text-secondary: light-dark(var(--color-text-secondary-light), var(--color-text-secondary-dark));
+  --color-text-secondary-light: oklch(
+    42% 0.015 80
+  ); /* labels, supporting text ~5:1 */
+  --color-text-secondary-dark: oklch(68% 0.01 80);
+  --color-text-secondary: light-dark(
+    var(--color-text-secondary-light),
+    var(--color-text-secondary-dark)
+  );
 
-  --color-text-muted-light: oklch(62% 0.008 80);      /* captions, metadata ~3:1 */
-  --color-text-muted-dark:  oklch(48% 0.008 80);
-  --color-text-muted: light-dark(var(--color-text-muted-light), var(--color-text-muted-dark));
+  --color-text-muted-light: oklch(62% 0.008 80); /* captions, metadata ~3:1 */
+  --color-text-muted-dark: oklch(48% 0.008 80);
+  --color-text-muted: light-dark(
+    var(--color-text-muted-light),
+    var(--color-text-muted-dark)
+  );
 
-  --color-text-disabled-light: oklch(72% 0.005 80);   /* disabled controls */
-  --color-text-disabled-dark:  oklch(38% 0.005 80);
-  --color-text-disabled: light-dark(var(--color-text-disabled-light), var(--color-text-disabled-dark));
+  --color-text-disabled-light: oklch(72% 0.005 80); /* disabled controls */
+  --color-text-disabled-dark: oklch(38% 0.005 80);
+  --color-text-disabled: light-dark(
+    var(--color-text-disabled-light),
+    var(--color-text-disabled-dark)
+  );
 
-  --color-text-inverse-light: oklch(96% 0.008 80);    /* text on dark surfaces */
-  --color-text-inverse-dark:  oklch(20% 0.015 80);
-  --color-text-inverse: light-dark(var(--color-text-inverse-light), var(--color-text-inverse-dark));
+  --color-text-inverse-light: oklch(96% 0.008 80); /* text on dark surfaces */
+  --color-text-inverse-dark: oklch(20% 0.015 80);
+  --color-text-inverse: light-dark(
+    var(--color-text-inverse-light),
+    var(--color-text-inverse-dark)
+  );
 
-  --color-text-on-primary: oklch(20% 0.08 65);        /* text directly on primary bg */
-  --color-text-link:       var(--color-accent);       /* hyperlinks */
+  --color-text-on-primary: oklch(20% 0.08 65); /* text directly on primary bg */
+  --color-text-link: var(--color-accent); /* hyperlinks */
   --color-text-link-hover: var(--color-accent-hover);
-
 
   /* ===========================================================================
      COLOUR — BORDERS & DIVIDERS
   =========================================================================== */
 
-  --color-border-light: oklch(88% 0.010 80);         /* default borders */
-  --color-border-dark:  oklch(30% 0.010 80);
-  --color-border: light-dark(var(--color-border-light), var(--color-border-dark));
+  --color-border-light: oklch(88% 0.01 80); /* default borders */
+  --color-border-dark: oklch(30% 0.01 80);
+  --color-border: light-dark(
+    var(--color-border-light),
+    var(--color-border-dark)
+  );
 
-  --color-border-strong-light: oklch(72% 0.012 80);  /* emphasized borders */
-  --color-border-strong-dark:  oklch(42% 0.012 80);
-  --color-border-strong: light-dark(var(--color-border-strong-light), var(--color-border-strong-dark));
+  --color-border-strong-light: oklch(72% 0.012 80); /* emphasized borders */
+  --color-border-strong-dark: oklch(42% 0.012 80);
+  --color-border-strong: light-dark(
+    var(--color-border-strong-light),
+    var(--color-border-strong-dark)
+  );
 
-  --color-border-focus: var(--color-primary);        /* keyboard focus rings */
+  --color-border-focus: var(--color-primary); /* keyboard focus rings */
   --color-border-error: var(--color-error);
-
 
   /* ===========================================================================
      COLOUR — SEMANTIC (status, feedback)
   =========================================================================== */
 
   /* Success */
-  --color-success:           oklch(52% 0.15 145);
+  --color-success: oklch(52% 0.15 145);
   --color-success-subtle-light: oklch(92% 0.07 145);
-  --color-success-subtle-dark:  oklch(25% 0.10 145);
-  --color-success-subtle: light-dark(var(--color-success-subtle-light), var(--color-success-subtle-dark));
-  --color-on-success:        oklch(98% 0.005 145);
+  --color-success-subtle-dark: oklch(25% 0.1 145);
+  --color-success-subtle: light-dark(
+    var(--color-success-subtle-light),
+    var(--color-success-subtle-dark)
+  );
+  --color-on-success: oklch(98% 0.005 145);
 
   /* Warning */
-  --color-warning:           oklch(72% 0.15 75);
+  --color-warning: oklch(72% 0.15 75);
   --color-warning-subtle-light: oklch(94% 0.07 75);
-  --color-warning-subtle-dark:  oklch(28% 0.10 75);
-  --color-warning-subtle: light-dark(var(--color-warning-subtle-light), var(--color-warning-subtle-dark));
-  --color-on-warning:        oklch(20% 0.08 75);
+  --color-warning-subtle-dark: oklch(28% 0.1 75);
+  --color-warning-subtle: light-dark(
+    var(--color-warning-subtle-light),
+    var(--color-warning-subtle-dark)
+  );
+  --color-on-warning: oklch(20% 0.08 75);
 
   /* Error */
-  --color-error:             oklch(55% 0.20 25);
+  --color-error: oklch(55% 0.2 25);
   --color-error-subtle-light: oklch(94% 0.07 25);
-  --color-error-subtle-dark:  oklch(25% 0.12 25);
-  --color-error-subtle: light-dark(var(--color-error-subtle-light), var(--color-error-subtle-dark));
-  --color-on-error:          oklch(98% 0.005 25);
+  --color-error-subtle-dark: oklch(25% 0.12 25);
+  --color-error-subtle: light-dark(
+    var(--color-error-subtle-light),
+    var(--color-error-subtle-dark)
+  );
+  --color-on-error: oklch(98% 0.005 25);
 
   /* Info */
-  --color-info:              oklch(58% 0.15 250);
+  --color-info: oklch(58% 0.15 250);
   --color-info-subtle-light: oklch(92% 0.06 250);
-  --color-info-subtle-dark:  oklch(25% 0.10 250);
-  --color-info-subtle: light-dark(var(--color-info-subtle-light), var(--color-info-subtle-dark));
-  --color-on-info:           oklch(98% 0.005 250);
-
+  --color-info-subtle-dark: oklch(25% 0.1 250);
+  --color-info-subtle: light-dark(
+    var(--color-info-subtle-light),
+    var(--color-info-subtle-dark)
+  );
+  --color-on-info: oklch(98% 0.005 250);
 
   /* ===========================================================================
      COLOUR — DATA VISUALISATION
      Used for charts, skill maps, progress rings. Perceptually distinct at same lightness.
   =========================================================================== */
 
-  --color-data-1: oklch(62% 0.16 65);   /* amber — primary */
-  --color-data-2: oklch(60% 0.13 195);  /* teal — accent */
-  --color-data-3: oklch(60% 0.15 290);  /* purple */
-  --color-data-4: oklch(62% 0.15 145);  /* green */
-  --color-data-5: oklch(60% 0.18 25);   /* red-orange */
-  --color-data-6: oklch(62% 0.12 230);  /* blue */
-
+  --color-data-1: oklch(62% 0.16 65); /* amber — primary */
+  --color-data-2: oklch(60% 0.13 195); /* teal — accent */
+  --color-data-3: oklch(60% 0.15 290); /* purple */
+  --color-data-4: oklch(62% 0.15 145); /* green */
+  --color-data-5: oklch(60% 0.18 25); /* red-orange */
+  --color-data-6: oklch(62% 0.12 230); /* blue */
 
   /* ===========================================================================
      SPACING
@@ -168,97 +220,93 @@
      Use semantic aliases for common layout patterns.
   =========================================================================== */
 
-  --space-1:  0.25rem;   /*  4px */
-  --space-2:  0.5rem;    /*  8px */
-  --space-3:  0.75rem;   /* 12px */
-  --space-4:  1rem;      /* 16px — base unit */
-  --space-5:  1.25rem;   /* 20px */
-  --space-6:  1.5rem;    /* 24px */
-  --space-8:  2rem;      /* 32px */
-  --space-10: 2.5rem;    /* 40px */
-  --space-12: 3rem;      /* 48px */
-  --space-16: 4rem;      /* 64px */
-  --space-20: 5rem;      /* 80px */
-  --space-24: 6rem;      /* 96px */
+  --space-1: 0.25rem; /*  4px */
+  --space-2: 0.5rem; /*  8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px — base unit */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
 
   /* Semantic spacing aliases */
-  --space-component-xs:  var(--space-2);   /* tight internal padding (chips, badges) */
-  --space-component-sm:  var(--space-3);   /* small components (buttons, inputs) */
-  --space-component-md:  var(--space-4);   /* default component padding */
-  --space-component-lg:  var(--space-6);   /* cards, panels */
-  --space-component-xl:  var(--space-8);   /* large cards, modals */
+  --space-component-xs: var(
+    --space-2
+  ); /* tight internal padding (chips, badges) */
+  --space-component-sm: var(--space-3); /* small components (buttons, inputs) */
+  --space-component-md: var(--space-4); /* default component padding */
+  --space-component-lg: var(--space-6); /* cards, panels */
+  --space-component-xl: var(--space-8); /* large cards, modals */
 
-  --space-layout-sm:     var(--space-8);   /* between related sections */
-  --space-layout-md:     var(--space-12);  /* between distinct sections */
-  --space-layout-lg:     var(--space-16);  /* page-level vertical rhythm */
-  --space-layout-xl:     var(--space-24);  /* hero/feature spacing */
+  --space-layout-sm: var(--space-8); /* between related sections */
+  --space-layout-md: var(--space-12); /* between distinct sections */
+  --space-layout-lg: var(--space-16); /* page-level vertical rhythm */
+  --space-layout-xl: var(--space-24); /* hero/feature spacing */
 
-  --space-inline-xs:     var(--space-1);   /* icon-to-label gap */
-  --space-inline-sm:     var(--space-2);   /* tight inline elements */
-  --space-inline-md:     var(--space-3);   /* default inline gap */
-  --space-inline-lg:     var(--space-4);   /* relaxed inline gap */
+  --space-inline-xs: var(--space-1); /* icon-to-label gap */
+  --space-inline-sm: var(--space-2); /* tight inline elements */
+  --space-inline-md: var(--space-3); /* default inline gap */
+  --space-inline-lg: var(--space-4); /* relaxed inline gap */
 
-  --space-stack-xs:      var(--space-1);   /* tightly stacked items */
-  --space-stack-sm:      var(--space-2);   /* form field rows */
-  --space-stack-md:      var(--space-4);   /* list items */
-  --space-stack-lg:      var(--space-6);   /* section blocks */
-
+  --space-stack-xs: var(--space-1); /* tightly stacked items */
+  --space-stack-sm: var(--space-2); /* form field rows */
+  --space-stack-md: var(--space-4); /* list items */
+  --space-stack-lg: var(--space-6); /* section blocks */
 
   /* ===========================================================================
      TYPOGRAPHY — TYPE SCALE
      Uses a modular scale (ratio ~1.25). rem-based for accessibility.
   =========================================================================== */
 
-  --font-size-xs:   0.75rem;    /* 12px — labels, captions */
-  --font-size-sm:   0.875rem;   /* 14px — body small, helper text */
-  --font-size-md:   1rem;       /* 16px — body default */
-  --font-size-lg:   1.125rem;   /* 18px — body large */
-  --font-size-xl:   1.25rem;    /* 20px — heading 6 / subtitle */
-  --font-size-2xl:  1.5rem;     /* 24px — heading 5 */
-  --font-size-3xl:  1.875rem;   /* 30px — heading 4 */
-  --font-size-4xl:  2.25rem;    /* 36px — heading 3 */
-  --font-size-5xl:  3rem;       /* 48px — heading 2 */
-  --font-size-6xl:  3.75rem;    /* 60px — heading 1 / display */
-
+  --font-size-xs: 0.75rem; /* 12px — labels, captions */
+  --font-size-sm: 0.875rem; /* 14px — body small, helper text */
+  --font-size-md: 1rem; /* 16px — body default */
+  --font-size-lg: 1.125rem; /* 18px — body large */
+  --font-size-xl: 1.25rem; /* 20px — heading 6 / subtitle */
+  --font-size-2xl: 1.5rem; /* 24px — heading 5 */
+  --font-size-3xl: 1.875rem; /* 30px — heading 4 */
+  --font-size-4xl: 2.25rem; /* 36px — heading 3 */
+  --font-size-5xl: 3rem; /* 48px — heading 2 */
+  --font-size-6xl: 3.75rem; /* 60px — heading 1 / display */
 
   /* ===========================================================================
      TYPOGRAPHY — FONT FAMILIES
   =========================================================================== */
 
-  --font-sans:   'DM Sans', 'Helvetica Neue', Arial, sans-serif;
-  --font-serif:  'Lora', Georgia, serif;         /* for editorial/pull-quote moments */
-  --font-mono:   'JetBrains Mono', 'Fira Code', monospace;  /* code, IDs, data */
-
+  --font-sans: "DM Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Lora", Georgia, serif; /* for editorial/pull-quote moments */
+  --font-mono: "JetBrains Mono", "Fira Code", monospace; /* code, IDs, data */
 
   /* ===========================================================================
      TYPOGRAPHY — FONT WEIGHTS
   =========================================================================== */
 
-  --font-weight-regular:   400;
-  --font-weight-medium:    500;
-  --font-weight-semibold:  600;
-  --font-weight-bold:      700;
-
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
   /* ===========================================================================
      TYPOGRAPHY — LINE HEIGHTS
   =========================================================================== */
 
-  --line-height-tight:    1.2;   /* headings */
-  --line-height-snug:     1.35;  /* subheadings, UI labels */
-  --line-height-normal:   1.5;   /* body text default */
-  --line-height-relaxed:  1.65;  /* long-form reading */
-
+  --line-height-tight: 1.2; /* headings */
+  --line-height-snug: 1.35; /* subheadings, UI labels */
+  --line-height-normal: 1.5; /* body text default */
+  --line-height-relaxed: 1.65; /* long-form reading */
 
   /* ===========================================================================
      TYPOGRAPHY — LETTER SPACING
   =========================================================================== */
 
-  --letter-spacing-tight:   -0.02em;  /* large headings */
-  --letter-spacing-normal:   0em;
-  --letter-spacing-wide:     0.04em;  /* uppercase labels, captions */
-  --letter-spacing-wider:    0.08em;  /* badge text, overlines */
-
+  --letter-spacing-tight: -0.02em; /* large headings */
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.04em; /* uppercase labels, captions */
+  --letter-spacing-wider: 0.08em; /* badge text, overlines */
 
   /* ===========================================================================
      TYPOGRAPHY — SEMANTIC ALIASES
@@ -266,144 +314,144 @@
   =========================================================================== */
 
   /* Display */
-  --text-display-size:    var(--font-size-6xl);
-  --text-display-weight:  var(--font-weight-bold);
+  --text-display-size: var(--font-size-6xl);
+  --text-display-weight: var(--font-weight-bold);
   --text-display-leading: var(--line-height-tight);
   --text-display-tracking: var(--letter-spacing-tight);
 
   /* Headings */
-  --text-h1-size:    var(--font-size-5xl);
-  --text-h1-weight:  var(--font-weight-bold);
+  --text-h1-size: var(--font-size-5xl);
+  --text-h1-weight: var(--font-weight-bold);
   --text-h1-leading: var(--line-height-tight);
 
-  --text-h2-size:    var(--font-size-4xl);
-  --text-h2-weight:  var(--font-weight-semibold);
+  --text-h2-size: var(--font-size-4xl);
+  --text-h2-weight: var(--font-weight-semibold);
   --text-h2-leading: var(--line-height-tight);
 
-  --text-h3-size:    var(--font-size-3xl);
-  --text-h3-weight:  var(--font-weight-semibold);
+  --text-h3-size: var(--font-size-3xl);
+  --text-h3-weight: var(--font-weight-semibold);
   --text-h3-leading: var(--line-height-snug);
 
-  --text-h4-size:    var(--font-size-2xl);
-  --text-h4-weight:  var(--font-weight-semibold);
+  --text-h4-size: var(--font-size-2xl);
+  --text-h4-weight: var(--font-weight-semibold);
   --text-h4-leading: var(--line-height-snug);
 
-  --text-h5-size:    var(--font-size-xl);
-  --text-h5-weight:  var(--font-weight-medium);
+  --text-h5-size: var(--font-size-xl);
+  --text-h5-weight: var(--font-weight-medium);
   --text-h5-leading: var(--line-height-snug);
 
   /* Body */
-  --text-body-lg-size:    var(--font-size-lg);
+  --text-body-lg-size: var(--font-size-lg);
   --text-body-lg-leading: var(--line-height-normal);
 
-  --text-body-size:    var(--font-size-md);
+  --text-body-size: var(--font-size-md);
   --text-body-leading: var(--line-height-normal);
 
-  --text-body-sm-size:    var(--font-size-sm);
+  --text-body-sm-size: var(--font-size-sm);
   --text-body-sm-leading: var(--line-height-normal);
 
   /* UI text */
-  --text-label-size:    var(--font-size-sm);
-  --text-label-weight:  var(--font-weight-medium);
+  --text-label-size: var(--font-size-sm);
+  --text-label-weight: var(--font-weight-medium);
   --text-label-leading: var(--line-height-snug);
 
-  --text-caption-size:    var(--font-size-xs);
-  --text-caption-weight:  var(--font-weight-regular);
+  --text-caption-size: var(--font-size-xs);
+  --text-caption-weight: var(--font-weight-regular);
   --text-caption-leading: var(--line-height-snug);
 
-  --text-overline-size:    var(--font-size-xs);
-  --text-overline-weight:  var(--font-weight-semibold);
+  --text-overline-size: var(--font-size-xs);
+  --text-overline-weight: var(--font-weight-semibold);
   --text-overline-tracking: var(--letter-spacing-wider);
 
-  --text-code-size:    var(--font-size-sm);
-  --text-code-family:  var(--font-mono);
-
+  --text-code-size: var(--font-size-sm);
+  --text-code-family: var(--font-mono);
 
   /* ===========================================================================
      BORDER RADIUS
   =========================================================================== */
 
-  --radius-none:   0;
-  --radius-xs:     0.125rem;   /*  2px — subtle rounding */
-  --radius-sm:     0.25rem;    /*  4px — inputs, small chips */
-  --radius-md:     0.5rem;     /*  8px — buttons, cards default */
-  --radius-lg:     0.75rem;    /* 12px — larger cards */
-  --radius-xl:     1rem;       /* 16px — modals, popovers */
-  --radius-2xl:    1.5rem;     /* 24px — featured cards */
-  --radius-full:   9999px;     /* pills, avatars, badges */
+  --radius-none: 0;
+  --radius-xs: 0.125rem; /*  2px — subtle rounding */
+  --radius-sm: 0.25rem; /*  4px — inputs, small chips */
+  --radius-md: 0.5rem; /*  8px — buttons, cards default */
+  --radius-lg: 0.75rem; /* 12px — larger cards */
+  --radius-xl: 1rem; /* 16px — modals, popovers */
+  --radius-2xl: 1.5rem; /* 24px — featured cards */
+  --radius-full: 9999px; /* pills, avatars, badges */
 
   /* Semantic aliases */
-  --radius-button:  var(--radius-md);
-  --radius-input:   var(--radius-md);
-  --radius-card:    var(--radius-lg);
-  --radius-modal:   var(--radius-xl);
-  --radius-badge:   var(--radius-full);
-  --radius-avatar:  var(--radius-full);
-  --radius-chip:    var(--radius-full);
+  --radius-button: var(--radius-md);
+  --radius-input: var(--radius-md);
+  --radius-card: var(--radius-lg);
+  --radius-modal: var(--radius-xl);
+  --radius-badge: var(--radius-full);
+  --radius-avatar: var(--radius-full);
+  --radius-chip: var(--radius-full);
   --radius-tooltip: var(--radius-sm);
-
 
   /* ===========================================================================
      SHADOWS / ELEVATION
      Warm-tinted shadows to match the amber palette.
   =========================================================================== */
 
-  --shadow-xs:  0 1px 2px oklch(20% 0.02 80 / 8%);
-  --shadow-sm:  0 1px 3px oklch(20% 0.02 80 / 10%), 0 1px 2px oklch(20% 0.02 80 / 6%);
-  --shadow-md:  0 4px 6px oklch(20% 0.02 80 / 8%),  0 2px 4px oklch(20% 0.02 80 / 6%);
-  --shadow-lg:  0 10px 15px oklch(20% 0.02 80 / 8%), 0 4px 6px oklch(20% 0.02 80 / 5%);
-  --shadow-xl:  0 20px 25px oklch(20% 0.02 80 / 8%), 0 8px 10px oklch(20% 0.02 80 / 5%);
+  --shadow-xs: 0 1px 2px oklch(20% 0.02 80 / 8%);
+  --shadow-sm:
+    0 1px 3px oklch(20% 0.02 80 / 10%), 0 1px 2px oklch(20% 0.02 80 / 6%);
+  --shadow-md:
+    0 4px 6px oklch(20% 0.02 80 / 8%), 0 2px 4px oklch(20% 0.02 80 / 6%);
+  --shadow-lg:
+    0 10px 15px oklch(20% 0.02 80 / 8%), 0 4px 6px oklch(20% 0.02 80 / 5%);
+  --shadow-xl:
+    0 20px 25px oklch(20% 0.02 80 / 8%), 0 8px 10px oklch(20% 0.02 80 / 5%);
   --shadow-2xl: 0 25px 50px oklch(20% 0.02 80 / 15%);
 
   /* Semantic */
-  --shadow-card:    var(--shadow-sm);
+  --shadow-card: var(--shadow-sm);
   --shadow-popover: var(--shadow-lg);
-  --shadow-modal:   var(--shadow-xl);
-  --shadow-button:  var(--shadow-xs);
+  --shadow-modal: var(--shadow-xl);
+  --shadow-button: var(--shadow-xs);
 
   /* Focus ring — used for keyboard navigation */
   --shadow-focus-ring: 0 0 0 3px oklch(68% 0.16 65 / 35%);
-  --shadow-focus-ring-error: 0 0 0 3px oklch(55% 0.20 25 / 35%);
-
+  --shadow-focus-ring-error: 0 0 0 3px oklch(55% 0.2 25 / 35%);
 
   /* ===========================================================================
      Z-INDEX SCALE
   =========================================================================== */
 
-  --z-below:    -1;
-  --z-base:      0;
-  --z-raised:   10;   /* cards, slightly elevated UI */
-  --z-dropdown: 100;  /* dropdowns, menus */
-  --z-sticky:   200;  /* sticky headers/sidebars */
-  --z-overlay:  300;  /* drawers, sidesheets */
-  --z-modal:    400;  /* modals, dialogs */
-  --z-toast:    500;  /* notifications, toasts */
-  --z-tooltip:  600;  /* tooltips (always on top) */
-
+  --z-below: -1;
+  --z-base: 0;
+  --z-raised: 10; /* cards, slightly elevated UI */
+  --z-dropdown: 100; /* dropdowns, menus */
+  --z-sticky: 200; /* sticky headers/sidebars */
+  --z-overlay: 300; /* drawers, sidesheets */
+  --z-modal: 400; /* modals, dialogs */
+  --z-toast: 500; /* notifications, toasts */
+  --z-tooltip: 600; /* tooltips (always on top) */
 
   /* ===========================================================================
      TRANSITIONS & ANIMATION
   =========================================================================== */
 
-  --duration-instant:  50ms;
-  --duration-fast:     100ms;
-  --duration-normal:   200ms;
-  --duration-slow:     350ms;
-  --duration-slower:   500ms;
+  --duration-instant: 50ms;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
 
-  --ease-default:      cubic-bezier(0.4, 0, 0.2, 1);   /* material standard */
-  --ease-in:           cubic-bezier(0.4, 0, 1, 1);
-  --ease-out:          cubic-bezier(0, 0, 0.2, 1);
-  --ease-spring:       cubic-bezier(0.34, 1.56, 0.64, 1); /* slight overshoot */
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1); /* material standard */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* slight overshoot */
 
-  --transition-color:     color var(--duration-fast) var(--ease-default),
-                          background-color var(--duration-fast) var(--ease-default),
-                          border-color var(--duration-fast) var(--ease-default);
+  --transition-color:
+    color var(--duration-fast) var(--ease-default),
+    background-color var(--duration-fast) var(--ease-default),
+    border-color var(--duration-fast) var(--ease-default);
   --transition-transform: transform var(--duration-normal) var(--ease-spring);
-  --transition-shadow:    box-shadow var(--duration-normal) var(--ease-default);
-  --transition-opacity:   opacity var(--duration-normal) var(--ease-default);
-  --transition-all:       all var(--duration-normal) var(--ease-default);
-
+  --transition-shadow: box-shadow var(--duration-normal) var(--ease-default);
+  --transition-opacity: opacity var(--duration-normal) var(--ease-default);
+  --transition-all: all var(--duration-normal) var(--ease-default);
 
   /* ===========================================================================
      LAYOUT — BREAKPOINTS (as reference — use in @media queries, not var())
@@ -416,45 +464,43 @@
   =========================================================================== */
 
   /* Max content widths */
-  --width-content-sm:  640px;
-  --width-content-md:  768px;
-  --width-content-lg:  1024px;
-  --width-content-xl:  1280px;
+  --width-content-sm: 640px;
+  --width-content-md: 768px;
+  --width-content-lg: 1024px;
+  --width-content-xl: 1280px;
   --width-content-max: 1440px;
 
   /* Common component widths */
-  --width-sidebar:       260px;
-  --width-sidebar-mini:  64px;
-  --width-panel:         380px;
-  --width-modal-sm:      400px;
-  --width-modal-md:      560px;
-  --width-modal-lg:      720px;
+  --width-sidebar: 260px;
+  --width-sidebar-mini: 64px;
+  --width-panel: 380px;
+  --width-modal-sm: 400px;
+  --width-modal-md: 560px;
+  --width-modal-lg: 720px;
 
   /* Heights */
-  --height-topbar:    60px;
-  --height-input-sm:  2rem;     /* 32px */
-  --height-input-md:  2.5rem;   /* 40px */
-  --height-input-lg:  3rem;     /* 48px */
-
+  --height-topbar: 60px;
+  --height-input-sm: 2rem; /* 32px */
+  --height-input-md: 2.5rem; /* 40px */
+  --height-input-lg: 3rem; /* 48px */
 
   /* ===========================================================================
      OPACITY
   =========================================================================== */
 
   --opacity-disabled: 0.4;
-  --opacity-muted:    0.6;
-  --opacity-subtle:   0.08;    /* hover backgrounds */
-  --opacity-overlay:  0.5;
-
+  --opacity-muted: 0.6;
+  --opacity-subtle: 0.08; /* hover backgrounds */
+  --opacity-overlay: 0.5;
 
   /* ===========================================================================
      ICON SIZES
   =========================================================================== */
 
-  --icon-xs:  0.75rem;   /* 12px */
-  --icon-sm:  1rem;      /* 16px */
-  --icon-md:  1.25rem;   /* 20px — default */
-  --icon-lg:  1.5rem;    /* 24px */
-  --icon-xl:  2rem;      /* 32px */
-  --icon-2xl: 3rem;      /* 48px — empty states, feature icons */
+  --icon-xs: 0.75rem; /* 12px */
+  --icon-sm: 1rem; /* 16px */
+  --icon-md: 1.25rem; /* 20px — default */
+  --icon-lg: 1.5rem; /* 24px */
+  --icon-xl: 2rem; /* 32px */
+  --icon-2xl: 3rem; /* 48px — empty states, feature icons */
 }

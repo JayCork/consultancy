@@ -7,6 +7,7 @@ import { NavItem } from "../../atoms";
 interface NavMenuProps {
   // Define your props here
   title: string;
+  isOpen?: boolean;
   items?: {
     id: number;
     href: string;
@@ -18,9 +19,13 @@ interface NavMenuProps {
 
 export const NavMenu = (props: NavMenuProps) => {
   return (
-    <aside class={styles.container}>
+    <aside
+      class={styles.container}
+      classList={{
+        [styles.closed]: props.isOpen === false,
+      }}
+    >
       <div class={styles.appContainer}>
-        {/* App-level controls (top section) */}
         <span>App</span>
       </div>
       <nav class={styles.nav} aria-label="Main navigation">
@@ -33,6 +38,7 @@ export const NavMenu = (props: NavMenuProps) => {
                   label={item.label}
                   icon={item?.icon}
                   notifications={item?.notifications}
+                  showText={props.isOpen !== false}
                 />
               </li>
             )}

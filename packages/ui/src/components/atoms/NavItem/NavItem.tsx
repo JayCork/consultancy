@@ -6,6 +6,7 @@ interface NavItemProps {
   label: string;
   icon?: any;
   notifications?: number;
+  showText?: boolean;
 }
 
 const NavItem = (props: NavItemProps) => {
@@ -16,7 +17,9 @@ const NavItem = (props: NavItemProps) => {
           <Show when={props.icon}>
             <span class={styles.icon}>{props.icon}</span>
           </Show>
-          {props.label}
+          <Show when={props.showText}>
+            <span class={styles.label}>{props.label}</span>
+          </Show>
         </a>
       </div>
       <div class={styles.itemEnd}>
@@ -25,28 +28,6 @@ const NavItem = (props: NavItemProps) => {
         </Show>
       </div>
     </li>
-    // <div class={styles.base}>
-    //   <h2>Menu</h2>
-    //   <ul class={styles.unorderedList}>
-    //     <For each={data()}>
-    //       {(item, index) => (
-    //         <li class={styles.item}>
-    //           <div class={styles.itemStart}>
-    //             <a href={item.href} class={styles.link}>
-    //               {item.icon && <item.icon />}
-    //               {item.label}
-    //             </a>
-    //           </div>
-    //           <div class={styles.itemEnd}>
-    //             <Show when={item.notifications}>
-    //               <span class={styles.badge}>{item.notifications}</span>
-    //             </Show>
-    //           </div>
-    //         </li>
-    //       )}
-    //     </For>
-    //   </ul>
-    // </div>
   );
 };
 

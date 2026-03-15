@@ -1,9 +1,6 @@
 .container {
   display: flex;
-  background-color: light-dark(
-    var(--surface-container-light),
-    var(--surface-container-dark)
-  );
+  background-color: var(--color-surface);
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
 }
