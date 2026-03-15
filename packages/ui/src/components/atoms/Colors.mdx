@@ -1,154 +1,487 @@
-import { Meta, ColorPalette, ColorItem } from "@storybook/addon-docs/blocks";
+import { Meta, ColorPalette, ColorItem, Markdown, Typeset, Unstyled } from '@storybook/addon-docs/blocks';
 
-<Meta title="Brand Colors" />
+<Meta title="Design System/Tokens" />
 
-<ColorPalette>
-  <ColorItem
-    title="Primary"
-    subtitle="Brand primary shades"
-    colors={[
-      "var(--primary-100)",
-      "var(--primary-200)",
-      "var(--primary-300)",
-      "var(--primary-400)",
-      "var(--primary-500)",
-      "var(--primary-600)",
-      "var(--primary-700)",
-      "var(--primary-800)",
-      "var(--primary-900)"
-    ]}
-  />
-  <ColorItem
-    title="Secondary"
-    subtitle="Brand secondary shades"
-    colors={[
-      "var(--secondary-100)",
-      "var(--secondary-200)",
-      "var(--secondary-300)",
-      "var(--secondary-400)",
-      "var(--secondary-500)",
-      "var(--secondary-600)",
-      "var(--secondary-700)",
-      "var(--secondary-800)",
-      "var(--secondary-900)"
-    ]}
-  />
-  <ColorItem
-    title="Surface"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--surface-light)",
-      "var(--surface-dark)",
-      
-    ]}
-  />
-  <ColorItem
-    title="On Surface"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--on-surface-light)",
-      "var(--on-surface-dark)"
-    ]}
-  />
-  <ColorItem
-    title="Surface Variant"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--surface-variant-light)",
-      "var(--surface-variant-dark)"
-    ]}
-  />
-  <ColorItem
-    title="On Surface Variant"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--on-surface-variant-light)",
-      "var(--on-surface-variant-dark)"
-    ]}
-  />
-  <ColorItem
-    title="Surface Container"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--surface-container-light)",
-      "var(--surface-container-dark)"
-    ]}
-  />
-  <ColorItem
-    title="On Surface Container"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--on-surface-container-light)",
-      "var(--on-surface-container-dark)"
-    ]}
-  />
-  <ColorItem
-    title="Surface Container Highest"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--surface-container-highest-light)",
-      "var(--surface-container-highest-dark)"
-    ]}
-  />
-  <ColorItem
-    title="On Surface Container Highest"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--on-surface-container-highest-light)",
-      "var(--on-surface-container-highest-dark)"
-    ]}
-  />
-  <ColorItem
-    title="Surface Container Lowest"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--surface-container-lowest-light)",
-      "var(--surface-container-lowest-dark)"
-    ]}
-  />
-  <ColorItem
-    title="On Surface Container Lowest"
-    subtitle="Light & Dark"
-    colors={[
-      "var(--on-surface-container-lowest-light)",
-      "var(--on-surface-container-lowest-dark)"
-    ]}
-  />
+# Design Tokens
 
-  {/* Custom Palette */}
-  <ColorItem
-    title="Deep Obsidian"
-    subtitle="Deep, neutral foundation"
-    colors={["oklch(18% 0.04 258)"]}
+A complete reference for colour, spacing, and typography. All values are CSS custom properties
+defined in `packages/tokens/colors.css`. Always reference tokens by name — never use raw values directly.
+
+```css
+/* ✅ Correct */
+background-color: var(--color-background);
+
+/* ❌ Never do this */
+background-color: oklch(98% 0.008 80);
+```
+
+---
+
+## Colour
+
+Colours are defined using [OKLCH](https://oklch.com/) for perceptual consistency across hues.
+Interactive states (hover, active, subtle, container) are derived automatically using CSS relative
+colour syntax — changing a base token cascades to all its variants.
+
+Every background token has a paired `on-` token that guarantees sufficient contrast. Always use the
+matching pair.
+
+<Markdown>
+{`
+| Background token | Text token |
+|:---|:---|
+| --color-primary | --color-on-primary |
+| --color-primary-container | --color-on-primary-container |
+| --color-primary-subtle | --color-on-primary-subtle |
+| --color-accent | --color-on-accent |
+| --color-accent-container | --color-on-accent-container |
+| --color-accent-subtle | --color-on-accent-subtle |
+| --color-success | --color-on-success |
+| --color-success-subtle | --color-on-success-subtle |
+| --color-warning | --color-on-warning |
+| --color-warning-subtle | --color-on-warning-subtle |
+| --color-error | --color-on-error |
+| --color-error-subtle | --color-on-error-subtle |
+| --color-info | --color-on-info |
+| --color-info-subtle | --color-on-info-subtle |
+`}
+</Markdown>
+
+
+### Backgrounds
+
+Layered elevation — each step is slightly more prominent than the one below.
+Use these to create visual depth without adding borders or shadows.
+
+<Unstyled>
+  <ColorPalette>
+    <ColorItem
+      title="Background"
+      subtitle="--color-background · Page canvas"
+      colors={{ Light: 'oklch(98% 0.008 80)', Dark: 'oklch(14% 0.008 80)' }}
+    />
+    <ColorItem
+      title="Surface"
+      subtitle="--color-surface · Panels, sidebars"
+      colors={{ Light: 'oklch(96% 0.010 80)', Dark: 'oklch(18% 0.008 80)' }}
+    />
+    <ColorItem
+      title="Container"
+      subtitle="--color-container · Cards, dialogs"
+      colors={{ Light: 'oklch(100% 0.000 0)', Dark: 'oklch(22% 0.008 80)' }}
+    />
+    <ColorItem
+      title="Overlay"
+      subtitle="--color-overlay · Hover states, popovers"
+      colors={{ Light: 'oklch(94% 0.010 80)', Dark: 'oklch(26% 0.008 80)' }}
+    />
+  </ColorPalette>
+</Unstyled>
+
+### Primary — Amber / Ochre
+
+The core brand colour. Communicates growth, energy, and warmth. Used for primary actions,
+active states, and key UI moments.
+
+<Unstyled>
+  <ColorPalette>
+    <ColorItem
+      title="Primary"
+      subtitle="--color-primary"
+      colors={{ Base: 'oklch(68% 0.16 65)' }}
+    />
+    <ColorItem
+      title="Primary Hover"
+      subtitle="--color-primary-hover · derived"
+      colors={{ Hover: 'oklch(62% 0.16 65)' }}
+    />
+    <ColorItem
+      title="Primary Active"
+      subtitle="--color-primary-active · derived"
+      colors={{ Active: 'oklch(56% 0.16 65)' }}
+    />
+    <ColorItem
+      title="Primary Subtle"
+      subtitle="--color-primary-subtle · tinted backgrounds"
+      colors={{ Subtle: 'oklch(92% 0.08 65)' }}
+    />
+    <ColorItem
+      title="Primary Container"
+      subtitle="--color-primary-container · chips, active nav"
+      colors={{ Container: 'oklch(88% 0.088 65)' }}
+    />
+    <ColorItem
+      title="On Primary"
+      subtitle="--color-on-primary · text on primary bg"
+      colors={{ 'On Primary': 'oklch(20% 0.08 65)' }}
+    />
+    <ColorItem
+      title="On Primary Container"
+      subtitle="--color-on-primary-container · text on container"
+      colors={{ 'On Container': 'oklch(30% 0.16 65)' }}
+    />
+    <ColorItem
+      title="On Primary Subtle"
+      subtitle="--color-on-primary-subtle · text on subtle bg"
+      colors={{ 'On Subtle': 'oklch(30% 0.16 65)' }}
+    />
+  </ColorPalette>
+</Unstyled>
+
+### Accent — Teal
+
+Used for skills, data visualisation, progress indicators, and secondary actions.
+Provides clear visual distinction from the primary amber.
+
+<Unstyled>
+  <ColorPalette>
+    <ColorItem
+      title="Accent"
+      subtitle="--color-accent"
+      colors={{ Base: 'oklch(60% 0.13 195)' }}
+    />
+    <ColorItem
+      title="Accent Hover"
+      subtitle="--color-accent-hover · derived"
+      colors={{ Hover: 'oklch(54% 0.13 195)' }}
+    />
+    <ColorItem
+      title="Accent Subtle"
+      subtitle="--color-accent-subtle · tinted backgrounds"
+      colors={{ Subtle: 'oklch(88% 0.065 195)' }}
+    />
+    <ColorItem
+      title="Accent Container"
+      subtitle="--color-accent-container · chips, tags"
+      colors={{ Container: 'oklch(84% 0.0715 195)' }}
+    />
+    <ColorItem
+      title="On Accent"
+      subtitle="--color-on-accent · text on accent bg"
+      colors={{ 'On Accent': 'oklch(14% 0.065 195)' }}
+    />
+    <ColorItem
+      title="On Accent Container"
+      subtitle="--color-on-accent-container"
+      colors={{ 'On Container': 'oklch(24% 0.13 195)' }}
+    />
+    <ColorItem
+      title="On Accent Subtle"
+      subtitle="--color-on-accent-subtle"
+      colors={{ 'On Subtle': 'oklch(24% 0.13 195)' }}
+    />
+  </ColorPalette>
+</Unstyled>
+
+### Text
+
+Four levels of hierarchy. Always verify contrast against the target surface — secondary and
+muted text may not meet AA requirements on all backgrounds.
+
+<Unstyled>
+  <ColorPalette>
+    <ColorItem
+      title="Text Primary"
+      subtitle="--color-text-primary · headings, key content ~14:1"
+      colors={{ Light: 'oklch(20% 0.015 80)', Dark: 'oklch(92% 0.010 80)' }}
+    />
+    <ColorItem
+      title="Text Secondary"
+      subtitle="--color-text-secondary · labels, supporting text ~5:1"
+      colors={{ Light: 'oklch(42% 0.015 80)', Dark: 'oklch(68% 0.010 80)' }}
+    />
+    <ColorItem
+      title="Text Muted"
+      subtitle="--color-text-muted · captions, metadata ~3:1"
+      colors={{ Light: 'oklch(62% 0.008 80)', Dark: 'oklch(48% 0.008 80)' }}
+    />
+  </ColorPalette>
+</Unstyled>
+
+### Semantic — Status & Feedback
+
+Used for toasts, banners, form validation, and status badges. Each colour has a `subtle`
+variant for background tints and an `on-` variant for text on those backgrounds.
+
+<Unstyled>
+  <ColorPalette>
+    <ColorItem
+      title="Success"
+      subtitle="--color-success / --color-success-subtle"
+      colors={{ Base: 'oklch(52% 0.15 145)', Subtle: 'oklch(92% 0.0525 145)' }}
+    />
+    <ColorItem
+      title="Warning"
+      subtitle="--color-warning / --color-warning-subtle"
+      colors={{ Base: 'oklch(72% 0.15 75)', Subtle: 'oklch(92% 0.06 75)' }}
+    />
+    <ColorItem
+      title="Error"
+      subtitle="--color-error / --color-error-subtle"
+      colors={{ Base: 'oklch(55% 0.20 25)', Subtle: 'oklch(93% 0.07 25)' }}
+    />
+    <ColorItem
+      title="Info"
+      subtitle="--color-info / --color-info-subtle"
+      colors={{ Base: 'oklch(58% 0.15 250)', Subtle: 'oklch(94% 0.0525 250)' }}
+    />
+  </ColorPalette>
+</Unstyled>
+
+### Data Visualisation
+
+Used exclusively for charts, skill matrices, and progress indicators. Colours are perceptually
+distinct at the same lightness level so they remain differentiable for users with colour vision
+deficiency. Do not use these for UI chrome.
+
+<Unstyled>
+  <ColorPalette>
+    <ColorItem
+      title="Data Series"
+      subtitle="--color-data-1 through --color-data-6"
+      colors={{
+        'data-1 Amber':  'oklch(62% 0.16 65)',
+        'data-2 Teal':   'oklch(60% 0.13 195)',
+        'data-3 Purple': 'oklch(60% 0.15 290)',
+        'data-4 Green':  'oklch(62% 0.15 145)',
+        'data-5 Red':    'oklch(60% 0.18 25)',
+        'data-6 Blue':   'oklch(62% 0.12 230)',
+      }}
+    />
+  </ColorPalette>
+</Unstyled>
+
+---
+
+## Spacing
+
+All spacing uses a **4px base unit**. The scale is defined as `--space-{n}` where `n` maps to
+multiples of the base unit.
+
+### The golden rule
+
+Use **semantic aliases** wherever possible. They communicate intent and decouple your components
+from raw scale values.
+
+```css
+/* ✅ Prefer semantic aliases */
+padding: var(--space-component-md);
+gap: var(--space-inline-md);
+margin-bottom: var(--space-layout-sm);
+
+/* 🟡 Use raw scale only for one-off layout needs */
+margin-top: var(--space-8);
+
+/* ❌ Never use raw pixel values */
+padding: 16px;
+```
+
+### Primitive scale
+
+<Unstyled>
+  <div style={{ fontFamily: 'monospace', fontSize: '13px' }}>
+    {[
+      { token: '--space-1',  rem: '0.25rem', px: '4px',  use: 'Icon nudges, hairline gaps' },
+      { token: '--space-2',  rem: '0.5rem',  px: '8px',  use: 'Inline icon-to-label gap' },
+      { token: '--space-3',  rem: '0.75rem', px: '12px', use: 'Button padding (vertical)' },
+      { token: '--space-4',  rem: '1rem',    px: '16px', use: 'Base unit — default component padding' },
+      { token: '--space-5',  rem: '1.25rem', px: '20px', use: 'Form field spacing' },
+      { token: '--space-6',  rem: '1.5rem',  px: '24px', use: 'Card padding, section gaps' },
+      { token: '--space-8',  rem: '2rem',    px: '32px', use: 'Between related components' },
+      { token: '--space-10', rem: '2.5rem',  px: '40px', use: 'Page section separation' },
+      { token: '--space-12', rem: '3rem',    px: '48px', use: 'Page padding, major sections' },
+      { token: '--space-16', rem: '4rem',    px: '64px', use: 'Hero padding, large layout gaps' },
+      { token: '--space-20', rem: '5rem',    px: '80px', use: 'Feature section spacing' },
+      { token: '--space-24', rem: '6rem',    px: '96px', use: 'Maximum layout breathing room' },
+    ].map(({ token, rem, px, use }) => (
+      <div key={token} style={{
+        display: 'grid',
+        gridTemplateColumns: '180px 80px 60px 1fr',
+        alignItems: 'center',
+        gap: '16px',
+        padding: '10px 0',
+        borderBottom: '1px solid #e5e5e5',
+      }}>
+        <span style={{ color: '#c97c2a', fontWeight: 600 }}>{token}</span>
+        <span style={{ color: '#888' }}>{rem}</span>
+        <span style={{ color: '#aaa' }}>{px}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            height: '8px',
+            width: px,
+            background: 'oklch(68% 0.16 65)',
+            borderRadius: '999px',
+            opacity: 0.7,
+            flexShrink: 0,
+          }} />
+          <span style={{ color: '#666', fontSize: '12px' }}>{use}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</Unstyled>
+
+### Semantic aliases
+
+These are the tokens you should be reaching for in components. They map to the primitive scale
+but communicate **purpose**, not just size.
+
+#### Component padding
+
+Use for internal padding within UI components.
+
+
+<Markdown>
+{`
+| Token | Value | Use |
+|---|---|---|
+| --space-component-xs | --space-2 · 8px | Chips, badges, tight labels |
+| --space-component-sm | --space-3 · 12px | Small buttons, compact inputs |
+| --space-component-md | --space-4 · 16px | Default buttons and inputs |
+| --space-component-lg | --space-6 · 24px | Cards, panels, form sections |
+| --space-component-xl | --space-8 · 32px | Large cards, modal bodies |
+`}
+</Markdown>
+
+#### Stack gaps (vertical)
+
+Use for `gap` or `margin-bottom` when stacking elements vertically.
+<Markdown>
+{`
+| Token | Value | Use |
+|---|---|---|
+| --space-stack-xs | --space-1 · 4px | Tightly packed items (e.g. label + input) |
+| --space-stack-sm | --space-2 · 8px | Form field rows |
+| --space-stack-md | --space-4 · 16px | List items, related content |
+| --space-stack-lg | --space-6 · 24px | Section blocks within a panel |
+`}
+</Markdown>
+#### Inline gaps (horizontal)
+
+Use for `gap` when laying out elements in a row.
+<Markdown>
+{`
+| Token | Value | Use |
+|---|---|---|
+| --space-inline-xs | --space-1 · 4px | Icon nudge to adjacent icon |
+| --space-inline-sm | --space-2 · 8px | Tight inline pairs |
+| --space-inline-md | --space-3 · 12px | Default icon-to-label, button row gap |
+| --space-inline-lg | --space-4 · 16px | Relaxed inline groupings |
+`}
+</Markdown>
+#### Layout gaps (page-level)
+
+Use between distinct page sections, not within components.
+
+| Token | Value | Use |
+|---|---|---|
+| `--space-layout-sm` | `--space-8` · 32px | Between related sections |
+| `--space-layout-md` | `--space-12` · 48px | Between distinct sections |
+| `--space-layout-lg` | `--space-16` · 64px | Page-level vertical rhythm |
+| `--space-layout-xl` | `--space-24` · 96px | Hero and feature spacing |
+
+---
+
+## Typography
+
+The type system uses **DM Sans** as the primary sans-serif and **DM Mono** for code and data.
+Sizes follow a modular scale with a ratio of ~1.25.
+
+Import the fonts in your app entry point:
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+```
+
+### Font families
+
+<Markdown>
+{`
+| Token | Value | Use |
+|---|---|---|
+| --font-sans | 'DM Sans', sans-serif | All UI text |
+| --font-serif | 'Lora', serif | Editorial, pull quotes |
+| --font-mono | 'DM Mono', monospace | Code, IDs, data values |
+`}
+</Markdown>
+
+### Font weights
+
+<Markdown>
+{`
+| Token | Value |
+|---|---|
+| --font-weight-regular | 400 |
+| --font-weight-medium | 500 |
+| --font-weight-semibold | 600 |
+| --font-weight-bold | 700 |
+`}
+</Markdown>
+
+### Type scale
+
+<Unstyled>
+  <Typeset
+    fontSizes={[12, 14, 16, 18, 20, 24, 30, 36, 48, 60]}
+    fontWeight={400}
+    sampleText="Growth Platform"
+    fontFamily="'DM Sans', sans-serif"
   />
-  <ColorItem
-    title="Midnight Surface"
-    subtitle="Elevated card surfaces"
-    colors={["oklch(28% 0.05 258)"]}
-  />
-  <ColorItem
-    title="Electric Violet"
-    subtitle={'High-chroma "Growth" accent'}
-    colors={["oklch(62% 0.24 295)"]}
-  />
-  <ColorItem
-    title="Cyan Flare"
-    subtitle="Bright, vibrating success color"
-    colors={["oklch(78% 0.16 215)"]}
-  />
-  <ColorItem
-    title="Aurora Mint"
-    subtitle="Minty achievement highlight"
-    colors={["oklch(82% 0.18 165)"]}
-  />
-  <ColorItem
-    title="Text Primary"
-    subtitle="Near-white with a hint of cool"
-    colors={["oklch(98% 0.01 258)"]}
-  />
-  <ColorItem
-    title="Text Muted"
-    subtitle="Softened secondary info"
-    colors={["oklch(70% 0.03 258)"]}
-  />
-</ColorPalette>
+</Unstyled>
+
+### Semantic text styles
+
+Use these composed styles rather than assembling size + weight + leading from scratch.
+
+<Unstyled>
+  <div style={{ fontFamily: "'DM Sans', sans-serif", display: 'flex', flexDirection: 'column', gap: '0' }}>
+    {[
+      { token: '--text-display', size: '3.75rem', weight: 700,  leading: 1.1,  tracking: '-0.03em', label: 'Display' },
+      { token: '--text-h1',      size: '3rem',    weight: 700,  leading: 1.1,  tracking: '-0.03em', label: 'Heading 1' },
+      { token: '--text-h2',      size: '2.25rem', weight: 600,  leading: 1.2,  tracking: '-0.02em', label: 'Heading 2' },
+      { token: '--text-h3',      size: '1.875rem',weight: 600,  leading: 1.25, tracking: '-0.01em', label: 'Heading 3' },
+      { token: '--text-h4',      size: '1.5rem',  weight: 600,  leading: 1.3,  tracking: '0',       label: 'Heading 4' },
+      { token: '--text-h5',      size: '1.25rem', weight: 500,  leading: 1.35, tracking: '0',       label: 'Heading 5' },
+      { token: '--text-body-lg', size: '1.125rem',weight: 400,  leading: 1.6,  tracking: '0',       label: 'Body Large' },
+      { token: '--text-body',    size: '1rem',    weight: 400,  leading: 1.5,  tracking: '0',       label: 'Body' },
+      { token: '--text-body-sm', size: '0.875rem',weight: 400,  leading: 1.5,  tracking: '0',       label: 'Body Small' },
+      { token: '--text-label',   size: '0.875rem',weight: 500,  leading: 1.35, tracking: '0',       label: 'Label' },
+      { token: '--text-caption', size: '0.75rem', weight: 400,  leading: 1.35, tracking: '0',       label: 'Caption' },
+    ].map(({ token, size, weight, leading, tracking, label }) => (
+      <div key={token} style={{
+        display: 'grid',
+        gridTemplateColumns: '200px 1fr',
+        alignItems: 'baseline',
+        gap: '24px',
+        padding: '12px 0',
+        borderBottom: '1px solid #e5e5e5',
+      }}>
+        <div>
+          <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#c97c2a', fontWeight: 600, marginBottom: '2px' }}>{token}</div>
+          <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#aaa' }}>{size} · {weight} · {leading}</div>
+        </div>
+        <div style={{ fontSize: size, fontWeight: weight, lineHeight: leading, letterSpacing: tracking, color: '#1a1a1a' }}>
+          {label} — Consultant Growth Platform
+        </div>
+      </div>
+    ))}
+  </div>
+</Unstyled>
+
+### Line heights
+
+| Token | Value | Use |
+|---|---|---|
+| `--line-height-tight` | 1.2 | Display, headings |
+| `--line-height-snug` | 1.35 | Subheadings, UI labels |
+| `--line-height-normal` | 1.5 | Body text default |
+| `--line-height-relaxed` | 1.65 | Long-form reading content |
+
+### Letter spacing
+
+| Token | Value | Use |
+|---|---|---|
+| `--letter-spacing-tight` | -0.02em | Large display headings |
+| `--letter-spacing-normal` | 0em | Body text |
+| `--letter-spacing-wide` | 0.04em | Uppercase labels |
+| `--letter-spacing-wider` | 0.08em | Badge text, overlines |
