@@ -37,6 +37,10 @@ export const visaTypesArray = [
   "unmarried partner",
   "fiance",
 ] as [string, ...string[]];
+
+
+/* Enums */
+
 export const visaTypesEnum = pgEnum("visa_types", visaTypesArray);
 
 export const clearanceLevelsEnum = pgEnum("clearance_levels", [
@@ -49,8 +53,8 @@ export const clearanceLevelsEnum = pgEnum("clearance_levels", [
   "enhanced developed vetting check",
 ]);
 
-export const citizenshipAquishitionMethodEnum = pgEnum(
-  "citizenship_aquisition_methods",
+export const citizenshipAcquisitionMethodEnum = pgEnum(
+  "citizenship_acquisition_methods",
   ["birth", "naturalization", "marriage", "descent", "adoption"],
 );
 
@@ -77,11 +81,14 @@ export const accessPurposeEnum = pgEnum("access_purposes", [
   "create",
 ]);
 
+// TABLES
+
 export const usersTable = pgTable("users", {
   id: uuid().primaryKey().defaultRandom(),
   name: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   role: varchar({ length: 100 }).notNull(),
+  
   // Sensitive information that should only be viewable by users with a relationship to this user (e.g. they are in the same project or they have a relationship in the user_relationships table)
   is_contractor: boolean().notNull().default(false),
   ...timestamps,
@@ -119,8 +126,8 @@ export const userCitizenshipTable = pgTable("user_citizenship", {
     .references(() => usersTable.id),
   country_code: varchar({ length: 3 }).notNull(),
   is_primary: boolean().notNull().default(false),
-  aquisition_method: citizenshipAquishitionMethodEnum().notNull(),
-  aquisition_date: timestamp({ precision: 3 }).defaultNow(),
+  acquisition_method: citizenshipAcquisitionMethodEnum().notNull(),
+  acquisition_date: timestamp({ precision: 3 }).defaultNow(),
   expiration_date: timestamp({ precision: 3 }),
   ...timestamps,
 });
