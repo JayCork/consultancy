@@ -1,1 +1,3 @@
-export { StarInput } from "./StarInput/StarInput";
+import { AppShell } from "./AppShell/AppShell";
+
+export { AppShell };

@@ -6,3 +6,6 @@ export * from "./components/atoms/NavItem/NavItem";
 export * from "./components/molecules/NavMenu/NavMenu";
 export * from "./components/molecules/Header/Header";
 export * from "./components/atoms/ButtonIcon/ButtonIcon";
+export * from "./components/atoms/InputField/InputField";
+export * from "./components/atoms/Container/Container";
+export * from "./components/organisms/ProgressTracker/ProgressTracker";

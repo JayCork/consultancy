@@ -3,6 +3,8 @@ import styles from "./ButtonIcon.module.css";
 
 interface ButtonIconProps {
   children: JSX.Element;
+  onClick?: () => void;
+  "aria-label": string;
 }
 
 export const ButtonIcon = (props: ButtonIconProps) => {

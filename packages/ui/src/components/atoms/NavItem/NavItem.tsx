@@ -1,13 +1,12 @@
-import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 import styles from "./NavItem.module.css";
-import { For, Show } from "solid-js";
-import { Library, TreePine } from "lucide-solid/icons/index";
+import { Show } from "solid-js";
 
 interface NavItemProps {
   href: string;
-  name: string;
+  label: string;
   icon?: any;
   notifications?: number;
+  showText?: boolean;
 }
 
 const NavItem = (props: NavItemProps) => {
@@ -15,8 +14,12 @@ const NavItem = (props: NavItemProps) => {
     <li class={styles.container}>
       <div class={styles.itemStart}>
         <a href={props.href} class={styles.link}>
-          {props.icon && <props.icon />}
-          {props.name}
+          <Show when={props.icon}>
+            <span class={styles.icon}>{props.icon}</span>
+          </Show>
+          <Show when={props.showText}>
+            <span class={styles.label}>{props.label}</span>
+          </Show>
         </a>
       </div>
       <div class={styles.itemEnd}>
@@ -25,28 +28,6 @@ const NavItem = (props: NavItemProps) => {
         </Show>
       </div>
     </li>
-    // <div class={styles.base}>
-    //   <h2>Menu</h2>
-    //   <ul class={styles.unorderedList}>
-    //     <For each={data()}>
-    //       {(item, index) => (
-    //         <li class={styles.item}>
-    //           <div class={styles.itemStart}>
-    //             <a href={item.href} class={styles.link}>
-    //               {item.icon && <item.icon />}
-    //               {item.name}
-    //             </a>
-    //           </div>
-    //           <div class={styles.itemEnd}>
-    //             <Show when={item.notifications}>
-    //               <span class={styles.badge}>{item.notifications}</span>
-    //             </Show>
-    //           </div>
-    //         </li>
-    //       )}
-    //     </For>
-    //   </ul>
-    // </div>
   );
 };
 

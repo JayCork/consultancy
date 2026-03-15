@@ -1,43 +1,54 @@
 import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 import styles from "./NavMenu.module.css";
-import { For, Show } from "solid-js";
+import { For, JSX, Show } from "solid-js";
 import { Library, TreePine } from "lucide-solid/icons/index";
 import { NavItem } from "../../atoms";
 
 interface NavMenuProps {
   // Define your props here
+  title: string;
+  isOpen?: boolean;
+  items?: {
+    id: number;
+    href: string;
+    label: string;
+    icon?: any;
+    notifications?: number;
+  }[];
 }
 
 export const NavMenu = (props: NavMenuProps) => {
-  const data = () => [
-    {
-      id: 1,
-      href: "#",
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      notifications: 3,
-    },
-    { id: 2, href: "#evidence-locker", name: "You're evidence", icon: Library },
-    { id: 3, href: "#career-hub", name: "Career Hub", icon: TreePine },
-  ];
-
   return (
-    <nav class={styles.base}>
-      <div>
-        <h2>Menu</h2>
+    <aside
+      class={styles.container}
+      classList={{
+        [styles.closed]: props.isOpen === false,
+      }}
+    >
+      <div class={styles.appContainer}>
+        <span>App</span>
       </div>
-      <ul class={styles.unorderedList}>
-        <For each={data()}>
-          {(item, index) => (
-            <NavItem
-              href={item.href}
-              name={item.name}
-              icon={item?.icon}
-              notifications={item?.notifications}
-            />
-          )}
-        </For>
-      </ul>
-    </nav>
+      <nav class={styles.nav} aria-label="Main navigation">
+        <ul class={styles.navList}>
+          <For each={props.items}>
+            {(item, index) => (
+              <li class={styles.navItem}>
+                <NavItem
+                  href={item.href}
+                  label={item.label}
+                  icon={item?.icon}
+                  notifications={item?.notifications}
+                  showText={props.isOpen !== false}
+                />
+              </li>
+            )}
+          </For>
+        </ul>
+      </nav>
+      <div class={styles.userSettings}>
+        {/* User settings (bottom section) */}
+        <span>Logout</span>
+      </div>
+    </aside>
   );
 };

@@ -1,29 +1,14 @@
-.base {
-  /* Styles for NavItem */
-}
-
-.unorderedList {
-  display: grid;
-  padding: 0;
-  margin: 0;
-  gap: 0.5rem;
-  margin-block-start: 0;
-  padding-inline-start: 0;
-}
-
 .container {
   display: flex;
   min-height: var(--size-touch-min);
   list-style-type: none;
-  background-color: var(--surface-variant-light);
-  color: var(--on-surface-light);
-  background-color: light-dark(
-    var(--surface-variant-light),
-    var(--surface-variant-dark)
-  );
-  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
   padding: 0;
   align-items: center;
+}
+
+.container:hover {
+  background-color: var(--color-container);
+  color: var(--color-on-container);
 }
 
 .itemStart {
@@ -36,37 +21,24 @@
   padding: 0 0.5rem;
 }
 .badge {
-  background-color: var(--color-primary);
+  background-color: var(--purple-500);
   color: white;
   border-radius: 9999px;
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
 }
 .item:hover {
-  background-color: light-dark(
-    var(--surface-variant-light),
-    var(--surface-variant-dark)
-  );
+  background-color: var(--color-primary-hover);
 }
 
 .link {
-  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem;
   text-decoration: none;
   width: 100%;
-  display: block;
   background: none;
   transition: background 0.2s;
-}
-
-.link {
-  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  text-decoration: none;
+  color: var(--color-on-container);
 }

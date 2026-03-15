@@ -1,8 +1,13 @@
 import "../../tokens/index.css";
 import type { Preview } from "storybook-solidjs-vite";
-import { JSX } from "solid-js";
 
 const preview: Preview = {
+  decorators: [
+    (Story) => {
+      document.documentElement.style.colorScheme = "light dark";
+      return Story();
+    },
+  ],
   parameters: {
     controls: {
       matchers: {

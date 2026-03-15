@@ -1,11 +1,10 @@
 .container {
-  background-color: var(--primary-light);
-  background-color: light-dark(var(--primary-500), var(--primary-600));
+  background-color: var(--color-primary);
   border: none;
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-sm);
   height: var(--size-touch-min);
   width: fit-content;
-  color: light-dark(var(--on-surface-light), var(--on-surface-dark));
+  color: var(--color-on-primary);
   cursor: pointer;
 }
 
@@ -15,5 +14,6 @@
 }
 
 .container:hover {
-  background-color: light-dark(var(--primary-600), var(--primary-800));
+  background-color: var(--color-primary-hover);
+  color: var(--color-primary-text);
 }

@@ -1,0 +1,17 @@
+.appShell {
+  display: flex;
+  height: 100vh;
+  background: var(--color-background);
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--color-on-background);
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.content {
+  padding: 1.5rem;
+}

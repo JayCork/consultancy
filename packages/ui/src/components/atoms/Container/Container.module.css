@@ -1,0 +1,6 @@
+.container {
+  display: flex;
+  background-color: var(--color-surface);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+}
