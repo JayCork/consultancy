@@ -1,6 +1,6 @@
-import { clearancesTable, usersTable } from "../schema/schema";
 import { eq, and, or, isNull, gt, InferSelectModel } from "drizzle-orm";
-import { db } from "../../index";
+import { db } from "..";
+import { clearancesTable, usersTable } from "../schema";
 
 type ClearanceLevel = InferSelectModel<typeof clearancesTable>["level"];
 const getAllUsers = async () => {

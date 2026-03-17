@@ -7,9 +7,9 @@ import { logger } from "hono/logger";
 const PORT = process.env.PORT || 5173;
 
 const api = new Hono().basePath("/api");
-const server = serve(api);
-api.route("/v0/users", userRoutes);
+const server = serve({ fetch: api.fetch, port: Number(PORT) });
 api.use(logger());
+api.route("/v0/users", userRoutes);
 
 // Graceful shutdown
 process.on("SIGINT", () => {

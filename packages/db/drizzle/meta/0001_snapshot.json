@@ -1,6 +1,6 @@
 {
-  "id": "60adfb99-7fa2-4af7-8c9f-d2dfbe89ca14",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "e66d4174-2435-4e7c-b8e3-8ed395cec863",
+  "prevId": "60adfb99-7fa2-4af7-8c9f-d2dfbe89ca14",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1008,16 +1008,6 @@
           "type": "timestamp (3)",
           "primaryKey": false,
           "notNull": false
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "generated": {
-            "as": "(end_date IS NULL OR end_date > NOW())",
-            "type": "stored"
-          }
         },
         "updated_at": {
           "name": "updated_at",
