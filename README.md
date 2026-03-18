@@ -47,3 +47,8 @@ To start the API server:
 ```
 pnpm --filter @consultancy/api dev
 ```
+
+## Structure
+
+- `apps/` contains things that run; processes, servers, deployable units. Each app has an entry point, a runtime, and gets deployed independently.
+- `packages/` contains things that are imported; shared code with no runtime of their own. They exist to be consumed by apps, not to run directly.

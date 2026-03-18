@@ -2,19 +2,19 @@
   "name": "@consultancy/db",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./src/index.ts"
   },
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:push": "npx drizzle-kit push",
-    "db:generate": "npx drizzle-kit generate",
-    "db:apply-migrations": "npx drizzle-kit apply",
+    "db:push": "dotenvx run -- drizzle-kit push",
+    "db:generate": "dotenvx run -- drizzle-kit generate",
+    "db:apply-migrations": "dotenvx run -- drizzle-kit apply",
     "db:start": "docker run --name drizzle-postgres -e POSTGRES_PASSWORD=mypassword -d -p 5432:5432 postgres",
-    "db:view": "concurrently \"pnpm drizzle-kit studio\" \"pnpm dlx drizzle-lab visualizer\" \"sleep 1 && pnpm dlx drizzle-view\"",
+    "db:view": "dotenvx run -- drizzle-kit studio",
     "build": "tsc --outDir dist --declaration false"
   },
   "keywords": [],
@@ -23,10 +23,8 @@
   "packageManager": "pnpm@10.28.2",
   "dependencies": {
     "better-auth": "^1.5.5",
-    "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
-    "pg": "^8.19.0",
-    "postgres": "^3.4.8"
+    "pg": "^8.19.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.3.0",

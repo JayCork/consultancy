@@ -1,8 +1,6 @@
 {
   "extends": "../../packages/config/base.json",
   "compilerOptions": {
-    "composite": true,
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -13,8 +11,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
@@ -22,8 +18,6 @@
     "noEmit": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

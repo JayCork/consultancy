@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { organizationsTable, projectsTable, usersTable } from "../schema";
 import { generateProjects, generateUsers } from "./seed.generator";
