@@ -1,4 +1,5 @@
 export * as atoms from "./components/atoms";
+export * from "./components/templates/AppShell/AppShell";
 export { default as Select } from "./components/atoms/Select/Select";
 // export * as molecules from './components/molecules';
 // export * as templates from './components/templates';    export * from "./components/pages/Dashboard/Dashboard";

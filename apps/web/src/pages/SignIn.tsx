@@ -13,8 +13,8 @@ export function SignIn() {
     setError("");
 
     const result = await signIn.email({
-      email: email(),
-      password: password(),
+      email: email().trim(),
+      password: password().trim(),
     });
 
     if (result.error) {
@@ -36,6 +36,7 @@ export function SignIn() {
             type="email"
             value={email()}
             onInput={(e) => setEmail(e.target.value)}
+            autocomplete="email"
             required
           />
         </div>
@@ -46,6 +47,7 @@ export function SignIn() {
             type="password"
             value={password()}
             onInput={(e) => setPassword(e.target.value)}
+            autocomplete="current-password"
             required
           />
         </div>

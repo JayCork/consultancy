@@ -2,9 +2,14 @@
   "name": "@consultancy/ui",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "storybook dev -p 6006",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

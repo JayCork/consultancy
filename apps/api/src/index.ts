@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import userRoutes from "./routes/user";
+import evidenceRoutes from "./routes/evidence";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { env, auth } from "./lib";
@@ -29,6 +30,7 @@ api.on(["POST", "GET"], "/auth/**", (c) => {
 });
 
 api.route("/v0/users", userRoutes);
+api.route("/v0/evidence", evidenceRoutes);
 
 api.get("/v0/health", (c) => {
   return c.json({

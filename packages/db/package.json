@@ -10,11 +10,12 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:push": "dotenvx run -- drizzle-kit push",
-    "db:generate": "dotenvx run -- drizzle-kit generate",
-    "db:apply-migrations": "dotenvx run -- drizzle-kit apply",
+    "dev": "node ../../scripts/start-db.mjs",
+    "db:push": "dotenvx run --env-file=../../.env -- drizzle-kit push",
+    "db:generate": "dotenvx run --env-file=../../.env -- drizzle-kit generate",
+    "db:apply-migrations": "dotenvx run --env-file=../../.env -- drizzle-kit apply",
     "db:start": "docker run --name drizzle-postgres -e POSTGRES_PASSWORD=mypassword -d -p 5432:5432 postgres",
-    "db:view": "dotenvx run -- drizzle-kit studio",
+    "db:view": "dotenvx run --env-file=../../.env -- drizzle-kit studio",
     "build": "tsc --outDir dist --declaration false"
   },
   "keywords": [],

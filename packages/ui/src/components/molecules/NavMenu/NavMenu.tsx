@@ -1,20 +1,22 @@
-import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 import styles from "./NavMenu.module.css";
-import { For, JSX, Show } from "solid-js";
-import { Library, TreePine } from "lucide-solid/icons/index";
+import { Component, For, Show } from "solid-js";
 import { NavItem } from "../../atoms";
+import CircleUser from "lucide-solid/icons/user-circle";
+import { ButtonIcon } from "../../atoms/ButtonIcon/ButtonIcon";
+import LogOut from "lucide-solid/icons/log-out";
 
 interface NavMenuProps {
-  // Define your props here
   title: string;
   isOpen?: boolean;
   items?: {
     id: number;
     href: string;
     label: string;
-    icon?: any;
+    icon?: Component;
     notifications?: number;
   }[];
+  user?: { name: string };
+  onSignOut?: () => void;
 }
 
 export const NavMenu = (props: NavMenuProps) => {
@@ -31,7 +33,7 @@ export const NavMenu = (props: NavMenuProps) => {
       <nav class={styles.nav} aria-label="Main navigation">
         <ul class={styles.navList}>
           <For each={props.items}>
-            {(item, index) => (
+            {(item) => (
               <li class={styles.navItem}>
                 <NavItem
                   href={item.href}
@@ -46,8 +48,17 @@ export const NavMenu = (props: NavMenuProps) => {
         </ul>
       </nav>
       <div class={styles.userSettings}>
-        {/* User settings (bottom section) */}
-        <span>Logout</span>
+        <Show when={props.user}>
+          <CircleUser />
+          <Show when={props.isOpen !== false}>
+            <span>{props.user?.name}</span>
+          </Show>
+        </Show>
+        <Show when={props.onSignOut}>
+          <ButtonIcon aria-label="Sign out" onClick={props.onSignOut}>
+            <LogOut />
+          </ButtonIcon>
+        </Show>
       </div>
     </aside>
   );

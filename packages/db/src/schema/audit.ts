@@ -1,4 +1,4 @@
-import { uuid, pgTable, varchar, timestamp } from "drizzle-orm/pg-core";
+import { uuid, pgTable, varchar, timestamp, jsonb } from "drizzle-orm/pg-core";
 import { timestamps } from "../columns.helpers";
 import { accessPurposeEnum } from "./enums";
 import { usersTable } from "./users";
@@ -12,8 +12,7 @@ export const auditLogsTable = pgTable("audit_logs", {
   target_id: uuid()
     .notNull()
     .references(() => usersTable.id),
-  // TODO: Change this to a JSONB column that can store an array of objects, where each object represents a specific piece of data that was accessed (e.g. which column or which row) and the value of that data at the time it was accessed. This will allow for more detailed auditing of data access.
-  data_field: varchar({ length: 255 }).notNull(),
+  data_field: jsonb().notNull(),
 
   timestamp: timestamp({ precision: 3 }).defaultNow(),
   access_purpose: accessPurposeEnum().notNull(),

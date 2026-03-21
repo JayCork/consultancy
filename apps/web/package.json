@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@consultancy/ui": "workspace:*",
     "@solidjs/router": "^0.15.4",
     "better-auth": "^1.5.5",
     "solid-js": "^1.9.10"

@@ -1,14 +1,13 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import { AppShell } from "./AppShell";
 import { LayoutDashboard } from "lucide-solid/icons/index";
-import { SettingsIcon, UserIcon } from "lucide-solid";
+import { UserIcon } from "lucide-solid";
 import { Container } from "../../atoms/Container/Container.jsx";
 
 const meta: Meta<typeof AppShell> = {
   component: AppShell,
   title: "Templates/AppShell",
   args: {},
-  // Full screen layout for the AppShell template
   parameters: {
     layout: "fullscreen",
   },
@@ -29,6 +28,7 @@ type Story = StoryObj<typeof AppShell>;
 
 export const Default: Story = {
   args: {
+    title: "Contractor Hub",
     children: placeholderContent,
     navMenuProps: {
       title: "Main Menu",
@@ -36,6 +36,8 @@ export const Default: Story = {
         { id: 1, href: "/home", label: "Home", icon: LayoutDashboard },
         { id: 2, href: "/profile", label: "Profile", icon: UserIcon },
       ],
+      user: { name: "Jane Smith" },
+      onSignOut: () => {},
     },
   },
 };

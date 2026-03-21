@@ -1,19 +1,23 @@
 import styles from "./AppShell.module.css";
 import { NavMenu } from "../../molecules/NavMenu/NavMenu";
-import { JSX } from "solid-js/jsx-runtime";
+import { JSX, Component, createSignal } from "solid-js";
 import { Header } from "../../molecules/Header/Header";
-import { createSignal } from "solid-js";
+
+interface NavItem {
+  id: number;
+  href: string;
+  icon?: Component;
+  label: string;
+  notifications?: number;
+}
 
 interface AppShellProps {
+  title: string;
   navMenuProps: {
     title: string;
-    items?: {
-      id: number;
-      href: string;
-      icon?: any;
-      label: string;
-      notifications?: number;
-    }[];
+    items?: NavItem[];
+    user?: { name: string };
+    onSignOut?: () => void;
   };
   children?: JSX.Element;
 }
@@ -27,7 +31,7 @@ export const AppShell = (props: AppShellProps) => {
     <div class={styles.appShell}>
       <NavMenu {...props.navMenuProps} isOpen={isNavMenuOpen()} />
       <main class={styles.main}>
-        <Header title="Contractor Hub" handleMenuClick={toggleNavMenu} />
+        <Header title={props.title} handleMenuClick={toggleNavMenu} />
         <div class={styles.content}>{props.children}</div>
       </main>
     </div>
