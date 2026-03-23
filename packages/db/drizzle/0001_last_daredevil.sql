@@ -1,0 +1,1 @@
+ALTER TABLE "user_relationships" DROP COLUMN "is_active";

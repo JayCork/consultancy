@@ -4,11 +4,10 @@ import solid from "vite-plugin-solid";
 export default defineConfig({
   plugins: [solid()],
   server: {
-    port: 5173,
+    port: 3000, // web app runs here
     proxy: {
-      // Directs frontend /api calls to the Hono backend
       "/api": {
-        target: "http://localhost:3000",
+        target: "http://localhost:5173", // API runs here
         changeOrigin: true,
       },
     },

@@ -1,9 +1,9 @@
 import { varchar, timestamp } from "drizzle-orm/pg-core";
 
 export const timestamps = {
-  updated_at: timestamp(),
-  created_at: timestamp().defaultNow().notNull(),
-  deleted_at: timestamp(),
+  updated_at: timestamp({ precision: 6 }),
+  created_at: timestamp({ precision: 6 }).defaultNow().notNull(),
+  deleted_at: timestamp({ precision: 6 }),
 };
 
 export const address = {

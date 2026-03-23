@@ -1,6 +1,7 @@
 import { faker, SimpleFaker } from "@faker-js/faker";
-import { projectsTable, usersTable } from "../schema/schema";
-import { visaTypesArray } from "../schema/schema";
+import { usersTable, projectsTable } from "../schema";
+import { visaTypesArray } from "../schema/enums";
+
 faker.seed(123);
 
 const jobTitles = [
@@ -19,11 +20,13 @@ const jobTitles = [
 
 const customSimpleFaker = new SimpleFaker();
 
-export const generateUsers = (count: number) => {
+export const generateUsers = (count: number, organisationId: string) => {
   const users: (typeof usersTable.$inferInsert)[] = [];
   for (let i = 0; i < count; i++) {
     users.push({
       id: faker.string.uuid(),
+      auth_user_id: faker.string.uuid(),
+      organisation_id: organisationId,
       name: faker.person.fullName(),
       email: faker.internet.email(),
       role: customSimpleFaker.helpers.arrayElement(jobTitles),
@@ -37,7 +40,7 @@ export const generateVisas = (users: (typeof usersTable.$inferInsert)[]) => {
   return users.map((user) => ({
     id: faker.string.uuid(),
     user_id: user.id,
-    country_code: faker.location.countryCode("alpha-3"),
+    country_code: faker.location.countryCode("alpha-2"),
     visa_type: faker.helpers.arrayElement(visaTypesArray),
     issue_date: faker.date.past(),
     expiration_date: faker.date.future(),

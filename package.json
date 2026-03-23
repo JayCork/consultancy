@@ -1,19 +1,19 @@
 {
   "scripts": {
     "gen:ui": "node scripts/generate-component.mjs",
-    "dev": "pnpm --parallel -r dev",
-    "dev:api": "pnpm --filter @consultancy/api dev",
-    "dev:web": "pnpm --filter @consultancy/web dev",
-    "dev:ui": "pnpm --filter @consultancy/ui storybook"
+    "dev": "dotenvx run -- pnpm --parallel -r dev",
+    "dev:api": "dotenvx run -- pnpm --filter @consultancy/api dev",
+    "dev:web": "dotenvx run -- pnpm --filter @consultancy/web dev",
+    "dev:ui": "dotenvx run -- pnpm --filter @consultancy/ui storybook"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^1.55.1",
     "@types/node": "^24.10.11",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "10.1.8",
     "prettier": "3.8.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vite": "npm:rolldown-vite@7.2.5",
     "vitest": "^4.0.18"
   }
 }

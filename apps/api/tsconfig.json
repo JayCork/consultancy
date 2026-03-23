@@ -6,5 +6,5 @@
       "@consultancy/db": ["packages/db/src/index.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../../packages/db/src/lib", "../../packages/db/src/schema/auth.ts"]
 }

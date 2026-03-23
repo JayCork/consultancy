@@ -2,9 +2,14 @@
   "name": "@consultancy/ui",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "storybook dev -p 6006",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -12,16 +17,19 @@
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.28.2",
+  "peerDependencies": {
+    "solid-js": "^1.9.11"
+  },
   "devDependencies": {
     "@storybook/addon-a11y": "^10.2.7",
     "@storybook/addon-docs": "^10.2.7",
-    "solid-js": "^1.9.11",
     "storybook": "^10.2.7",
     "storybook-css-modules": "^1.0.8",
-    "storybook-solidjs-vite": "^10.0.9"
+    "storybook-solidjs-vite": "^10.0.9",
+    "vite": "8.0.0",
+    "vite-plugin-solid": "^2.11.10"
   },
   "dependencies": {
-    "lucide-solid": "^0.563.0",
-    "vite-plugin-solid": "^2.11.10"
+    "lucide-solid": "^0.563.0"
   }
 }

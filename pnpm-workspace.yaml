@@ -1,10 +1,25 @@
 packages:
-  - "apps/*"
-  - "packages/*"
-minimumReleaseAge: 1440
-# minimumReleaseAgeExclude:
-#   - 'example'
-trustPolicy: no-downgrade
-# trustPolicyExclude:
-#   - 'example'
+  - apps/*
+  - packages/*
+
 blockExoticSubdeps: true
+
+ignoredBuiltDependencies:
+  - esbuild
+
+minimumReleaseAge: 1440
+
+overrides:
+  '@hono/node-server@<1.19.10': '>=1.19.10'
+  esbuild@<=0.24.2: '>=0.25.0'
+  flatted@<3.4.0: '>=3.4.0'
+  hono@<4.11.10: '>=4.11.10'
+  hono@<4.12.4: '>=4.12.4'
+  hono@<4.12.7: '>=4.12.7'
+  minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
+  minimatch@>=9.0.0 <9.0.6: '>=9.0.6'
+  minimatch@>=9.0.0 <9.0.7: '>=9.0.7'
+  rollup@>=4.0.0 <4.59.0: '>=4.59.0'
+  storybook@>=10.0.0-beta.0 <10.2.10: '>=10.2.10'
+
+trustPolicy: no-downgrade

@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@consultancy/web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,9 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@consultancy/ui": "workspace:*",
+    "@solidjs/router": "^0.15.4",
+    "better-auth": "^1.5.5",
     "solid-js": "^1.9.10"
   },
   "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0",
     "vite-plugin-solid": "^2.11.10"
   }
 }

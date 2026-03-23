@@ -1,17 +1,53 @@
-import "dotenv/config";
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import userRoutes from "./routes/user";
+import evidenceRoutes from "./routes/evidence";
 import { logger } from "hono/logger";
+import { cors } from "hono/cors";
+import { env, auth } from "./lib";
 
 const PORT = process.env.PORT || 5173;
 
 const api = new Hono().basePath("/api");
-const server = serve(api);
-api.route("/v0/users", userRoutes);
+const server = serve({
+  fetch: api.fetch,
+  port: env.port,
+});
 api.use(logger());
 
-// Graceful shutdown
+api.use(
+  "/auth/**",
+  cors({
+    origin: env.webUrl,
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
+  }),
+);
+
+api.on(["POST", "GET"], "/auth/**", (c) => {
+  return auth.handler(c.req.raw);
+});
+
+api.route("/v0/users", userRoutes);
+api.route("/v0/evidence", evidenceRoutes);
+
+api.get("/v0/health", (c) => {
+  return c.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    mode: env.nodeEnv,
+  });
+});
+
+api.notFound((c) => c.text("Unable to find the requested resource", 404));
+api.onError((err, c) => {
+  console.error(err);
+  return c.text("An unexpected error occurred", 500);
+});
+
+console.debug(`Hono API running on http://localhost:${env.port}`);
+
 process.on("SIGINT", () => {
   server.close();
   process.exit(0);
@@ -25,25 +61,5 @@ process.on("SIGTERM", () => {
     process.exit(0);
   });
 });
-
-api.notFound((c) => {
-  return c.text("Unable to find the requested resource", 404);
-});
-
-api.onError((err, c) => {
-  console.error(`${err}`);
-  return c.text("An unexpected error occurred", 500);
-});
-
-api.get("/v0/health", (c) => {
-  return c.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-    mode: process.env.NODE_ENV,
-  });
-});
-
-console.debug(`Hono API running on http://localhost:${PORT}`);
-serve({ fetch: api.fetch, port: Number(PORT) });
 
 export default api;

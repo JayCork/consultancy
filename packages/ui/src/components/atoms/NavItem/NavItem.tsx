@@ -1,10 +1,11 @@
 import styles from "./NavItem.module.css";
-import { Show } from "solid-js";
+import { Component, Show } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
 interface NavItemProps {
   href: string;
   label: string;
-  icon?: any;
+  icon?: Component;
   notifications?: number;
   showText?: boolean;
 }
@@ -15,7 +16,9 @@ const NavItem = (props: NavItemProps) => {
       <div class={styles.itemStart}>
         <a href={props.href} class={styles.link}>
           <Show when={props.icon}>
-            <span class={styles.icon}>{props.icon}</span>
+            <span class={styles.icon}>
+              <Dynamic component={props.icon} />
+            </span>
           </Show>
           <Show when={props.showText}>
             <span class={styles.label}>{props.label}</span>
