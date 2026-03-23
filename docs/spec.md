@@ -2,7 +2,6 @@
 
 **Status:** In Development  
 **Version:** 0.1  
-**Author:** Alun  
 **Last Updated:** March 2026
 
 ---
