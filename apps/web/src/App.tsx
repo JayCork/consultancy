@@ -1,7 +1,9 @@
 import { Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
-import { useSession, signOut } from "./lib/auth-client";
-import { AppShell } from "@consultancy/ui";
+import { useSession } from "./lib/auth-client";
+import { Button, Container, ProgressTracker } from "@consultancy/ui";
+import { Shell } from "./Shell";
+import { EvidenceStats } from "./components/EvidenceStats";
 
 export function App() {
   const session = useSession();
@@ -12,17 +14,21 @@ export function App() {
       when={session()?.data?.user}
       fallback={<>{navigate("/sign-in", { replace: true })}</>}
     >
-      <AppShell
-        title="Contractor Hub"
-        navMenuProps={{
-          title: "Main Menu",
-          items: [],
-          user: session()?.data?.user
-            ? { name: session()!.data!.user!.name! }
-            : undefined,
-          onSignOut: signOut,
-        }}
-      />
+      <Shell>
+        <Container>
+          <h2>Welcome back, {session()?.data?.user?.name}</h2>
+          <ProgressTracker percentComplete={0} />
+          <EvidenceStats />
+          <p>
+            Log evidence of your work to build your SFIA profile and track your
+            career progression.
+          </p>
+          <Button
+            label="Add Evidence"
+            onClick={() => navigate("/evidence/add")}
+          />
+        </Container>
+      </Shell>
     </Show>
   );
 }

@@ -1,0 +1,132 @@
+.card {
+  background: var(--color-container);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-component-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.skillBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.skillName {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+/* --color-accent (teal) is the designated token for skills, data, and
+   progress indicators. --color-primary (amber) is brand/CTA only. */
+.levelBadge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: var(--color-accent-container);
+  color: var(--color-on-accent-container);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-badge);
+}
+
+.metaRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-inline-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-badge);
+}
+
+/* Status colours via data attribute — avoids duplicating the badge layout
+   rules for each status while keeping colours in CSS where they belong. */
+.statusBadge[data-status="draft"] {
+  color: var(--color-text-secondary);
+  background: var(--color-overlay);
+}
+
+.statusBadge[data-status="pending_verification"] {
+  color: var(--color-on-warning-subtle);
+  background: var(--color-warning-subtle);
+}
+
+.statusBadge[data-status="verified"] {
+  color: var(--color-on-success-subtle);
+  background: var(--color-success-subtle);
+}
+
+.date {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.actionSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+}
+
+.actionLabel {
+  font-size: var(--text-overline-size);
+  font-weight: var(--text-overline-weight);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.actionText {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary);
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.footer {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.footerTag {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}

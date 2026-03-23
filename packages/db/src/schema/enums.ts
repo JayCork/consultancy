@@ -65,10 +65,16 @@ export const accessPurposeEnum = pgEnum("access_purposes", [
   "pay_review",
 ]);
 
-export const evidenceStatusEnum = pgEnum("evidence_status", [
+export const evidenceStatusArray = [
   "draft",
   "pending_verification",
   "verified",
+] as const;
+
+export type EvidenceStatus = (typeof evidenceStatusArray)[number];
+
+export const evidenceStatusEnum = pgEnum("evidence_status", [
+  ...evidenceStatusArray,
 ]);
 
 export const sectorEnum = pgEnum("sectors", [

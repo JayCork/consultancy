@@ -16,6 +16,7 @@
     "db:apply-migrations": "dotenvx run --env-file=../../.env -- drizzle-kit apply",
     "db:start": "docker run --name drizzle-postgres -e POSTGRES_PASSWORD=mypassword -d -p 5432:5432 postgres",
     "db:view": "dotenvx run --env-file=../../.env -- drizzle-kit studio",
+    "db:seed": "dotenvx run --env-file=../../.env -- tsx src/scripts/seed.ts",
     "build": "tsc --outDir dist --declaration false"
   },
   "keywords": [],

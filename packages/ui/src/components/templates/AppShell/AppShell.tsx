@@ -9,6 +9,7 @@ interface NavItem {
   icon?: Component;
   label: string;
   notifications?: number;
+  isActive?: boolean;
 }
 
 interface AppShellProps {

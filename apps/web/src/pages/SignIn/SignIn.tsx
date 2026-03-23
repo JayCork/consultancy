@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
-import { useNavigate } from "@solidjs/router";
-import { signIn } from "../lib/auth-client";
+import { useNavigate, A } from "@solidjs/router";
+import { signIn } from "../../lib/auth-client";
 
 export function SignIn() {
   const [email, setEmail] = createSignal("");
@@ -54,6 +54,9 @@ export function SignIn() {
         {error() && <p role="alert">{error()}</p>}
         <button type="submit">Sign in</button>
       </form>
+      <p>
+        Don't have an account? <A href="/register">Create one</A>
+      </p>
     </div>
   );
 }
