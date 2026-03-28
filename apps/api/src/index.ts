@@ -2,6 +2,10 @@ import { Hono } from "hono";
 import { serve } from "@hono/node-server";
 import userRoutes from "./routes/user";
 import evidenceRoutes from "./routes/evidence";
+import projectRoutes from "./routes/projects";
+import skillRoutes from "./routes/skills";
+import readinessRoutes from "./routes/readiness";
+import adminRoutes from "./routes/admin";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { env, auth } from "./lib";
@@ -16,7 +20,7 @@ const server = serve({
 api.use(logger());
 
 api.use(
-  "/auth/**",
+  "*",
   cors({
     origin: env.webUrl,
     allowHeaders: ["Content-Type", "Authorization"],
@@ -31,6 +35,10 @@ api.on(["POST", "GET"], "/auth/**", (c) => {
 
 api.route("/v0/users", userRoutes);
 api.route("/v0/evidence", evidenceRoutes);
+api.route("/v0/projects", projectRoutes);
+api.route("/v0/skills", skillRoutes);
+api.route("/v0/readiness", readinessRoutes);
+api.route("/v0/admin", adminRoutes);
 
 api.get("/v0/health", (c) => {
   return c.json({

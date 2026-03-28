@@ -4,7 +4,8 @@
     "dev": "dotenvx run -- pnpm --parallel -r dev",
     "dev:api": "dotenvx run -- pnpm --filter @consultancy/api dev",
     "dev:web": "dotenvx run -- pnpm --filter @consultancy/web dev",
-    "dev:ui": "dotenvx run -- pnpm --filter @consultancy/ui storybook"
+    "dev:ui": "dotenvx run -- pnpm --filter @consultancy/ui storybook",
+    "dev:db": "dotenvx run -- pnpm --filter @consultancy/db db:view"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.55.1",

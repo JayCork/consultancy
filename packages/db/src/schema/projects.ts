@@ -9,7 +9,7 @@ import {
   text,
 } from "drizzle-orm/pg-core";
 import { timestamps } from "../columns.helpers";
-import { projectRoleEnum } from "./enums";
+import { projectRoleEnum, sectorEnum } from "./enums";
 import { usersTable } from "./users";
 
 export const projectsTable = pgTable("projects", {
@@ -17,6 +17,7 @@ export const projectsTable = pgTable("projects", {
   name: varchar({ length: 610 }).notNull(),
   description: text().notNull(),
   category: varchar({ length: 100 }), // e.g., "Engineering", "Delivery"
+  sector: sectorEnum().notNull().default("commercial"),
   ...timestamps,
 });
 

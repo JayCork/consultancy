@@ -33,4 +33,13 @@ export const getUserById = async (id: string) => {
   return user[0];
 };
 
+export const getUserByAuthId = async (authId: string) => {
+  const user = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.auth_user_id, authId))
+    .limit(1);
+  return user[0];
+};
+
 export { getAllUsers, getUserByClearance };

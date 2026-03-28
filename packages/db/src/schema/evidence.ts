@@ -18,9 +18,7 @@ export const evidenceTable = pgTable("evidence_entries", {
   action: text().notNull(),
   result: text().notNull(),
   status: evidenceStatusEnum().notNull().default("draft"),
-  project_id: uuid()
-    .notNull()
-    .references(() => projectsTable.id),
+  project_id: uuid().references(() => projectsTable.id),
   level_id: uuid()
     .notNull()
     .references(() => skillsLevelTable.id),

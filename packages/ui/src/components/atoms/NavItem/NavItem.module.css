@@ -4,11 +4,20 @@
   list-style-type: none;
   padding: 0;
   align-items: center;
+  border-radius: var(--radius-md);
 }
 
 .container:hover {
-  background-color: var(--color-container);
-  color: var(--color-on-container);
+  background-color: var(--color-primary-subtle);
+}
+
+.active {
+  background-color: var(--color-primary-container);
+}
+
+.active .link {
+  color: var(--color-on-primary-container);
+  font-weight: var(--font-weight-semibold);
 }
 
 .itemStart {

@@ -8,13 +8,21 @@ interface NavItemProps {
   icon?: Component;
   notifications?: number;
   showText?: boolean;
+  isActive?: boolean;
 }
 
 const NavItem = (props: NavItemProps) => {
   return (
-    <li class={styles.container}>
+    <li
+      class={styles.container}
+      classList={{ [styles.active]: props.isActive }}
+    >
       <div class={styles.itemStart}>
-        <a href={props.href} class={styles.link}>
+        <a
+          href={props.href}
+          class={styles.link}
+          aria-current={props.isActive ? "page" : undefined}
+        >
           <Show when={props.icon}>
             <span class={styles.icon}>
               <Dynamic component={props.icon} />

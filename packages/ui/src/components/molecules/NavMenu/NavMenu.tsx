@@ -14,6 +14,7 @@ interface NavMenuProps {
     label: string;
     icon?: Component;
     notifications?: number;
+    isActive?: boolean;
   }[];
   user?: { name: string };
   onSignOut?: () => void;
@@ -28,7 +29,12 @@ export const NavMenu = (props: NavMenuProps) => {
       }}
     >
       <div class={styles.appContainer}>
-        <span>App</span>
+        <Show when={props.isOpen !== false}>
+          <span class={styles.appName}>{props.title}</span>
+        </Show>
+        <Show when={props.isOpen === false}>
+          <span class={styles.appNameCollapsed}>{props.title.charAt(0)}</span>
+        </Show>
       </div>
       <nav class={styles.nav} aria-label="Main navigation">
         <ul class={styles.navList}>
@@ -41,6 +47,7 @@ export const NavMenu = (props: NavMenuProps) => {
                   icon={item?.icon}
                   notifications={item?.notifications}
                   showText={props.isOpen !== false}
+                  isActive={item?.isActive}
                 />
               </li>
             )}
@@ -49,10 +56,12 @@ export const NavMenu = (props: NavMenuProps) => {
       </nav>
       <div class={styles.userSettings}>
         <Show when={props.user}>
-          <CircleUser />
-          <Show when={props.isOpen !== false}>
-            <span>{props.user?.name}</span>
-          </Show>
+          <div class={styles.iconWithName}>
+            <CircleUser />
+            <Show when={props.isOpen !== false}>
+              <span>{props.user?.name}</span>
+            </Show>
+          </div>
         </Show>
         <Show when={props.onSignOut}>
           <ButtonIcon aria-label="Sign out" onClick={props.onSignOut}>

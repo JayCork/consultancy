@@ -1,8 +1,7 @@
-import { JSX } from "solid-js";
+import { JSX, Show, splitProps } from "solid-js";
 import styles from "./TextArea.module.css";
-import { Show, splitProps } from "solid-js";
 
-interface TextAreaProps extends JSX.HTMLAttributes<HTMLTextAreaElement> {
+interface TextAreaProps extends JSX.TextareaHTMLAttributes<HTMLTextAreaElement> {
   name: string;
   description?: string;
   placeholder?: string;
@@ -20,7 +19,9 @@ const TextArea = (_props: TextAreaProps) => {
         {props.name}
       </label>
       <Show when={props.description}>
-        <p id={`${props.name}-description`}>{props.description}</p>
+        <p id={`${props.name}-description`} class={styles.description}>
+          {props.description}
+        </p>
       </Show>
       <textarea
         class={styles.base}

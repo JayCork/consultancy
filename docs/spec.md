@@ -211,7 +211,40 @@ Sensitive fields follow a strict Privacy by Interaction model:
 
 ### Design System
 
-The UI uses an Ink & Amber design language — a dark, archival aesthetic built to feel trustworthy for government-adjacent work while remaining approachable for daily use. Colour tokens use OKLCH for perceptual uniformity and P3 wide gamut support. All contrast ratios meet WCAG AA minimum (4.5:1 for normal text). Typography pairs Playfair Display (editorial, human) with IBM Plex Mono (precise, institutional).
+The UI uses an Ink & Amber design language — a dark, archival aesthetic built to feel trustworthy for government-adjacent work while remaining approachable for daily use. Colour tokens use OKLCH for perceptual uniformity and P3 wide gamut support. All contrast ratios meet WCAG AA minimum (4.5:1 for normal text). Typography pairs DM Sans (approachable, legible) with JetBrains Mono (precise, institutional).
+
+#### Token Usage — Mandatory Rules
+
+All component styles (inline styles, CSS Modules) **must** use CSS custom properties from `packages/tokens/`. Hardcoded hex values, magic-number rem/px sizes, and raw border-radius values are not permitted in any component style. This rule applies to the UI package, web app, and any future apps.
+
+**Colour semantics:**
+
+| Token | Use |
+|---|---|
+| `--color-primary` (amber) | Brand colour — CTA buttons, interactive links, "Read more" controls |
+| `--color-accent` (teal) | Skills, data visualisation, progress indicators, level badges |
+| `--color-text-primary` | Headings and body copy |
+| `--color-text-secondary` | Supporting labels, secondary information |
+| `--color-text-muted` | Captions, metadata, overline labels |
+| `--color-container` | Card and panel backgrounds |
+| `--color-surface` | Page-layer backgrounds, tag/chip backgrounds |
+| `--color-overlay` | Elevated surfaces, neutral badge backgrounds |
+| `--color-success-subtle` + `--color-success` | Verified status badges |
+| `--color-warning-subtle` + `--color-on-warning` | Pending-review status badges |
+| `--color-error-subtle` + `--color-error` | Error and rejected states |
+
+**Enforcement:**
+- Never use `, fallback` values in `var()` calls — they mask missing-token bugs that would otherwise surface as broken dark-mode contrast.
+- Dark mode is handled automatically via `light-dark()` inside token definitions. Components do not need `prefers-color-scheme` media queries.
+- If a value you need is not covered by an existing token, add the token to the relevant file in `packages/tokens/` before using it.
+
+#### Component Authoring Rules
+
+- New UI components go in `packages/ui/src/components/` in the correct atomic tier (`atoms` → `molecules` → `organisms` → `templates` → `pages`).
+- Every component folder must contain: `ComponentName.tsx`, `ComponentName.module.css`, `ComponentName.stories.tsx`.
+- Styling must use CSS Modules. Inline `style={{}}` objects are only permitted for genuinely dynamic per-instance values (e.g. a colour token string passed as a prop from a parent). All static sizing, spacing, typography, and colour must be in the CSS module.
+- Every new component must be exported from `packages/ui/src/index.ts`.
+- `packages/ui` is a presentational library — it must not import from `apps/web`, call fetch/API functions, or import auth or router hooks.
 
 ---
 
