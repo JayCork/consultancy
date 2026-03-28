@@ -26,10 +26,9 @@ export function EvidenceList() {
       <Container>
         <div class={styles.header}>
           <h2 class={styles.heading}>My Evidence</h2>
-          <Button
-            label="Add Evidence"
-            onClick={() => navigate("/evidence/add")}
-          />
+          <Button onClick={() => navigate("/evidence/add")}>
+            Add Evidence
+          </Button>
         </div>
 
         <Show when={entries.loading}>
@@ -43,10 +42,9 @@ export function EvidenceList() {
               Use the STAR method to capture moments that demonstrate your
               skills — even small wins count.
             </p>
-            <Button
-              label="Add your first entry"
-              onClick={() => navigate("/evidence/add")}
-            />
+            <Button onClick={() => navigate("/evidence/add")}>
+              Add your first entry
+            </Button>
           </div>
         </Show>
 

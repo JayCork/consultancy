@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import Button from "./Button";
-import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 
 const meta: Meta<typeof Button> = {
   component: Button,
@@ -12,21 +11,21 @@ type Story = StoryObj<typeof Button>;
 
 export const Primary: Story = {
   args: {
-    label: "Button",
+    children: "Button",
   },
 };
 
 export const WithALongLabel: Story = {
   args: {
     ...Primary.args,
-    label: "This is a button with a long label",
+    children: "This is a button with a long label",
   },
 };
 
 export const WithFocus: Story = {
   args: {
     ...Primary.args,
-    label: "Focused Button",
+    children: "Focused Button",
   },
   play: async ({ canvasElement }) => {
     const button = canvasElement.querySelector("button");

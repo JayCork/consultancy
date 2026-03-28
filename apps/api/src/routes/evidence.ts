@@ -24,9 +24,30 @@ evidence.get("/", async (c) => {
 evidence.post("/", async (c) => {
   const body = await c.req.json();
 
-  const { author_id, skill_id, level_id, project_id, situation, task, action, result, sector, security_context } = body;
+  const {
+    author_id,
+    skill_id,
+    level_id,
+    project_id,
+    situation,
+    task,
+    action,
+    result,
+    sector,
+    security_context,
+  } = body;
 
-  if (!author_id || !skill_id || !level_id || !situation || !task || !action || !result || !sector || !security_context) {
+  if (
+    !author_id ||
+    !skill_id ||
+    !level_id ||
+    !situation ||
+    !task ||
+    !action ||
+    !result ||
+    !sector ||
+    !security_context
+  ) {
     return c.json({ ok: false, error: "Missing required fields" }, 400);
   }
 

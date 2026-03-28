@@ -1,14 +1,18 @@
-import { JSX } from "solid-js/jsx-runtime";
+import { JSX, splitProps } from "solid-js";
 import styles from "./Button.module.css";
 
 interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
-  label: string;
+  fullWidth?: boolean;
 }
 
 const Button = (props: ButtonProps) => {
+  const [local, rest] = splitProps(props, ["fullWidth", "children"]);
   return (
-    <button class={styles.container} {...props}>
-      {props.label}
+    <button
+      {...rest}
+      class={`${styles.container}${local.fullWidth ? ` ${styles.fullWidth}` : ""}`}
+    >
+      {local.children}
     </button>
   );
 };

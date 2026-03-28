@@ -1,9 +1,10 @@
 import { Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useSession } from "./lib/auth-client";
-import { Button, Container, ProgressTracker } from "@consultancy/ui";
+import { Button, Container } from "@consultancy/ui";
 import { Shell } from "./Shell";
 import { EvidenceStats } from "./components/EvidenceStats";
+import { CareerProgress } from "./components/CareerProgress";
 
 export function App() {
   const session = useSession();
@@ -17,16 +18,15 @@ export function App() {
       <Shell>
         <Container>
           <h2>Welcome back, {session()?.data?.user?.name}</h2>
-          <ProgressTracker percentComplete={0} />
           <EvidenceStats />
+          <CareerProgress />
           <p>
             Log evidence of your work to build your SFIA profile and track your
             career progression.
           </p>
-          <Button
-            label="Add Evidence"
-            onClick={() => navigate("/evidence/add")}
-          />
+          <Button fullWidth onClick={() => navigate("/evidence/add")}>
+            Add Evidence
+          </Button>
         </Container>
       </Shell>
     </Show>

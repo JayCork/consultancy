@@ -293,16 +293,13 @@ export function AddEvidence() {
           </Show>
 
           <div>
-            <Button
-              label="Cancel"
-              type="button"
-              onClick={() => navigate("/")}
-            />
-            <Button
-              label={submitting() ? "Submitting…" : "Submit Evidence"}
-              type="submit"
-              disabled={submitting()}
-            />
+            <Button type="button" onClick={() => navigate("/")}>
+              Cancel
+            </Button>
+
+            <Button type="submit" disabled={submitting()}>
+              {submitting() ? "Submitting…" : "Submit Evidence"}
+            </Button>
           </div>
         </form>
       </Container>

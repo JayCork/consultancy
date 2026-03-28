@@ -15,4 +15,6 @@ export * from "./components/atoms/Container/Container";
 export * from "./components/organisms/ProgressTracker/ProgressTracker";
 export * from "./components/organisms/EvidenceCard/EvidenceCard";
 export * from "./components/organisms/EvidenceStats/EvidenceStats";
+export * from "./components/organisms/ReadinessCard/ReadinessCard";
+export * from "./components/organisms/SkillGapList/SkillGapList";
 export * from "./components/atoms/StatCard/StatCard";

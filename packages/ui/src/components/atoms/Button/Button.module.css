@@ -8,6 +8,10 @@
   cursor: pointer;
 }
 
+.fullWidth {
+  width: 100%;
+}
+
 .container:focus {
   outline: 2px solid pink;
   outline-offset: 2px;

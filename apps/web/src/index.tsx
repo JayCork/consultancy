@@ -4,6 +4,7 @@ import { Router, Route } from "@solidjs/router";
 import { App } from "./App";
 import {
   AddEvidence,
+  AdminConfig,
   EvidenceList,
   PeerReview,
   Register,
@@ -19,6 +20,7 @@ render(
       <Route path="/evidence/add" component={AddEvidence} />
       <Route path="/evidence" component={EvidenceList} />
       <Route path="/peer-review" component={PeerReview} />
+      <Route path="/admin" component={AdminConfig} />
     </Router>
   ),
   document.getElementById("root")!,

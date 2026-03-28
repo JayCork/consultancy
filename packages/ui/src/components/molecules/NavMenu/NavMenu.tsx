@@ -56,10 +56,12 @@ export const NavMenu = (props: NavMenuProps) => {
       </nav>
       <div class={styles.userSettings}>
         <Show when={props.user}>
-          <CircleUser />
-          <Show when={props.isOpen !== false}>
-            <span>{props.user?.name}</span>
-          </Show>
+          <div class={styles.iconWithName}>
+            <CircleUser />
+            <Show when={props.isOpen !== false}>
+              <span>{props.user?.name}</span>
+            </Show>
+          </div>
         </Show>
         <Show when={props.onSignOut}>
           <ButtonIcon aria-label="Sign out" onClick={props.onSignOut}>

@@ -1,0 +1,203 @@
+.loading {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.empty,
+.noRequirements {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+
+.section {
+  margin-bottom: var(--space-8);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 0 var(--space-1);
+  height: 22px;
+  background: var(--color-overlay);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ── Organisation settings ───────────────────────────────────────────────── */
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.settingCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-component-md) var(--space-component-lg);
+  background: var(--color-container);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.settingValue {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: var(--line-height-tight);
+}
+
+.settingLabel {
+  font-size: var(--text-label-size);
+  font-weight: var(--text-label-weight);
+  color: var(--color-text-primary);
+}
+
+.settingHint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-snug);
+}
+
+/* ── Role cards ──────────────────────────────────────────────────────────── */
+
+.roleList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.roleCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-component-md) var(--space-component-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.roleHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.roleTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.roleName {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.levelPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.userCount {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.roleDescription {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+/* ── Requirements ────────────────────────────────────────────────────────── */
+
+.requirementsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+.requirementsLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.requirementsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.requirementItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-container);
+  border-radius: var(--radius-input);
+}
+
+.reqMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.reqSkill {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.reqLevel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  background: var(--color-overlay);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+}
+
+.reqCriteria {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-snug);
+}

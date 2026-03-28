@@ -1,6 +1,8 @@
 import { createSignal } from "solid-js";
 import { useNavigate, A } from "@solidjs/router";
 import { signIn } from "../../lib/auth-client";
+import styles from "./SignIn.module.css";
+import { Button, InputField } from "@consultancy/ui";
 
 export function SignIn() {
   const [email, setEmail] = createSignal("");
@@ -26,33 +28,33 @@ export function SignIn() {
   };
 
   return (
-    <div>
+    <div class={styles.base}>
       <h1>Sign in</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label for="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email()}
-            onInput={(e) => setEmail(e.target.value)}
-            autocomplete="email"
-            required
-          />
-        </div>
-        <div>
-          <label for="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password()}
-            onInput={(e) => setPassword(e.target.value)}
-            autocomplete="current-password"
-            required
-          />
-        </div>
+      <p>Enter your email and password to sign in.</p>
+      <form class={styles.form} onSubmit={handleSubmit}>
+        <InputField
+          label="Email"
+          id="email"
+          type="email"
+          value={email()}
+          onInput={(e) => setEmail(e.target.value)}
+          autocomplete="email"
+          required
+        />
+        <InputField
+          label="Password"
+          id="password"
+          type="password"
+          value={password()}
+          onInput={(e) => setPassword(e.target.value)}
+          autocomplete="current-password"
+          required
+        />
+
         {error() && <p role="alert">{error()}</p>}
-        <button type="submit">Sign in</button>
+        <Button type="submit" fullWidth>
+          Sign in
+        </Button>
       </form>
       <p>
         Don't have an account? <A href="/register">Create one</A>

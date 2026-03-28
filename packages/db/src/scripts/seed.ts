@@ -5,6 +5,22 @@ import {
   skillsTable,
   skillsLevelTable,
   usersTable,
+  evidenceTable,
+  feedbackTable,
+  auditLogsTable,
+  frameworkMappingsTable,
+  externalSkillsTable,
+  externalFrameworksTable,
+  userProjectRolesTable,
+  userRelationshipsTable,
+  relationshipRolesTable,
+  clearancesTable,
+  visasTable,
+  userCitizenshipTable,
+  residentialAddressesTable,
+  jobRolesTable,
+  roleSkillRequirementsTable,
+  userRoleAssignmentsTable,
 } from "../schema";
 import {
   SEED_PROJECTS,
@@ -16,8 +32,24 @@ import {
 const db = drizzle(process.env.DATABASE_URL!);
 
 async function main() {
-  // Clear in FK-safe order before re-seeding
+  // Clear in FK-safe order (leaf tables first) before re-seeding
+  await db.delete(feedbackTable);
+  await db.delete(auditLogsTable);
+  await db.delete(evidenceTable);
+  await db.delete(userRoleAssignmentsTable);
+  await db.delete(roleSkillRequirementsTable);
+  await db.delete(jobRolesTable);
+  await db.delete(userProjectRolesTable);
+  await db.delete(relationshipRolesTable);
+  await db.delete(userRelationshipsTable);
+  await db.delete(clearancesTable);
+  await db.delete(visasTable);
+  await db.delete(userCitizenshipTable);
+  await db.delete(residentialAddressesTable);
+  await db.delete(frameworkMappingsTable);
   await db.delete(skillsLevelTable);
+  await db.delete(externalSkillsTable);
+  await db.delete(externalFrameworksTable);
   await db.delete(skillsTable);
   await db.delete(projectsTable);
   await db.delete(usersTable);

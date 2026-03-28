@@ -1,3 +1,16 @@
 .base {
-  /* Styles for InputField */
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.base label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  min-height: calc(var(--size-touch-min) - 2px);
 }

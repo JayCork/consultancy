@@ -5,6 +5,7 @@ import { useSession, signOut } from "./lib/auth-client";
 import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 import Archive from "lucide-solid/icons/archive";
 import Users from "lucide-solid/icons/users";
+import Settings from "lucide-solid/icons/settings";
 
 interface NavEntry {
   id: number;
@@ -35,6 +36,13 @@ const NAV_ITEMS: NavEntry[] = [
     href: "/peer-review",
     label: "Peer Review",
     icon: Users,
+    match: "prefix",
+  },
+  {
+    id: 4,
+    href: "/admin",
+    label: "Admin",
+    icon: Settings,
     match: "prefix",
   },
 ];
@@ -82,7 +90,7 @@ export function Shell(props: ShellProps) {
         user: session()?.data?.user
           ? { name: session()!.data!.user!.name! }
           : undefined,
-        onSignOut: signOut,
+        onSignOut: () => signOut(),
       }}
     >
       {props.children}

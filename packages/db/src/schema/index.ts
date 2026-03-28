@@ -3,6 +3,7 @@ export * from "./evidence";
 export * from "./feedback";
 export * from "./organisations";
 export * from "./projects";
+export * from "./roles";
 export * from "./skills";
 export * from "./relationships";
 export * from "./users";
