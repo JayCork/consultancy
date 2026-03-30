@@ -56,6 +56,15 @@ export const relationshipEnum = pgEnum("relationship_types", [
   "colleague",
 ]);
 
+// Controls who is permitted to verify another user's evidence submissions.
+// Configurable per organisation; defaults to relationship_only.
+export const verificationPolicyEnum = pgEnum("verification_policy", [
+  "relationship_only", // (default) only active mentors and managers of the author
+  "peers_and_above",   // mentor, manager, peer, or colleague of the author
+  "same_project",      // any user sharing an active project assignment with the author
+  "any_member",        // any member of the same organisation
+]);
+
 export const accessPurposeEnum = pgEnum("access_purposes", [
   "bid_preparation",
   "promotion_review",

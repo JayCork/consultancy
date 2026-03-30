@@ -1,5 +1,11 @@
 export { getUserByClearance, getAllUsers, getUserById, getUserByAuthId } from "./users";
-export { createEvidence, getEvidenceByUser } from "./evidence";
+export {
+  createEvidence,
+  getEvidenceByUser,
+  getEvidenceById,
+  updateEvidenceStatus,
+  canUserVerifyEvidence,
+} from "./evidence";
 export { getAllProjects } from "./projects";
 export { getAllSkills, getSkillLevels } from "./skills";
 export { getReadinessForUser } from "./readiness";

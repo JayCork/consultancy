@@ -6,6 +6,7 @@ import {
   skillsLevelTable,
   jobRolesTable,
   roleSkillRequirementsTable,
+  clearancesTable,
 } from "../schema";
 import { visaTypesArray } from "../schema/enums";
 
@@ -488,4 +489,88 @@ export const generateRoleSkillRequirements = (
   }
 
   return result;
+};
+
+const SPONSORING_ORGS = [
+  "Demo Consultancy",
+  "Home Office",
+  "NHS Digital",
+  "HMCTS",
+  "MOD",
+  "DfE",
+];
+
+// Clearances — realistic UK public sector distribution across all users.
+// Demo user always gets Security Check; mock users are distributed across
+// BPSS (most common), SC, and DV (rare).
+export const generateClearances = (
+  allUserIds: string[],
+  demoDomainUserId: string,
+): (typeof clearancesTable.$inferInsert)[] =>
+  allUserIds.map((userId) => {
+    if (userId === demoDomainUserId) {
+      return {
+        user_id: userId,
+        level: "security check" as const,
+        granted_at: new Date("2024-01-15"),
+        expires_at: new Date("2029-01-15"),
+        sponsoring_organization: "Demo Consultancy",
+      };
+    }
+
+    const roll = faker.number.int({ min: 1, max: 10 });
+    const level =
+      roll <= 5
+        ? ("baseline personnel security standard" as const)
+        : roll <= 8
+          ? ("security check" as const)
+          : roll === 9
+            ? ("enhanced security check" as const)
+            : ("developed vetting check" as const);
+
+    return {
+      user_id: userId,
+      level,
+      granted_at: faker.date.past({ years: 3 }),
+      expires_at:
+        level === "baseline personnel security standard"
+          ? null
+          : faker.date.future({ years: 3 }),
+      sponsoring_organization: faker.helpers.arrayElement(SPONSORING_ORGS),
+    };
+  });
+
+type RelationshipSeed = {
+  actor_id: string;
+  subject_id: string;
+  role: "manager" | "peer" | "mentor" | "mentee" | "colleague";
+};
+
+// Relationships — creates a realistic org structure around the demo user.
+// allUserIds must be ordered as [demoDomainUserId, ...mockUserIds].
+export const generateRelationships = (
+  allUserIds: string[],
+  demoDomainUserId: string,
+): RelationshipSeed[] => {
+  const others = allUserIds.filter((id) => id !== demoDomainUserId);
+
+  return [
+    // others[0] is the demo user's line manager
+    { actor_id: others[0], subject_id: demoDomainUserId, role: "manager" },
+    // Demo user mentors others[1]; others[1] records the reciprocal mentee side
+    { actor_id: demoDomainUserId, subject_id: others[1], role: "mentor" },
+    { actor_id: others[1], subject_id: demoDomainUserId, role: "mentee" },
+    // Demo user has two colleagues on current project
+    { actor_id: demoDomainUserId, subject_id: others[2], role: "colleague" },
+    { actor_id: others[2], subject_id: demoDomainUserId, role: "colleague" },
+    // Demo user is a peer with others[3]
+    { actor_id: demoDomainUserId, subject_id: others[3], role: "peer" },
+    // others[0] also manages others[4] and others[5]
+    { actor_id: others[0], subject_id: others[4], role: "manager" },
+    { actor_id: others[0], subject_id: others[5], role: "manager" },
+    // A few relationships among the remaining mock users
+    { actor_id: others[6], subject_id: others[7], role: "colleague" },
+    { actor_id: others[7], subject_id: others[6], role: "colleague" },
+    { actor_id: others[8], subject_id: others[5], role: "peer" },
+  ];
 };

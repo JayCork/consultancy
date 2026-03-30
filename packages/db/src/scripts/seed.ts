@@ -35,6 +35,9 @@ import {
   generateSkillLevels,
   generateSkills,
   generateUsers,
+  generateVisas,
+  generateClearances,
+  generateRelationships,
   generateJobRoles,
   generateRoleSkillRequirements,
 } from "./seed.generator";
@@ -119,6 +122,37 @@ async function main() {
   const mockUsers = generateUsers(9, org.id);
   await db.insert(usersTable).values([demoUser, ...mockUsers]);
   console.log("10 users created (1 loginable demo user + 9 sample users)!");
+
+  const allUserIds = [demoDomainUserId, ...mockUsers.map((u) => u.id as string)];
+
+  // Visas — mock users only (demo user is assumed to be a UK national)
+  const visas = generateVisas(mockUsers);
+  await db.insert(visasTable).values(visas);
+  console.log(`${visas.length} visas created!`);
+
+  // Clearances — all users, demo user always gets SC
+  const clearances = generateClearances(allUserIds, demoDomainUserId);
+  await db.insert(clearancesTable).values(clearances);
+  console.log(`${clearances.length} clearances created!`);
+
+  // Relationships — insert the relationship record, then the role record for each
+  const relationshipSeeds = generateRelationships(allUserIds, demoDomainUserId);
+  const insertedRelationships = await db
+    .insert(userRelationshipsTable)
+    .values(
+      relationshipSeeds.map((r) => ({
+        actor_id: r.actor_id,
+        subject_id: r.subject_id,
+      })),
+    )
+    .returning();
+  await db.insert(relationshipRolesTable).values(
+    insertedRelationships.map((rel, i) => ({
+      relationship_id: rel.id,
+      role: relationshipSeeds[i].role,
+    })),
+  );
+  console.log(`${insertedRelationships.length} user relationships created!`);
 
   await db.insert(projectsTable).values(SEED_PROJECTS);
   console.log(`${SEED_PROJECTS.length} projects created!`);
