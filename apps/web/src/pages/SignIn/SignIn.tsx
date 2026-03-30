@@ -1,7 +1,7 @@
+import styles from "./SignIn.module.css";
 import { createSignal } from "solid-js";
 import { useNavigate, A } from "@solidjs/router";
 import { signIn } from "../../lib/auth-client";
-import styles from "./SignIn.module.css";
 import { Button, InputField } from "@consultancy/ui";
 
 export function SignIn() {

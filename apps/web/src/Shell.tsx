@@ -52,6 +52,12 @@ const TITLE_OVERRIDES: Record<string, string> = {
   "/evidence/add": "Add Evidence",
 };
 
+function resolveTitleOverride(pathname: string): string | undefined {
+  if (TITLE_OVERRIDES[pathname]) return TITLE_OVERRIDES[pathname];
+  if (/^\/peer-review\/.+/.test(pathname)) return "Review Evidence";
+  return undefined;
+}
+
 interface ShellProps {
   children: JSX.Element;
 }
@@ -68,7 +74,7 @@ export function Shell(props: ShellProps) {
   };
 
   const pageTitle = () =>
-    TITLE_OVERRIDES[location.pathname] ??
+    resolveTitleOverride(location.pathname) ??
     activeItem()?.label ??
     "Contractor Hub";
 

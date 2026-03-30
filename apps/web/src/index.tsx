@@ -6,6 +6,7 @@ import {
   AddEvidence,
   AdminConfig,
   EvidenceList,
+  EvidenceReview,
   PeerReview,
   Register,
   SignIn,
@@ -20,6 +21,7 @@ render(
       <Route path="/evidence/add" component={AddEvidence} />
       <Route path="/evidence" component={EvidenceList} />
       <Route path="/peer-review" component={PeerReview} />
+      <Route path="/peer-review/:id" component={EvidenceReview} />
       <Route path="/admin" component={AdminConfig} />
     </Router>
   ),

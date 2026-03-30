@@ -14,3 +14,19 @@
   border-radius: var(--radius-md);
   min-height: calc(var(--size-touch-min) - 2px);
 }
+
+.input:user-invalid {
+  border-color: var(--color-error, #c0392b);
+  outline-color: var(--color-error, #c0392b);
+}
+
+.error {
+  display: none;
+  color: var(--color-error, #c0392b);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.input:user-invalid + .error {
+  display: block;
+}
