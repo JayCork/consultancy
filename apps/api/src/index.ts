@@ -24,7 +24,7 @@ api.use(
   cors({
     origin: env.webUrl,
     allowHeaders: ["Content-Type", "Authorization"],
-    allowMethods: ["GET", "POST", "OPTIONS"],
+    allowMethods: ["GET", "POST", "PATCH", "OPTIONS"],
     credentials: true,
   }),
 );

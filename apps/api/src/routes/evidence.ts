@@ -3,8 +3,11 @@ import {
   createEvidence,
   getEvidenceByUser,
   getUserByAuthId,
+  canUserVerifyEvidence,
+  updateEvidenceStatus,
   type EvidenceStatus,
 } from "@consultancy/db";
+import { auth } from "../lib";
 
 const evidence = new Hono();
 
@@ -70,6 +73,39 @@ evidence.post("/", async (c) => {
     status: "pending_verification" satisfies EvidenceStatus,
   });
   return c.json({ ok: true, data: entry }, 201);
+});
+
+evidence.patch("/:id/status", async (c) => {
+  // Caller identity comes from the session cookie — never a query param
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!session) {
+    return c.json({ ok: false, error: "Unauthorised" }, 401);
+  }
+
+  const verifier = await getUserByAuthId(session.user.id);
+  if (!verifier) {
+    return c.json({ ok: false, error: "User not found" }, 404);
+  }
+
+  const body = await c.req.json();
+  if (body.status !== "verified") {
+    return c.json(
+      { ok: false, error: "Only 'verified' is a valid target status" },
+      400,
+    );
+  }
+
+  const evidenceId = c.req.param("id");
+  const { allowed, reason } = await canUserVerifyEvidence(
+    verifier.id,
+    evidenceId,
+  );
+  if (!allowed) {
+    return c.json({ ok: false, error: reason }, 403);
+  }
+
+  const updated = await updateEvidenceStatus(evidenceId, "verified");
+  return c.json({ ok: true, data: updated });
 });
 
 export default evidence;
