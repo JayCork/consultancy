@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import {
   createEvidence,
   getEvidenceByUser,
+  getEvidenceWithDetails,
+  getPendingEvidenceForReviewer,
   getUserByAuthId,
   canUserVerifyEvidence,
   updateEvidenceStatus,
@@ -10,6 +12,31 @@ import {
 import { auth } from "../lib";
 
 const evidence = new Hono();
+
+evidence.get("/pending", async (c) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!session) {
+    return c.json({ ok: false, error: "Unauthorised" }, 401);
+  }
+  const reviewer = await getUserByAuthId(session.user.id);
+  if (!reviewer) {
+    return c.json({ ok: false, error: "User not found" }, 404);
+  }
+  const entries = await getPendingEvidenceForReviewer(reviewer.id);
+  return c.json({ ok: true, data: entries });
+});
+
+evidence.get("/:id", async (c) => {
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!session) {
+    return c.json({ ok: false, error: "Unauthorised" }, 401);
+  }
+  const entry = await getEvidenceWithDetails(c.req.param("id"));
+  if (!entry) {
+    return c.json({ ok: false, error: "Evidence not found" }, 404);
+  }
+  return c.json({ ok: true, data: entry });
+});
 
 evidence.get("/", async (c) => {
   const authUserId = c.req.query("userId");

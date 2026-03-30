@@ -29,7 +29,7 @@ api.use(
   }),
 );
 
-api.on(["POST", "GET"], "/auth/**", (c) => {
+api.on(["POST", "GET"], "/auth/*", (c) => {
   return auth.handler(c.req.raw);
 });
 

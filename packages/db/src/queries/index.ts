@@ -5,6 +5,8 @@ export {
   getEvidenceById,
   updateEvidenceStatus,
   canUserVerifyEvidence,
+  getPendingEvidenceForReviewer,
+  getEvidenceWithDetails,
 } from "./evidence";
 export { getAllProjects } from "./projects";
 export { getAllSkills, getSkillLevels } from "./skills";

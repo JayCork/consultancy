@@ -1,0 +1,134 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.skillBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.skillName {
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.levelBadge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: var(--color-accent-container);
+  color: var(--color-on-accent-container);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-badge);
+}
+
+.overdueBadge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: var(--color-error-subtle, #fde8e8);
+  color: var(--color-on-error-subtle, #b91c1c);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-badge);
+}
+
+.metaGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-8);
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.metaLabel {
+  font-size: var(--text-overline-size);
+  font-weight: var(--text-overline-weight);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.metaValue {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.starSections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.starSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-container);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.sectionLabel {
+  font-size: var(--text-overline-size);
+  font-weight: var(--text-overline-weight);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.sectionText {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.buttonRow {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+.errorMessage {
+  font-size: var(--font-size-sm);
+  color: var(--color-on-error-subtle, #b91c1c);
+  margin: 0;
+  text-align: right;
+}

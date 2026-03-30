@@ -24,14 +24,14 @@ Consultants log STAR-format evidence entries, mentors verify them, and verified 
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | SolidJS + Vite |
-| Backend | Hono (Node.js) |
-| Database | PostgreSQL (Docker) |
-| ORM | Drizzle |
-| Auth | Better-Auth (email/password) |
-| Monorepo | pnpm workspaces |
+| Layer    | Technology                   |
+| -------- | ---------------------------- |
+| Frontend | SolidJS + Vite               |
+| Backend  | Hono (Node.js)               |
+| Database | PostgreSQL (Docker)          |
+| ORM      | Drizzle                      |
+| Auth     | Better-Auth (email/password) |
+| Monorepo | pnpm workspaces              |
 
 ---
 
@@ -58,14 +58,23 @@ pnpm install
 # 2. Create your .env file (see Environment Variables below)
 cp .env.example .env   # or create .env manually
 
-# 3. Start Docker Desktop, then push the schema and seed demo data
+#3. Create and start the database container (if not using the dev script to manage it)
+docker run --name drizzle-postgres \
+  -e POSTGRES_PASSWORD=mypassword \
+  -e POSTGRES_USER=admin \
+  -d -p 5432:5432 postgres
+
+docker exec -it drizzle-postgres psql -U admin -c "CREATE DATABASE mydatabase;"
+
+
+# 4. Start Docker Desktop, then push the schema and seed demo data
 pnpm --filter @consultancy/db db:push
 pnpm --filter @consultancy/db db:seed
 
-# 4. Start all services
+# 5. Start all services
 pnpm dev
 
-# 5. Register your account at http://localhost:3000/register
+# 6. Register your account at http://localhost:3000/register
 #    Your account is automatically linked to the Demo Consultancy organisation
 ```
 
@@ -138,15 +147,15 @@ pnpm --filter @consultancy/db db:seed
 
 **What gets created:**
 
-| Entity | Count | Details |
-|--------|-------|---------|
-| Organisation | 1 | "Demo Consultancy" |
-| Users | 10 | Mix of developer roles: Junior, Mid, Senior, Lead, Principal, Frontend, Backend, Full Stack, DevOps, EM |
-| Projects | 8 | Government and commercial clients (see [Demo Data Reference](#demo-data-reference)) |
-| Skills | 8 | Full-stack web developer skills across frontend, backend, and DevOps disciplines |
-| Skill Levels | 40 | 5 proficiency levels per skill, each with detailed criteria |
-| Job Roles | 5 | Junior → Principal developer career ladder |
-| Role Requirements | 38 | Skill + level requirements per role, mapping the full career progression |
+| Entity            | Count | Details                                                                                                 |
+| ----------------- | ----- | ------------------------------------------------------------------------------------------------------- |
+| Organisation      | 1     | "Demo Consultancy"                                                                                      |
+| Users             | 10    | Mix of developer roles: Junior, Mid, Senior, Lead, Principal, Frontend, Backend, Full Stack, DevOps, EM |
+| Projects          | 8     | Government and commercial clients (see [Demo Data Reference](#demo-data-reference))                     |
+| Skills            | 8     | Full-stack web developer skills across frontend, backend, and DevOps disciplines                        |
+| Skill Levels      | 40    | 5 proficiency levels per skill, each with detailed criteria                                             |
+| Job Roles         | 5     | Junior → Principal developer career ladder                                                              |
+| Role Requirements | 38    | Skill + level requirements per role, mapping the full career progression                                |
 
 > The seed script clears existing data before re-seeding, so it is safe to run multiple times.
 
@@ -158,12 +167,12 @@ After seeding, register an account through the web app. The system automatically
 
 **Demo account (created by the seed script):**
 
-| Field | Value |
-|-------|-------|
-| Email | `example@demo.com` |
-| Password | `Password123!` |
-| Role | Senior Developer |
-| Organisation | Demo Consultancy |
+| Field        | Value              |
+| ------------ | ------------------ |
+| Email        | `example@demo.com` |
+| Password     | `Password123!`     |
+| Role         | Senior Developer   |
+| Organisation | Demo Consultancy   |
 
 Sign in at `http://localhost:3000/sign-in` with these credentials — no registration needed.
 
@@ -176,6 +185,7 @@ If you want to create your own account:
 3. Enter your name, email, and a password — you are immediately signed in
 
 When you register, a database hook in the API automatically:
+
 - Creates your domain user profile
 - Assigns you the **Consultant** role
 - Associates you with **Demo Consultancy**
@@ -192,12 +202,12 @@ pnpm dev
 
 This starts in parallel:
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| Web app | http://localhost:3000 | SolidJS frontend |
-| API | http://localhost:5173 | Hono REST API |
-| Storybook | http://localhost:6006 | Component explorer |
-| Database | localhost:5432 | PostgreSQL (Docker) |
+| Service   | URL                   | Description         |
+| --------- | --------------------- | ------------------- |
+| Web app   | http://localhost:3000 | SolidJS frontend    |
+| API       | http://localhost:5173 | Hono REST API       |
+| Storybook | http://localhost:6006 | Component explorer  |
+| Database  | localhost:5432        | PostgreSQL (Docker) |
 
 **Start services individually:**
 
@@ -285,56 +295,56 @@ pnpm gen:ui molecules SkillCard
 
 ### Organisation
 
-| Field | Value |
-|-------|-------|
-| Name | Demo Consultancy |
-| Promotion threshold | 80% readiness score |
-| Evidence required per skill | 3 verified entries |
+| Field                       | Value               |
+| --------------------------- | ------------------- |
+| Name                        | Demo Consultancy    |
+| Promotion threshold         | 80% readiness score |
+| Evidence required per skill | 3 verified entries  |
 
 ### Projects
 
-| Project | Sector |
-|---------|--------|
-| Home Office Digital Platform | Central Government |
-| NHS Patient Portal | Health |
-| MOD Personnel System | Defence |
-| Transport for London Data Platform | Transport |
-| Barclays Digital Banking | Commercial |
-| HMCTS Case Management | Justice |
-| DfE Schools Data Service | Education |
-| Camden Council Digital Services | Local Government |
+| Project                            | Sector             |
+| ---------------------------------- | ------------------ |
+| Home Office Digital Platform       | Central Government |
+| NHS Patient Portal                 | Health             |
+| MOD Personnel System               | Defence            |
+| Transport for London Data Platform | Transport          |
+| Barclays Digital Banking           | Commercial         |
+| HMCTS Case Management              | Justice            |
+| DfE Schools Data Service           | Education          |
+| Camden Council Digital Services    | Local Government   |
 
 ### Skills
 
-| Skill | Levels |
-|-------|--------|
-| Frontend Engineering | 1–5 |
-| Backend Engineering | 1–5 |
-| TypeScript / JavaScript | 1–5 |
-| Testing & Quality Assurance | 1–5 |
-| DevOps & CI/CD | 1–5 |
-| Database Design | 1–5 |
-| API Design | 1–5 |
-| Web Security | 1–5 |
+| Skill                       | Levels |
+| --------------------------- | ------ |
+| Frontend Engineering        | 1–5    |
+| Backend Engineering         | 1–5    |
+| TypeScript / JavaScript     | 1–5    |
+| Testing & Quality Assurance | 1–5    |
+| DevOps & CI/CD              | 1–5    |
+| Database Design             | 1–5    |
+| API Design                  | 1–5    |
+| Web Security                | 1–5    |
 
 ### Job Roles (Career Ladder)
 
-| Role | Seniority | Required Skills |
-|------|-----------|-----------------|
-| Junior Developer | 1 | Frontend L1, Backend L1, TypeScript L1, Testing L1 |
-| Mid-Level Developer | 2 | Frontend L2, Backend L2, TypeScript L2, Testing L2, DevOps L1, API Design L1 |
-| Senior Developer | 3 | Frontend L3, Backend L3, TypeScript L2, Testing L2, DevOps L2, DB Design L2, API Design L2, Security L2 |
-| Lead Developer | 4 | Frontend L3, Backend L3, TypeScript L3, Testing L3, DevOps L3, DB Design L3, API Design L3, Security L3 |
-| Principal Developer | 5 | All 8 skills at Level 4 |
+| Role                | Seniority | Required Skills                                                                                         |
+| ------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| Junior Developer    | 1         | Frontend L1, Backend L1, TypeScript L1, Testing L1                                                      |
+| Mid-Level Developer | 2         | Frontend L2, Backend L2, TypeScript L2, Testing L2, DevOps L1, API Design L1                            |
+| Senior Developer    | 3         | Frontend L3, Backend L3, TypeScript L2, Testing L2, DevOps L2, DB Design L2, API Design L2, Security L2 |
+| Lead Developer      | 4         | Frontend L3, Backend L3, TypeScript L3, Testing L3, DevOps L3, DB Design L3, API Design L3, Security L3 |
+| Principal Developer | 5         | All 8 skills at Level 4                                                                                 |
 
 ### Pages and Features to Explore
 
 Once signed in, you can explore:
 
-| Page | URL | Description |
-|------|-----|-------------|
-| Dashboard | `/` | Evidence stats and career readiness score |
-| Add Evidence | `/evidence/add` | Log a new STAR entry against a skill |
-| Evidence List | `/evidence/list` | View all your logged evidence |
-| Peer Review | `/peer-review` | Verify evidence submitted by colleagues |
-| Admin Config | `/admin/config` | Organisation settings and job role requirements |
+| Page          | URL              | Description                                     |
+| ------------- | ---------------- | ----------------------------------------------- |
+| Dashboard     | `/`              | Evidence stats and career readiness score       |
+| Add Evidence  | `/evidence/add`  | Log a new STAR entry against a skill            |
+| Evidence List | `/evidence/list` | View all your logged evidence                   |
+| Peer Review   | `/peer-review`   | Verify evidence submitted by colleagues         |
+| Admin Config  | `/admin/config`  | Organisation settings and job role requirements |
