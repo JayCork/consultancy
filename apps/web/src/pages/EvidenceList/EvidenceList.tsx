@@ -1,6 +1,7 @@
-import { createResource, For, Show } from "solid-js";
+import { createResource, createEffect, For, Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useSession } from "../../lib/auth-client";
+import { useAuthGuard } from "../../lib/use-auth-guard";
 import { Button, Container } from "@consultancy/ui";
 import { EvidenceCard, type EvidenceEntry } from "@consultancy/ui";
 import { Shell } from "../../Shell";
@@ -9,6 +10,7 @@ import styles from "./EvidenceList.module.css";
 const API = import.meta.env.VITE_API_URL;
 
 export function EvidenceList() {
+  useAuthGuard();
   const session = useSession();
   const navigate = useNavigate();
 
@@ -20,6 +22,8 @@ export function EvidenceList() {
     const json = await res.json();
     return json.data as EvidenceEntry[];
   });
+
+  createEffect(() => console.log("Evidence entries:", entries()));
 
   return (
     <Shell>

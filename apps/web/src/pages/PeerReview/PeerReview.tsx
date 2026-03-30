@@ -1,7 +1,9 @@
 import { Shell } from "../../Shell";
 import { Container } from "@consultancy/ui";
+import { useAuthGuard } from "../../lib/use-auth-guard";
 
 export function PeerReview() {
+  useAuthGuard();
   return (
     <Shell>
       <Container>

@@ -40,15 +40,17 @@ export const getReadinessForUser = async (
     return {
       role: null,
       required_skills: [],
-      evidence_required_per_skill: 3,
-      promotion_readiness_threshold: 80,
+      evidence_required_per_skill: 0,
+      promotion_readiness_threshold: 0,
     };
   }
 
   const [org] = await db
     .select({
-      evidence_required_per_skill: organizationsTable.evidence_required_per_skill,
-      promotion_readiness_threshold: organizationsTable.promotion_readiness_threshold,
+      evidence_required_per_skill:
+        organizationsTable.evidence_required_per_skill,
+      promotion_readiness_threshold:
+        organizationsTable.promotion_readiness_threshold,
     })
     .from(organizationsTable)
     .where(eq(organizationsTable.id, user.organisation_id))
@@ -114,7 +116,10 @@ export const getReadinessForUser = async (
     .where(eq(roleSkillRequirementsTable.role_id, assignment.role_id));
 
   return {
-    role: { name: assignment.role_name, seniority_level: assignment.seniority_level },
+    role: {
+      name: assignment.role_name,
+      seniority_level: assignment.seniority_level,
+    },
     required_skills,
     evidence_required_per_skill: org?.evidence_required_per_skill ?? 3,
     promotion_readiness_threshold: org?.promotion_readiness_threshold ?? 80,

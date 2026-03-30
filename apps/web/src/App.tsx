@@ -1,20 +1,17 @@
 import { Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
-import { useSession } from "./lib/auth-client";
 import { Button, Container } from "@consultancy/ui";
 import { Shell } from "./Shell";
 import { EvidenceStats } from "./components/EvidenceStats";
 import { CareerProgress } from "./components/CareerProgress";
+import { useAuthGuard } from "./lib/use-auth-guard";
 
 export function App() {
-  const session = useSession();
+  const session = useAuthGuard();
   const navigate = useNavigate();
 
   return (
-    <Show
-      when={session()?.data?.user}
-      fallback={<>{navigate("/sign-in", { replace: true })}</>}
-    >
+    <Show when={session()?.data?.user}>
       <Shell>
         <Container>
           <h2>Welcome back, {session()?.data?.user?.name}</h2>

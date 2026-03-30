@@ -1,78 +1,62 @@
-# Running a Postgres Database in Docker
+# @consultancy/db
 
-This guide explains how to set up a PostgreSQL database using Docker, which is useful for local development and testing.
+Drizzle ORM schema, queries, and seed scripts for Contractor Hub.
 
-## Prerequisites
+The database runs in a Docker container managed automatically by the dev script. See the [root README](../../README.md) for full setup instructions.
 
-- [Docker](https://www.docker.com/products/docker-desktop/) installed on your machine
+## Commands
 
-## 1. Pull the Postgres Docker Image
+```bash
+# Push schema changes to the running database
+pnpm db:push
 
-Open your terminal and run:
+# Generate a migration file from schema changes
+pnpm db:generate
 
-```
-docker pull postgres
-```
+# Seed the database with demo data (clears existing data first)
+pnpm db:seed
 
-## 2. Start a Postgres Container
-
-Run the following command to start a new Postgres container:
-
-```
-docker run --name drizzle-postgres -e POSTGRES_PASSWORD=mypassword -e POSTGRES_USER=admin -d -p 5432:5432 postgres
+# Open Drizzle Studio (visual DB browser) at http://localhost:4983
+pnpm db:view
 ```
 
-- `--name drizzle-postgres`: Names your container for easy reference
-- `-e POSTGRES_PASSWORD=mypassword`: Sets the database password
-- `-e POSTGRES_USER=admin`: Sets the database user
-- `-d`: Runs the container in detached mode
-- `-p 5432:5432`: Maps port 5432 on your machine to the container
+## Manual Docker Setup
 
-## 3. Create a Database
+If you need to create the database container manually (the dev script normally handles this):
 
-By default, only the `postgres` database is created. To create a new database (e.g., `mydatabase`), run:
+```bash
+# Create and start the container
+docker run --name drizzle-postgres \
+  -e POSTGRES_PASSWORD=mypassword \
+  -e POSTGRES_USER=admin \
+  -d -p 5432:5432 postgres
 
-```
+# Create the database inside the container
 docker exec -it drizzle-postgres psql -U admin -c "CREATE DATABASE mydatabase;"
 ```
 
-## 4. Connect to the Database
-
-You can now connect to your database using a Postgres client or from your application using the following connection string:
+Connection string:
 
 ```
-postgresql://admin:mypassword@localhost:5432/mydatabase
+postgres://admin:mypassword@localhost:5432/mydatabase
 ```
 
-## 5. Stopping and Removing the Container
+**Stopping and starting:**
 
-To stop the container:
-
-```
+```bash
 docker stop drizzle-postgres
-```
-
-To remove the container:
-
-```
-docker rm drizzle-postgres
-```
-
-To start the container again after stopping:
-
-```
 docker start drizzle-postgres
+docker rm drizzle-postgres   # remove entirely
 ```
 
----
+## Structure
 
-For more details, see the [official Postgres Docker documentation](https://hub.docker.com/_/postgres).
-
-## Seeding the Database
-
-To seed the database with initial data, you can use the `seed.ts` script:
-
-```ts-node
-pnpm tsx src/index.ts
-
+```
+src/
+├── schema/       # Drizzle table definitions
+├── queries/      # Typed query functions used by the API
+├── scripts/
+│   ├── seed.ts           # Seed runner (clears + re-seeds all tables)
+│   └── seed.generator.ts # Faker-based data generators
+└── index.ts      # Package exports
 ```

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm --filter @consultancy/db exec tsc --noEmit)",
+      "Bash(pnpm --filter @consultancy/db db:push)",
+      "Bash(pnpm --filter @consultancy/db db:seed)",
+      "Bash(pnpm --filter @consultancy/web exec tsc --noEmit)"
+    ]
+  }
+}
