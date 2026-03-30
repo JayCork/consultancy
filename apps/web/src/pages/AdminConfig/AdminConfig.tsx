@@ -2,6 +2,7 @@ import { createResource, For, Show } from "solid-js";
 import { Container } from "@consultancy/ui";
 import { Shell } from "../../Shell";
 import styles from "./AdminConfig.module.css";
+import { useAuthGuard } from "../../lib/use-auth-guard";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -30,6 +31,7 @@ interface OrgConfig {
 }
 
 export function AdminConfig() {
+  useAuthGuard();
   const [config] = createResource<OrgConfig | null>(async () => {
     const res = await fetch(`${API}/api/v0/admin/config`);
     const json = await res.json();

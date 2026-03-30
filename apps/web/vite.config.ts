@@ -12,4 +12,9 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    // Exclude workspace packages from pre-bundling so Vite watches their
+    // source files directly and HMR picks up changes without a restart.
+    exclude: ["@consultancy/ui", "@consultancy/db"],
+  },
 });

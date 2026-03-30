@@ -1,21 +1,27 @@
 import { faker, SimpleFaker } from "@faker-js/faker";
-import { usersTable, projectsTable, skillsTable, skillsLevelTable } from "../schema";
+import {
+  usersTable,
+  projectsTable,
+  skillsTable,
+  skillsLevelTable,
+  jobRolesTable,
+  roleSkillRequirementsTable,
+} from "../schema";
 import { visaTypesArray } from "../schema/enums";
 
 faker.seed(123);
 
 const jobTitles = [
-  "Agile Project Manager",
-  "User Experience Practitioner",
-  "Data Analyst",
-  "Solution Architect",
-  "Cloud Engineer",
-  "Cybersecurity Specialist",
-  "AI Researcher",
-  "Blockchain Developer",
-  "IoT Engineer",
+  "Junior Developer",
+  "Developer",
+  "Senior Developer",
+  "Lead Developer",
+  "Principal Developer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Full Stack Developer",
   "DevOps Engineer",
-  "Product Manager",
+  "Engineering Manager",
 ];
 
 const customSimpleFaker = new SimpleFaker();
@@ -51,100 +57,386 @@ export const generateVisas = (users: (typeof usersTable.$inferInsert)[]) => {
 export const SEED_PROJECTS: (typeof projectsTable.$inferInsert)[] = [
   {
     name: "Home Office Digital Platform",
-    description: "Modernising case management and digital services for the Home Office, improving processing times and transparency for applicants.",
+    description:
+      "Modernising case management and digital services for the Home Office, improving processing times and transparency for applicants.",
     sector: "central_government",
   },
   {
     name: "NHS Patient Portal",
-    description: "Building a unified patient-facing portal for appointment booking, test results, and GP communications across NHS trusts.",
+    description:
+      "Building a unified patient-facing portal for appointment booking, test results, and GP communications across NHS trusts.",
     sector: "health",
   },
   {
     name: "MOD Personnel System",
-    description: "Replacing legacy HR and personnel management systems for the Ministry of Defence with a modern, secure cloud-based solution.",
+    description:
+      "Replacing legacy HR and personnel management systems for the Ministry of Defence with a modern, secure cloud-based solution.",
     sector: "defence",
   },
   {
     name: "Transport for London Data Platform",
-    description: "Designing and delivering a real-time data platform to support operational analytics and passenger experience improvements across the TfL network.",
+    description:
+      "Designing and delivering a real-time data platform to support operational analytics and passenger experience improvements across the TfL network.",
     sector: "transport",
   },
   {
     name: "Barclays Digital Banking",
-    description: "Delivering new features and infrastructure improvements to the Barclays retail banking app, serving millions of customers.",
+    description:
+      "Delivering new features and infrastructure improvements to the Barclays retail banking app, serving millions of customers.",
     sector: "commercial",
   },
   {
     name: "HMCTS Case Management",
-    description: "Transforming court and tribunal case management by migrating paper-based processes to a digital-first service.",
+    description:
+      "Transforming court and tribunal case management by migrating paper-based processes to a digital-first service.",
     sector: "justice",
   },
   {
     name: "DfE Schools Data Service",
-    description: "Creating a centralised data service for the Department for Education to improve school performance monitoring and funding allocation.",
+    description:
+      "Creating a centralised data service for the Department for Education to improve school performance monitoring and funding allocation.",
     sector: "education",
   },
   {
     name: "Camden Council Digital Services",
-    description: "Redesigning citizen-facing digital services for Camden London Borough Council, reducing call volumes and improving resident satisfaction.",
+    description:
+      "Redesigning citizen-facing digital services for Camden London Borough Council, reducing call volumes and improving resident satisfaction.",
     sector: "local_government",
   },
 ];
 
 const SKILL_DEFINITIONS = [
   {
-    name: "Solution Architecture",
-    description: "Designing technical solutions that meet business requirements, including system design, technology selection, and integration patterns.",
+    name: "Frontend Engineering",
+    description:
+      "Building accessible, performant user interfaces using modern HTML, CSS, and JavaScript frameworks.",
     levels: [
-      { level_number: 1, criteria: "Understands basic architectural patterns and can describe common design decisions with guidance from senior colleagues." },
-      { level_number: 2, criteria: "Contributes to architectural discussions and documents design decisions for bounded components with some independence." },
-      { level_number: 3, criteria: "Independently designs end-to-end solutions for moderately complex systems, justifying technology choices and trade-offs." },
-      { level_number: 4, criteria: "Leads architectural design for complex, multi-system programmes and mentors others. Accountable for cross-cutting concerns such as security and scalability." },
-      { level_number: 5, criteria: "Sets architectural strategy and standards across the organisation. Influences vendor and technology roadmaps. Recognised externally as a domain authority." },
+      {
+        level_number: 1,
+        criteria:
+          "Writes HTML, CSS, and JavaScript for well-defined tasks under close supervision. Familiar with one frontend framework. Uses browser devtools to debug basic issues.",
+      },
+      {
+        level_number: 2,
+        criteria:
+          "Independently builds responsive, accessible components. Comfortable with state management and the component lifecycle. Writes unit and component tests. Follows performance and accessibility guidelines.",
+      },
+      {
+        level_number: 3,
+        criteria:
+          "Designs and implements complex UI features across a codebase. Owns frontend build configuration and performance budgets. Leads frontend direction for a workstream and reviews others' work critically.",
+      },
+      {
+        level_number: 4,
+        criteria:
+          "Defines frontend architecture across a programme. Drives accessibility and performance standards. Evaluates and adopts frameworks or tooling. Mentors engineers and sets the technical bar for the team.",
+      },
+      {
+        level_number: 5,
+        criteria:
+          "Sets frontend engineering strategy for the organisation. Contributes to open-source projects or web standards. Recognised externally as an authority on frontend engineering at scale.",
+      },
     ],
   },
   {
-    name: "Software Development",
-    description: "Writing, reviewing, and maintaining production-quality code across the full development lifecycle, including testing and deployment.",
+    name: "Backend Engineering",
+    description:
+      "Designing and building reliable, scalable server-side systems including APIs, business logic, and data persistence layers.",
     levels: [
-      { level_number: 1, criteria: "Writes working code for well-defined tasks under close supervision. Follows team coding standards and contributes to code reviews with guidance." },
-      { level_number: 2, criteria: "Delivers features independently within an established codebase. Writes unit tests and participates in code reviews constructively." },
-      { level_number: 3, criteria: "Designs and implements non-trivial features with appropriate testing strategies. Identifies and resolves systemic code quality issues." },
-      { level_number: 4, criteria: "Leads technical direction for a team. Defines coding standards, drives adoption of best practices, and unblocks complex technical problems." },
-      { level_number: 5, criteria: "Shapes engineering culture and practices across multiple teams or the organisation. Drives adoption of new technologies and engineering paradigms." },
+      {
+        level_number: 1,
+        criteria:
+          "Writes server-side code for defined tasks under supervision. Understands the request/response lifecycle and basic data persistence. Follows existing patterns for validation and error handling.",
+      },
+      {
+        level_number: 2,
+        criteria:
+          "Independently builds and ships API endpoints with appropriate validation, error handling, and logging. Contributes to database query design. Understands and applies basic auth patterns.",
+      },
+      {
+        level_number: 3,
+        criteria:
+          "Designs service boundaries and data models for complex features. Implements authentication and authorisation systems. Owns reliability and performance of backend systems for a workstream.",
+      },
+      {
+        level_number: 4,
+        criteria:
+          "Leads backend architecture across a programme. Defines API contracts and service patterns. Drives engineering quality, mentors engineers, and makes technology decisions with long-term consequence.",
+      },
+      {
+        level_number: 5,
+        criteria:
+          "Sets backend engineering strategy for the organisation. Authors foundational platforms or shared libraries. Shapes industry practice and is recognised externally as an authority.",
+      },
     ],
   },
   {
-    name: "Delivery Management",
-    description: "Planning, coordinating, and tracking delivery of projects and programmes, managing risks, dependencies, and stakeholder expectations.",
+    name: "TypeScript / JavaScript",
+    description:
+      "Writing and maintaining well-typed, idiomatic TypeScript and JavaScript across frontend and backend codebases.",
     levels: [
-      { level_number: 1, criteria: "Supports delivery planning and tracks progress for small, well-defined tasks. Escalates blockers promptly." },
-      { level_number: 2, criteria: "Manages delivery of a workstream or small team with regular oversight. Maintains a risk log and facilitates team ceremonies." },
-      { level_number: 3, criteria: "Independently manages delivery across a team or multiple workstreams. Proactively identifies and mitigates risks before they impact delivery." },
-      { level_number: 4, criteria: "Leads delivery of a complex programme with multiple teams. Manages cross-team dependencies and provides delivery assurance to senior stakeholders." },
-      { level_number: 5, criteria: "Sets delivery standards across the organisation or portfolio. Coaches delivery managers and shapes the organisation's approach to programme governance." },
+      {
+        level_number: 1,
+        criteria:
+          "Writes typed code following established team patterns. Understands primitive types, interfaces, and basic type inference. Resolves simple type errors with guidance.",
+      },
+      {
+        level_number: 2,
+        criteria:
+          "Uses generics, utility types, and strict mode effectively. Resolves complex type errors independently. Configures tsconfig appropriately for the project context.",
+      },
+      {
+        level_number: 3,
+        criteria:
+          "Authors conditional types, mapped types, and complex type transformations. Establishes typing conventions for a team. Guides others through difficult type problems.",
+      },
+      {
+        level_number: 4,
+        criteria:
+          "Designs type systems for large codebases to maximise safety and developer experience. Educates teams on advanced patterns. Contributes to programme-level tooling configuration.",
+      },
+      {
+        level_number: 5,
+        criteria:
+          "Recognised authority on the TypeScript type system. Contributes to TypeScript or JavaScript language standards, community tooling, or major open-source projects.",
+      },
     ],
   },
   {
-    name: "Stakeholder Management",
-    description: "Building and maintaining relationships with stakeholders at all levels, managing expectations, and communicating effectively to drive alignment.",
+    name: "Testing & Quality Assurance",
+    description:
+      "Designing and implementing testing strategies across the full stack to ensure software correctness, reliability, and maintainability.",
     levels: [
-      { level_number: 1, criteria: "Communicates clearly with immediate team members and follows up on actions. Begins building rapport with colleagues and junior client contacts." },
-      { level_number: 2, criteria: "Manages relationships with day-to-day client contacts. Prepares and presents status updates and handles routine stakeholder queries independently." },
-      { level_number: 3, criteria: "Builds trusted relationships with senior client stakeholders. Navigates competing priorities and conflicting interests to maintain alignment." },
-      { level_number: 4, criteria: "Manages relationships at director and C-suite level. Influences strategic decisions and handles escalations effectively. Accountable for overall client satisfaction." },
-      { level_number: 5, criteria: "Operates as a trusted advisor to executive stakeholders. Shapes organisational relationships and opens new opportunities through sustained trust and credibility." },
+      {
+        level_number: 1,
+        criteria:
+          "Writes basic unit tests for own code following team conventions. Understands the test pyramid and the purpose of different test types. Runs the test suite and investigates failures.",
+      },
+      {
+        level_number: 2,
+        criteria:
+          "Writes unit, integration, and component tests independently. Identifies and fills coverage gaps. Uses test doubles (mocks, stubs, fakes) appropriately. Contributes to CI quality gates.",
+      },
+      {
+        level_number: 3,
+        criteria:
+          "Designs the testing strategy for a feature or service. Introduces end-to-end and contract tests where appropriate. Defines quality gates and flakiness standards in CI pipelines.",
+      },
+      {
+        level_number: 4,
+        criteria:
+          "Sets QA strategy for a programme. Builds shared testing infrastructure. Mentors teams on quality culture. Drives adoption of test automation and performance testing practices.",
+      },
+      {
+        level_number: 5,
+        criteria:
+          "Shapes the organisation's approach to engineering quality. Drives industry-level adoption of testing best practices. Recognised authority on software quality at scale.",
+      },
     ],
   },
   {
-    name: "Data Analysis",
-    description: "Analysing data to surface insights, inform decisions, and communicate findings clearly to technical and non-technical audiences.",
+    name: "DevOps & CI/CD",
+    description:
+      "Building and maintaining delivery pipelines, cloud infrastructure, and operational tooling to enable fast, reliable software releases.",
     levels: [
-      { level_number: 1, criteria: "Cleans and queries structured datasets using SQL or spreadsheet tools to answer predefined questions with guidance." },
-      { level_number: 2, criteria: "Independently analyses datasets to answer business questions, produces clear visualisations, and documents methodology." },
-      { level_number: 3, criteria: "Designs analytical frameworks and applies statistical methods. Translates complex findings into actionable recommendations for non-technical stakeholders." },
-      { level_number: 4, criteria: "Leads data strategy for a programme or team. Defines data quality standards and builds reusable analytical assets. Mentors junior analysts." },
-      { level_number: 5, criteria: "Sets data culture and strategy across the organisation. Champions data-driven decision making at the executive level and drives data literacy." },
+      {
+        level_number: 1,
+        criteria:
+          "Understands core deployment concepts. Runs and interprets CI pipeline results. Resolves common pipeline failures with guidance. Familiar with containerisation basics.",
+      },
+      {
+        level_number: 2,
+        criteria:
+          "Configures and maintains CI/CD pipelines independently. Manages containers and environment configuration. Writes basic infrastructure-as-code. Monitors deployments and responds to alerts.",
+      },
+      {
+        level_number: 3,
+        criteria:
+          "Designs pipeline architecture for programmes. Implements GitOps workflows and multi-environment deployment strategies. Owns on-call runbooks and incident response for the platform.",
+      },
+      {
+        level_number: 4,
+        criteria:
+          "Sets DevOps strategy across a programme. Leads platform engineering. Drives observability standards and SRE practices. Mentors engineers on operational excellence.",
+      },
+      {
+        level_number: 5,
+        criteria:
+          "Shapes the organisation's engineering platform and DevOps culture. Influences tooling strategy at an organisational or industry level. Recognised authority on continuous delivery at scale.",
+      },
+    ],
+  },
+  {
+    name: "Database Design",
+    description:
+      "Designing, querying, and managing relational and non-relational databases with a focus on correctness, performance, and maintainability.",
+    levels: [
+      {
+        level_number: 1,
+        criteria:
+          "Writes basic SQL queries. Understands database normalisation. Adds schema migrations following established team patterns.",
+      },
+      {
+        level_number: 2,
+        criteria:
+          "Designs database schemas for features. Writes optimised queries with appropriate indexes. Manages migrations safely. Understands transactions and basic concurrency concerns.",
+      },
+      {
+        level_number: 3,
+        criteria:
+          "Designs data models for complex domains. Implements query performance tuning and explains plans. Owns migration strategy. Advises on database technology selection for the project.",
+      },
+      {
+        level_number: 4,
+        criteria:
+          "Sets data architecture standards for a programme. Manages scaling, replication, and backup strategies. Mentors engineers on data modelling and query design.",
+      },
+      {
+        level_number: 5,
+        criteria:
+          "Shapes the organisation's data infrastructure strategy. Recognised expert in data storage and retrieval at scale. Influences technology selection at the portfolio level.",
+      },
+    ],
+  },
+  {
+    name: "API Design",
+    description:
+      "Designing clear, consistent, and evolvable APIs — REST, event-driven, or otherwise — with a focus on developer experience and long-term maintainability.",
+    levels: [
+      {
+        level_number: 1,
+        criteria:
+          "Understands REST conventions and HTTP semantics. Reads and uses OpenAPI specifications. Implements endpoints following established team patterns.",
+      },
+      {
+        level_number: 2,
+        criteria:
+          "Designs resource-oriented APIs independently. Writes OpenAPI specs. Versions APIs correctly. Handles errors and edge cases consistently across endpoints.",
+      },
+      {
+        level_number: 3,
+        criteria:
+          "Leads API design across a service or programme. Establishes contract-first development practices. Introduces GraphQL or event-driven patterns where appropriate. Reviews API designs critically.",
+      },
+      {
+        level_number: 4,
+        criteria:
+          "Sets API governance and standards across a programme. Drives developer experience for internal and external consumers. Evaluates API platforms and gateways.",
+      },
+      {
+        level_number: 5,
+        criteria:
+          "Shapes the organisation's API strategy. Contributes to industry standards or influential open-source API tooling. Recognised authority on API design at scale.",
+      },
+    ],
+  },
+  {
+    name: "Web Security",
+    description:
+      "Applying secure development practices to protect web applications from common vulnerabilities and emerging threats.",
+    levels: [
+      {
+        level_number: 1,
+        criteria:
+          "Aware of the OWASP Top 10 and common web vulnerabilities. Follows secure coding guidance. Escalates security concerns to senior colleagues promptly.",
+      },
+      {
+        level_number: 2,
+        criteria:
+          "Independently applies secure coding practices. Implements authentication and authorisation patterns correctly. Uses dependency scanning and SAST tools in the development workflow.",
+      },
+      {
+        level_number: 3,
+        criteria:
+          "Leads security reviews for features and services. Implements OWASP mitigations. Defines security requirements alongside architects. Manages and communicates security incidents.",
+      },
+      {
+        level_number: 4,
+        criteria:
+          "Sets security standards for a programme. Drives threat modelling, penetration testing, and security assurance. Trains teams on secure development practices.",
+      },
+      {
+        level_number: 5,
+        criteria:
+          "Shapes the organisation's security posture. Recognised authority on web application security. Contributes to security standards or community knowledge at an industry level.",
+      },
+    ],
+  },
+];
+
+const ROLE_DEFINITIONS = [
+  {
+    name: "Junior Developer",
+    seniority_level: 1,
+    description:
+      "Entry-level developer building core skills across the full stack. Works closely with a senior or lead developer and is expected to contribute to well-defined tasks.",
+    requirements: [
+      { skillName: "Frontend Engineering", levelNumber: 1 },
+      { skillName: "Backend Engineering", levelNumber: 1 },
+      { skillName: "TypeScript / JavaScript", levelNumber: 1 },
+      { skillName: "Testing & Quality Assurance", levelNumber: 1 },
+    ],
+  },
+  {
+    name: "Mid-Level Developer",
+    seniority_level: 2,
+    description:
+      "Capable developer who can own features end-to-end with limited supervision. Contributes to technical decisions within a team.",
+    requirements: [
+      { skillName: "Frontend Engineering", levelNumber: 2 },
+      { skillName: "Backend Engineering", levelNumber: 2 },
+      { skillName: "TypeScript / JavaScript", levelNumber: 2 },
+      { skillName: "Testing & Quality Assurance", levelNumber: 2 },
+      { skillName: "DevOps & CI/CD", levelNumber: 1 },
+      { skillName: "API Design", levelNumber: 1 },
+    ],
+  },
+  {
+    name: "Senior Developer",
+    seniority_level: 3,
+    description:
+      "Experienced developer who independently drives complex features, sets standards within a team, and mentors junior colleagues.",
+    requirements: [
+      { skillName: "Frontend Engineering", levelNumber: 3 },
+      { skillName: "Backend Engineering", levelNumber: 3 },
+      { skillName: "TypeScript / JavaScript", levelNumber: 2 },
+      { skillName: "Testing & Quality Assurance", levelNumber: 2 },
+      { skillName: "DevOps & CI/CD", levelNumber: 2 },
+      { skillName: "Database Design", levelNumber: 2 },
+      { skillName: "API Design", levelNumber: 2 },
+      { skillName: "Web Security", levelNumber: 2 },
+    ],
+  },
+  {
+    name: "Lead Developer",
+    seniority_level: 4,
+    description:
+      "Technical lead responsible for the architecture and delivery quality of an engineering team. Balances hands-on delivery with team leadership.",
+    requirements: [
+      { skillName: "Frontend Engineering", levelNumber: 3 },
+      { skillName: "Backend Engineering", levelNumber: 3 },
+      { skillName: "TypeScript / JavaScript", levelNumber: 3 },
+      { skillName: "Testing & Quality Assurance", levelNumber: 3 },
+      { skillName: "DevOps & CI/CD", levelNumber: 3 },
+      { skillName: "Database Design", levelNumber: 3 },
+      { skillName: "API Design", levelNumber: 3 },
+      { skillName: "Web Security", levelNumber: 3 },
+    ],
+  },
+  {
+    name: "Principal Developer",
+    seniority_level: 5,
+    description:
+      "Senior technical leader who shapes engineering strategy, standards, and culture across multiple teams or programmes.",
+    requirements: [
+      { skillName: "Frontend Engineering", levelNumber: 4 },
+      { skillName: "Backend Engineering", levelNumber: 4 },
+      { skillName: "TypeScript / JavaScript", levelNumber: 4 },
+      { skillName: "Testing & Quality Assurance", levelNumber: 4 },
+      { skillName: "DevOps & CI/CD", levelNumber: 4 },
+      { skillName: "Database Design", levelNumber: 4 },
+      { skillName: "API Design", levelNumber: 4 },
+      { skillName: "Web Security", levelNumber: 4 },
     ],
   },
 ];
@@ -159,4 +451,41 @@ export const generateSkillLevels = (
   const skill = SKILL_DEFINITIONS.find((s) => s.name === skillName);
   if (!skill) return [];
   return skill.levels.map((l) => ({ skill_id: skillId, ...l }));
+};
+
+export const generateJobRoles = (
+  orgId: string,
+): (typeof jobRolesTable.$inferInsert)[] =>
+  ROLE_DEFINITIONS.map((r) => ({
+    organisation_id: orgId,
+    name: r.name,
+    seniority_level: r.seniority_level,
+    description: r.description,
+  }));
+
+export const generateRoleSkillRequirements = (
+  roles: { id: string; name: string }[],
+  skills: { id: string; name: string }[],
+  levels: { id: string; skill_id: string; level_number: number }[],
+): (typeof roleSkillRequirementsTable.$inferInsert)[] => {
+  const result: (typeof roleSkillRequirementsTable.$inferInsert)[] = [];
+
+  for (const roleDef of ROLE_DEFINITIONS) {
+    const role = roles.find((r) => r.name === roleDef.name);
+    if (!role) continue;
+
+    for (const req of roleDef.requirements) {
+      const skill = skills.find((s) => s.name === req.skillName);
+      if (!skill) continue;
+
+      const level = levels.find(
+        (l) => l.skill_id === skill.id && l.level_number === req.levelNumber,
+      );
+      if (!level) continue;
+
+      result.push({ role_id: role.id, skill_id: skill.id, level_id: level.id });
+    }
+  }
+
+  return result;
 };

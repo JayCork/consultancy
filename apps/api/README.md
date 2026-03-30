@@ -1,24 +1,52 @@
 # @consultancy/api
 
-## Running the API locally
+Hono REST API for Contractor Hub. Runs on `http://localhost:5173`.
 
-To run the API locally, you can use the following command:
+See the [root README](../../README.md) for full setup and environment variable instructions.
+
+## Running Locally
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
-This will start the API server on `http://localhost:5173/`. You can then make requests to the API endpoints using tools like Postman or curl.
+Or from the project root:
 
-```curl
-curl http://localhost:5173/api/endpoint
+```bash
+pnpm dev:api
 ```
 
-## Env
+## Environment Variables
 
-### Secret Generation
+```env
+DATABASE_URL=postgres://admin:mypassword@localhost:5432/mydatabase
+BETTER_AUTH_URL=http://localhost:5173
+BETTER_AUTH_SECRET=<generated>
+WEB_URL=http://localhost:3000
+```
 
-To generate a secret for Better Auth, you can use the following command in your terminal:
+Generate `BETTER_AUTH_SECRET`:
 
-`npx auth secret`
-This will output a secure, random string that you can use as the `BETTER_AUTH_SECRET` in your `.env` file. Make sure to keep this secret safe and do not share it publicly, as it is used to sign authentication tokens.
+```bash
+npx auth secret
+```
+
+## API Routes
+
+```
+GET  /api/health                  # Health check
+POST /api/auth/**                 # Better-Auth endpoints (sign-up, sign-in, session)
+GET  /api/v0/users                # Get current authenticated user
+POST /api/v0/evidence             # Create a STAR evidence entry
+GET  /api/v0/evidence?userId=...  # Get evidence entries for a user
+POST /api/v0/projects             # Manage projects
+GET  /api/v0/skills               # Get all skills and their levels
+GET  /api/v0/readiness            # Career readiness score for current user
+GET  /api/v0/admin/config         # Organisation config and job role requirements
+```
+
+## Health Check
+
+```bash
+curl http://localhost:5173/api/health
+```

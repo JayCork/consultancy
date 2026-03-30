@@ -1,5 +1,5 @@
 import { createSignal, Show } from "solid-js";
-import { Clock, FilePenLine, BadgeCheck } from "lucide-solid";
+import { Clock, FilePenLine, BadgeCheck, ChevronDown, ChevronUp } from "lucide-solid";
 import styles from "./EvidenceCard.module.css";
 
 export type EvidenceEntry = {
@@ -34,6 +34,13 @@ const SECTOR_LABELS: Record<string, string> = {
   commercial: "Commercial",
 };
 
+const STAR_SECTIONS = [
+  { key: "situation", label: "Situation" },
+  { key: "task", label: "Task" },
+  { key: "action", label: "Action" },
+  { key: "result", label: "Result" },
+] as const;
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
     day: "numeric",
@@ -49,15 +56,14 @@ interface EvidenceCardProps {
 export function EvidenceCard(props: EvidenceCardProps) {
   const [expanded, setExpanded] = createSignal(false);
   const status = () => STATUS_CONFIG[props.entry.status];
-  const Icon = () => {
+  const StatusIcon = () => {
     const S = status().icon;
     return <S size={14} />;
   };
 
   const actionPreview = () => {
     const text = props.entry.action;
-    if (expanded() || text.length <= 240) return text;
-    return text.slice(0, 240) + "…";
+    return text.length > 240 ? text.slice(0, 240) + "…" : text;
   };
 
   return (
@@ -69,26 +75,42 @@ export function EvidenceCard(props: EvidenceCardProps) {
         </div>
 
         <div class={styles.metaRight}>
-          <span
-            class={styles.statusBadge}
-            data-status={props.entry.status}
-          >
-            <Icon />
+          <span class={styles.statusBadge} data-status={props.entry.status}>
+            <StatusIcon />
             {status().label}
           </span>
           <time class={styles.date}>{formatDate(props.entry.created_at)}</time>
+          <button
+            class={styles.expandBtn}
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded()}
+            aria-label={expanded() ? "Collapse STAR details" : "Expand STAR details"}
+          >
+            <Show when={expanded()} fallback={<ChevronDown size={16} />}>
+              <ChevronUp size={16} />
+            </Show>
+          </button>
         </div>
       </header>
 
-      <section class={styles.actionSection}>
-        <p class={styles.actionLabel}>What I did</p>
-        <p class={styles.actionText}>{actionPreview()}</p>
-        <Show when={props.entry.action.length > 240}>
-          <button class={styles.toggle} onClick={() => setExpanded((v) => !v)}>
-            {expanded() ? "Show less" : "Read more"}
-          </button>
-        </Show>
-      </section>
+      <Show
+        when={expanded()}
+        fallback={
+          <section class={styles.starSection}>
+            <p class={styles.sectionLabel}>Action</p>
+            <p class={styles.sectionText}>{actionPreview()}</p>
+          </section>
+        }
+      >
+        <div class={styles.starGrid}>
+          {STAR_SECTIONS.map((s) => (
+            <section class={styles.starSection}>
+              <p class={styles.sectionLabel}>{s.label}</p>
+              <p class={styles.sectionText}>{props.entry[s.key]}</p>
+            </section>
+          ))}
+        </div>
+      </Show>
 
       <footer class={styles.footer}>
         <span class={styles.footerTag}>

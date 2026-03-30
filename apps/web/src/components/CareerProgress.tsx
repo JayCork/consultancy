@@ -1,10 +1,6 @@
-import { createResource, Show } from "solid-js";
+import { createResource, createEffect, Show } from "solid-js";
 import { useSession } from "../lib/auth-client";
-import {
-  ReadinessCard,
-  SkillGapList,
-  type SkillEntry,
-} from "@consultancy/ui";
+import { ReadinessCard, SkillGapList, type SkillEntry } from "@consultancy/ui";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -27,8 +23,10 @@ export function CareerProgress() {
     return json.data as ReadinessResponse;
   });
 
+  createEffect(() => console.log("Readiness data:", data()));
+
   return (
-    <Show when={!data.loading && data()?.role}>
+    <Show when={!data.loading && data()?.role != null && data()}>
       {(d) => (
         <>
           <ReadinessCard

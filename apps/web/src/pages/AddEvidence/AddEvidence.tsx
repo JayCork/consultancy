@@ -1,6 +1,7 @@
 import { createSignal, createResource, Show } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { useSession } from "../../lib/auth-client";
+import { useAuthGuard } from "../../lib/use-auth-guard";
 import { TextArea, Select, Button, Container } from "@consultancy/ui";
 import { Shell } from "../../Shell";
 
@@ -50,6 +51,7 @@ async function fetchSkillLevels(skillId: string) {
 }
 
 export function AddEvidence() {
+  useAuthGuard();
   const session = useSession();
   const navigate = useNavigate();
 
