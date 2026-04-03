@@ -1,0 +1,472 @@
+enum access_purposes {
+  bid_preparation
+  promotion_review
+  security_renewal
+  compliance_audit
+  line_management
+  pay_review
+}
+
+enum citizenship_acquisition_methods {
+  birth
+  naturalization
+  marriage
+  descent
+  adoption
+}
+
+enum clearance_levels {
+  "baseline personnel security standard"
+  "accreditation check"
+  "counter terrorist check"
+  "security check"
+  "enhanced security check"
+  "developed vetting check"
+  "enhanced developed vetting check"
+}
+
+enum evidence_status {
+  draft
+  pending_verification
+  verified
+}
+
+enum project_roles {
+  manager
+  developer
+  designer
+  tester
+  analyst
+}
+
+enum relationship_types {
+  manager
+  peer
+  mentor
+  mentee
+  colleague
+}
+
+enum sectors {
+  central_government
+  defence
+  health
+  justice
+  transport
+  local_government
+  education
+  commercial
+}
+
+enum security_contexts {
+  public_facing
+  official
+  official_sensitive
+  high_side_sc
+  high_side_dv
+}
+
+enum verification_policy {
+  relationship_only
+  peers_and_above
+  same_project
+  any_member
+}
+
+enum visa_types {
+  "standard visitor"
+  "business visitor"
+  "marraige visitor"
+  "parent of a child visitor"
+  "global talent"
+  "skilled worker"
+  "innovator founder"
+  scaleup
+  "sole representative"
+  "tier 5 temporary worker"
+  "global business mobility"
+  "youth mobility scheme"
+  student
+  "short-term study"
+  "spouse or partner"
+  dependent
+  ancestry
+  "family reunion"
+  "unmarried partner"
+  fiance
+}
+
+table account {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  password text
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null]
+
+  indexes {
+    user_id [name: 'account_userId_idx']
+  }
+}
+
+table audit_logs {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  viewer_id uuid [not null]
+  target_id uuid [not null]
+  data_field jsonb [not null]
+  timestamp "timestamp (3)" [default: `now()`]
+  access_purpose access_purposes [not null]
+  ip_address varchar(255) [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table clearances {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  level clearance_levels [not null]
+  granted_at "timestamp (3)" [default: `now()`]
+  expires_at "timestamp (3)"
+  sponsoring_organization varchar(255) [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table evidence_entries {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  author_id uuid [not null]
+  skill_id uuid [not null]
+  situation text [not null]
+  task text [not null]
+  action text [not null]
+  result text [not null]
+  status evidence_status [not null, default: 'draft']
+  project_id uuid
+  level_id uuid [not null]
+  sector sectors [not null]
+  security_context security_contexts [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table external_frameworks {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  name varchar(255) [not null]
+  version varchar(255) [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table external_skills {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  framework_id uuid [not null]
+  code varchar(25) [not null]
+  name varchar(255) [not null]
+  category varchar(255) [not null]
+  level_number integer [not null]
+  description text [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table feedback {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  evidence_id uuid [not null]
+  author_id uuid [not null]
+  content text [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table framework_mappings {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  level_id uuid
+  external_skill_id uuid
+  notes text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table job_roles {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  organisation_id uuid [not null]
+  name varchar(255) [not null]
+  seniority_level integer [not null]
+  description text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table organizations {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  name varchar(255) [not null]
+  promotion_readiness_threshold integer [not null, default: 80]
+  evidence_required_per_skill integer [not null, default: 3]
+  verification_policy verification_policy [not null, default: 'relationship_only']
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table projects {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  name varchar(610) [not null]
+  description text [not null]
+  category varchar(100)
+  sector sectors [not null, default: 'commercial']
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table relationship_to_role {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  relationship_id uuid [not null]
+  role relationship_types [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table residential_addresses {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  street_address varchar(255) [not null]
+  city varchar(255)
+  area_code varchar(10) [not null]
+  country_code varchar(2) [not null]
+  start_date "timestamp (3)" [not null, default: `now()`]
+  end_date "timestamp (3)"
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table role_skill_requirements {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  role_id uuid [not null]
+  skill_id uuid [not null]
+  level_id uuid [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table session {
+  id text [pk, not null]
+  expires_at timestamp [not null]
+  token text [not null, unique]
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+
+  indexes {
+    user_id [name: 'session_userId_idx']
+  }
+}
+
+table skill_levels {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  skill_id uuid [not null]
+  level_number integer [not null]
+  criteria text [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table skills {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  name varchar(255) [not null]
+  description text [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table sso_provider {
+  id text [pk, not null]
+  issuer text [not null]
+  oidc_config text
+  saml_config text
+  user_id text
+  provider_id text [not null, unique]
+  organization_id text
+  domain text [not null]
+}
+
+table user {
+  id text [pk, not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean [not null, default: false]
+  image text
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+}
+
+table user_citizenship {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  country_code varchar(2) [not null]
+  is_primary boolean [not null, default: false]
+  acquisition_method citizenship_acquisition_methods [not null]
+  acquisition_date "timestamp (3)" [default: `now()`]
+  expiration_date "timestamp (3)"
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table user_project_roles {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  project_id uuid [not null]
+  role project_roles [not null]
+  start_date "timestamp (3)" [default: `now()`]
+  end_date "timestamp (3)"
+  allocation_percentage real [not null, default: 100]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table user_relationships {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  actor_id uuid [not null]
+  subject_id uuid [not null]
+  start_date "timestamp (3)" [default: `now()`]
+  end_date "timestamp (3)"
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table user_role_assignments {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  role_id uuid [not null]
+  assigned_at "timestamp (6)" [not null, default: `now()`]
+  is_current boolean [not null, default: true]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table users {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  auth_user_id text [not null, unique]
+  organisation_id uuid [not null]
+  name varchar(255) [not null]
+  email varchar(255) [not null, unique]
+  role varchar(100) [not null]
+  is_contractor boolean [not null, default: false]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  indexes {
+    identifier [name: 'verification_identifier_idx']
+  }
+}
+
+table visas {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  country_code varchar(2) [not null]
+  visa_type visa_types [not null]
+  issue_date "timestamp (3)" [default: `now()`]
+  expiration_date "timestamp (3)"
+  sponsoring_organization varchar(255) [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade, update: no action]
+
+ref audit_logs_viewer_id_users_id_fk: audit_logs.viewer_id > users.id [delete: no action, update: no action]
+
+ref audit_logs_target_id_users_id_fk: audit_logs.target_id > users.id [delete: no action, update: no action]
+
+ref clearances_user_id_users_id_fk: clearances.user_id > users.id [delete: no action, update: no action]
+
+ref evidence_entries_author_id_users_id_fk: evidence_entries.author_id > users.id [delete: no action, update: no action]
+
+ref evidence_entries_skill_id_skills_id_fk: evidence_entries.skill_id > skills.id [delete: no action, update: no action]
+
+ref evidence_entries_project_id_projects_id_fk: evidence_entries.project_id > projects.id [delete: no action, update: no action]
+
+ref evidence_entries_level_id_skill_levels_id_fk: evidence_entries.level_id > skill_levels.id [delete: no action, update: no action]
+
+ref external_skills_framework_id_external_frameworks_id_fk: external_skills.framework_id > external_frameworks.id [delete: no action, update: no action]
+
+ref feedback_evidence_id_evidence_entries_id_fk: feedback.evidence_id > evidence_entries.id [delete: no action, update: no action]
+
+ref feedback_author_id_users_id_fk: feedback.author_id > users.id [delete: no action, update: no action]
+
+ref framework_mappings_level_id_skill_levels_id_fk: framework_mappings.level_id > skill_levels.id [delete: no action, update: no action]
+
+ref framework_mappings_external_skill_id_external_skills_id_fk: framework_mappings.external_skill_id > external_skills.id [delete: no action, update: no action]
+
+ref job_roles_organisation_id_organizations_id_fk: job_roles.organisation_id > organizations.id [delete: no action, update: no action]
+
+ref relationship_to_role_relationship_id_user_relationships_id_fk: relationship_to_role.relationship_id > user_relationships.id [delete: no action, update: no action]
+
+ref residential_addresses_user_id_users_id_fk: residential_addresses.user_id > users.id [delete: no action, update: no action]
+
+ref role_skill_requirements_role_id_job_roles_id_fk: role_skill_requirements.role_id > job_roles.id [delete: no action, update: no action]
+
+ref role_skill_requirements_skill_id_skills_id_fk: role_skill_requirements.skill_id > skills.id [delete: no action, update: no action]
+
+ref role_skill_requirements_level_id_skill_levels_id_fk: role_skill_requirements.level_id > skill_levels.id [delete: no action, update: no action]
+
+ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade, update: no action]
+
+ref skill_levels_skill_id_skills_id_fk: skill_levels.skill_id > skills.id [delete: no action, update: no action]
+
+ref sso_provider_user_id_user_id_fk: sso_provider.user_id > user.id [delete: cascade, update: no action]
+
+ref user_citizenship_user_id_users_id_fk: user_citizenship.user_id > users.id [delete: no action, update: no action]
+
+ref user_project_roles_user_id_users_id_fk: user_project_roles.user_id > users.id [delete: no action, update: no action]
+
+ref user_project_roles_project_id_projects_id_fk: user_project_roles.project_id > projects.id [delete: no action, update: no action]
+
+ref user_relationships_actor_id_users_id_fk: user_relationships.actor_id > users.id [delete: no action, update: no action]
+
+ref user_relationships_subject_id_users_id_fk: user_relationships.subject_id > users.id [delete: no action, update: no action]
+
+ref user_role_assignments_user_id_users_id_fk: user_role_assignments.user_id > users.id [delete: no action, update: no action]
+
+ref user_role_assignments_role_id_job_roles_id_fk: user_role_assignments.role_id > job_roles.id [delete: no action, update: no action]
+
+ref users_organisation_id_organizations_id_fk: users.organisation_id > organizations.id [delete: no action, update: no action]
+
+ref visas_user_id_users_id_fk: visas.user_id > users.id [delete: no action, update: no action]
