@@ -1,23 +1,35 @@
-import { timestamps } from "../columns.helpers";
-import { clearancesTable, organizationsTable } from "../schema.old";
 import {
-  uuid,
   pgTable,
-  varchar,
-  timestamp,
-  boolean,
+  uuid,
   text,
+  date,
+  uniqueIndex,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
+import { organizationsTable } from "./organizations";
+import { clearanceLevelsTable } from "./reference";
 
 export const usersTable = pgTable("users", {
   id: uuid().primaryKey().defaultRandom(),
-  organisation_id: uuid()
-    .notNull()
-    .references(() => organizationsTable.id),
-  name: varchar({ length: 255 }).notNull(),
-  email: varchar({ length: 255 }).notNull().unique(),
-  current_clearance_id: uuid().references(() => clearancesTable.id),
-  external_id: text(), // e.g. Auth0 user ID, Okta user ID, Azure AD user ID
-  external_source: text(), // e.g. auth0, okta, azure_ad
-  ...timestamps,
+  organization_id: uuid().notNull().references(() => organizationsTable.id),
+  name: text().notNull(),
+  email: text().notNull().unique(),
+  // Denormalised for fast clearance checks. Forward ref resolved via AnyPgColumn.
+  current_clearance_id: uuid().references((): AnyPgColumn => userClearancesTable.id),
+  external_id: text(),
+  external_source: text(),
+}, (table) => [
+  uniqueIndex("users_org_external_unique").on(
+    table.organization_id,
+    table.external_source,
+    table.external_id,
+  ),
+]);
+
+export const userClearancesTable = pgTable("user_clearances", {
+  id: uuid().primaryKey().defaultRandom(),
+  user_id: uuid().notNull().references(() => usersTable.id),
+  clearance_level_id: uuid().notNull().references(() => clearanceLevelsTable.id),
+  granted_at: date().notNull(),
+  expires_at: date(),
 });
