@@ -22,7 +22,7 @@ interface JobRole {
 }
 
 interface OrgConfig {
-  organisation: {
+  organization: {
     name: string;
     promotion_readiness_threshold: number;
     evidence_required_per_skill: number;
@@ -48,13 +48,13 @@ export function AdminConfig() {
         <Show when={!config.loading && config()}>
           {(cfg) => (
             <>
-              {/* ── Organisation settings ─────────────────────────────── */}
+              {/* ── organization settings ─────────────────────────────── */}
               <section class={styles.section}>
-                <h2 class={styles.sectionTitle}>{cfg().organisation.name}</h2>
+                <h2 class={styles.sectionTitle}>{cfg().organization.name}</h2>
                 <div class={styles.settingsGrid}>
                   <div class={styles.settingCard}>
                     <span class={styles.settingValue}>
-                      {cfg().organisation.promotion_readiness_threshold}%
+                      {cfg().organization.promotion_readiness_threshold}%
                     </span>
                     <span class={styles.settingLabel}>Promotion threshold</span>
                     <span class={styles.settingHint}>
@@ -64,7 +64,7 @@ export function AdminConfig() {
                   </div>
                   <div class={styles.settingCard}>
                     <span class={styles.settingValue}>
-                      {cfg().organisation.evidence_required_per_skill}
+                      {cfg().organization.evidence_required_per_skill}
                     </span>
                     <span class={styles.settingLabel}>Evidence per skill</span>
                     <span class={styles.settingHint}>
@@ -123,8 +123,7 @@ export function AdminConfig() {
                           >
                             <div class={styles.requirementsSection}>
                               <span class={styles.requirementsLabel}>
-                                Required skills (
-                                {role.requirements.length})
+                                Required skills ({role.requirements.length})
                               </span>
                               <ul class={styles.requirementsList}>
                                 <For each={role.requirements}>

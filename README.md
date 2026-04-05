@@ -75,7 +75,7 @@ pnpm --filter @consultancy/db db:seed
 pnpm dev
 
 # 6. Register your account at http://localhost:3000/register
-#    Your account is automatically linked to the Demo Consultancy organisation
+#    Your account is automatically linked to the Demo Consultancy organization
 ```
 
 ---
@@ -139,7 +139,7 @@ pnpm --filter @consultancy/db db:view
 
 ## Seed Demo Data
 
-The seed script populates the database with a realistic demo organisation, consultants, projects, and skills.
+The seed script populates the database with a realistic demo organization, consultants, projects, and skills.
 
 ```bash
 pnpm --filter @consultancy/db db:seed
@@ -149,7 +149,7 @@ pnpm --filter @consultancy/db db:seed
 
 | Entity            | Count | Details                                                                                                 |
 | ----------------- | ----- | ------------------------------------------------------------------------------------------------------- |
-| Organisation      | 1     | "Demo Consultancy"                                                                                      |
+| organization      | 1     | "Demo Consultancy"                                                                                      |
 | Users             | 10    | Mix of developer roles: Junior, Mid, Senior, Lead, Principal, Frontend, Backend, Full Stack, DevOps, EM |
 | Projects          | 8     | Government and commercial clients (see [Demo Data Reference](#demo-data-reference))                     |
 | Skills            | 8     | Full-stack web developer skills across frontend, backend, and DevOps disciplines                        |
@@ -163,7 +163,7 @@ pnpm --filter @consultancy/db db:seed
 
 ## Creating Your User Account
 
-After seeding, register an account through the web app. The system automatically links new accounts to the Demo Consultancy organisation.
+After seeding, register an account through the web app. The system automatically links new accounts to the Demo Consultancy organization.
 
 **Demo account (created by the seed script):**
 
@@ -172,7 +172,7 @@ After seeding, register an account through the web app. The system automatically
 | Email        | `example@demo.com` |
 | Password     | `Password123!`     |
 | Role         | Senior Developer   |
-| Organisation | Demo Consultancy   |
+| organization | Demo Consultancy   |
 
 Sign in at `http://localhost:3000/sign-in` with these credentials — no registration needed.
 
@@ -293,7 +293,7 @@ pnpm gen:ui molecules SkillCard
 
 ## Demo Data Reference
 
-### Organisation
+### organization
 
 | Field                       | Value               |
 | --------------------------- | ------------------- |
@@ -347,4 +347,4 @@ Once signed in, you can explore:
 | Add Evidence  | `/evidence/add`  | Log a new STAR entry against a skill            |
 | Evidence List | `/evidence/list` | View all your logged evidence                   |
 | Peer Review   | `/peer-review`   | Verify evidence submitted by colleagues         |
-| Admin Config  | `/admin/config`  | Organisation settings and job role requirements |
+| Admin Config  | `/admin/config`  | organization settings and job role requirements |

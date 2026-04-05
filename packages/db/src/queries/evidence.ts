@@ -25,7 +25,10 @@ import {
   projectsTable,
 } from "../schema";
 
-type NewEvidence = Omit<InferInsertModel<typeof evidenceTable>, "id" | "created_at" | "updated_at" | "deleted_at">;
+type NewEvidence = Omit<
+  InferInsertModel<typeof evidenceTable>,
+  "id" | "created_at" | "updated_at" | "deleted_at"
+>;
 type EvidenceStatus = InferSelectModel<typeof evidenceTable>["status"];
 
 export const createEvidence = async (data: NewEvidence) => {
@@ -51,7 +54,10 @@ export const getEvidenceByUser = async (userId: string) => {
     })
     .from(evidenceTable)
     .innerJoin(skillsTable, eq(evidenceTable.skill_id, skillsTable.id))
-    .innerJoin(skillsLevelTable, eq(evidenceTable.level_id, skillsLevelTable.id))
+    .innerJoin(
+      skillsLevelTable,
+      eq(evidenceTable.level_id, skillsLevelTable.id),
+    )
     .where(eq(evidenceTable.author_id, userId))
     .orderBy(desc(evidenceTable.created_at));
 };
@@ -65,7 +71,10 @@ export const getEvidenceById = async (id: string) => {
   return entry ?? null;
 };
 
-export const updateEvidenceStatus = async (id: string, status: EvidenceStatus) => {
+export const updateEvidenceStatus = async (
+  id: string,
+  status: EvidenceStatus,
+) => {
   const [updated] = await db
     .update(evidenceTable)
     .set({ status })
@@ -87,16 +96,16 @@ export const canUserVerifyEvidence = async (
   if (evidence.author_id === verifierId)
     return { allowed: false, reason: "You cannot verify your own evidence" };
 
-  // Resolve both users and confirm they share the same organisation
+  // Resolve both users and confirm they share the same organization
   const [author, verifier] = await Promise.all([
     db
-      .select({ organisation_id: usersTable.organisation_id })
+      .select({ organization_id: usersTable.organization_id })
       .from(usersTable)
       .where(eq(usersTable.id, evidence.author_id))
       .limit(1)
       .then((r) => r[0]),
     db
-      .select({ organisation_id: usersTable.organisation_id })
+      .select({ organization_id: usersTable.organization_id })
       .from(usersTable)
       .where(eq(usersTable.id, verifierId))
       .limit(1)
@@ -104,21 +113,24 @@ export const canUserVerifyEvidence = async (
   ]);
 
   if (!author || !verifier) return { allowed: false, reason: "User not found" };
-  if (author.organisation_id !== verifier.organisation_id)
-    return { allowed: false, reason: "Not in the same organisation" };
+  if (author.organization_id !== verifier.organization_id)
+    return { allowed: false, reason: "Not in the same organization" };
 
   const [org] = await db
     .select({ verification_policy: organizationsTable.verification_policy })
     .from(organizationsTable)
-    .where(eq(organizationsTable.id, author.organisation_id))
+    .where(eq(organizationsTable.id, author.organization_id))
     .limit(1);
 
-  if (!org) return { allowed: false, reason: "Organisation not found" };
+  if (!org) return { allowed: false, reason: "organization not found" };
 
   const policy = org.verification_policy;
 
   if (policy === "any_member") {
-    return { allowed: true, reason: "Organisation permits any member to verify" };
+    return {
+      allowed: true,
+      reason: "organization permits any member to verify",
+    };
   }
 
   if (policy === "same_project") {
@@ -140,7 +152,10 @@ export const canUserVerifyEvidence = async (
             isNull(userProjectRolesTable.end_date),
             gt(userProjectRolesTable.end_date, new Date()),
           ),
-          or(isNull(verifierUpr.end_date), gt(verifierUpr.end_date, new Date())),
+          or(
+            isNull(verifierUpr.end_date),
+            gt(verifierUpr.end_date, new Date()),
+          ),
         ),
       )
       .limit(1);
@@ -182,7 +197,7 @@ export const canUserVerifyEvidence = async (
 
 export const getPendingEvidenceForReviewer = async (reviewerId: string) => {
   const [reviewer] = await db
-    .select({ organisation_id: usersTable.organisation_id })
+    .select({ organization_id: usersTable.organization_id })
     .from(usersTable)
     .where(eq(usersTable.id, reviewerId))
     .limit(1);
@@ -192,7 +207,7 @@ export const getPendingEvidenceForReviewer = async (reviewerId: string) => {
   const [org] = await db
     .select({ verification_policy: organizationsTable.verification_policy })
     .from(organizationsTable)
-    .where(eq(organizationsTable.id, reviewer.organisation_id))
+    .where(eq(organizationsTable.id, reviewer.organization_id))
     .limit(1);
 
   if (!org) return [];
@@ -206,7 +221,7 @@ export const getPendingEvidenceForReviewer = async (reviewerId: string) => {
       .from(usersTable)
       .where(
         and(
-          eq(usersTable.organisation_id, reviewer.organisation_id),
+          eq(usersTable.organization_id, reviewer.organization_id),
           ne(usersTable.id, reviewerId),
         ),
       );
@@ -216,13 +231,22 @@ export const getPendingEvidenceForReviewer = async (reviewerId: string) => {
     const sharedProjectUsers = await db
       .selectDistinct({ user_id: userProjectRolesTable.user_id })
       .from(userProjectRolesTable)
-      .innerJoin(verifierUpr, eq(userProjectRolesTable.project_id, verifierUpr.project_id))
+      .innerJoin(
+        verifierUpr,
+        eq(userProjectRolesTable.project_id, verifierUpr.project_id),
+      )
       .where(
         and(
           eq(verifierUpr.user_id, reviewerId),
           ne(userProjectRolesTable.user_id, reviewerId),
-          or(isNull(userProjectRolesTable.end_date), gt(userProjectRolesTable.end_date, new Date())),
-          or(isNull(verifierUpr.end_date), gt(verifierUpr.end_date, new Date())),
+          or(
+            isNull(userProjectRolesTable.end_date),
+            gt(userProjectRolesTable.end_date, new Date()),
+          ),
+          or(
+            isNull(verifierUpr.end_date),
+            gt(verifierUpr.end_date, new Date()),
+          ),
         ),
       );
     authorIds = sharedProjectUsers.map((u) => u.user_id);
@@ -276,7 +300,10 @@ export const getPendingEvidenceForReviewer = async (reviewerId: string) => {
     })
     .from(evidenceTable)
     .innerJoin(skillsTable, eq(evidenceTable.skill_id, skillsTable.id))
-    .innerJoin(skillsLevelTable, eq(evidenceTable.level_id, skillsLevelTable.id))
+    .innerJoin(
+      skillsLevelTable,
+      eq(evidenceTable.level_id, skillsLevelTable.id),
+    )
     .innerJoin(authorAlias, eq(evidenceTable.author_id, authorAlias.id))
     .leftJoin(projectsTable, eq(evidenceTable.project_id, projectsTable.id))
     .where(
@@ -311,7 +338,10 @@ export const getEvidenceWithDetails = async (evidenceId: string) => {
     })
     .from(evidenceTable)
     .innerJoin(skillsTable, eq(evidenceTable.skill_id, skillsTable.id))
-    .innerJoin(skillsLevelTable, eq(evidenceTable.level_id, skillsLevelTable.id))
+    .innerJoin(
+      skillsLevelTable,
+      eq(evidenceTable.level_id, skillsLevelTable.id),
+    )
     .innerJoin(authorAlias, eq(evidenceTable.author_id, authorAlias.id))
     .leftJoin(projectsTable, eq(evidenceTable.project_id, projectsTable.id))
     .where(eq(evidenceTable.id, evidenceId))

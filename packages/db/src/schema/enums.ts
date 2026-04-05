@@ -22,7 +22,7 @@ export const competencyDispositionEnum = pgEnum("competency_disposition", [
   "prefer_not",
 ]);
 
-// Organizations
+// organizations
 export const endorsementRoutingPolicyEnum = pgEnum(
   "endorsement_routing_policy",
   ["project_and_managers", "project_only", "managers_only", "org_wide"],
@@ -67,7 +67,17 @@ export const feedbackVisibilityEnum = pgEnum("feedback_visibility", [
   "pending_review",
   "approved",
   "rejected",
-  "visible_to_subject",
+  "published",
+]);
+
+// Framworks
+export const frameworkLevelEnum = pgEnum("framework_level", [
+  "associate",
+  "junior",
+  "mid",
+  "senior",
+  "lead",
+  "principal",
 ]);
 
 // Goals

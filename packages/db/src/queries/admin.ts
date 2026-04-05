@@ -18,7 +18,7 @@ export const getJobRolesWithRequirements = async (orgId: string) => {
   const roles = await db
     .select()
     .from(jobRolesTable)
-    .where(eq(jobRolesTable.organisation_id, orgId))
+    .where(eq(jobRolesTable.organization_id, orgId))
     .orderBy(jobRolesTable.seniority_level, jobRolesTable.name);
 
   return Promise.all(

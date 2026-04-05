@@ -77,7 +77,7 @@ async function main() {
 
   console.log("Tables cleared.");
 
-  // Organisation — must exist before users
+  // organization — must exist before users
   const [org] = await db
     .insert(organizationsTable)
     .values({ name: "Demo Consultancy" })
@@ -111,7 +111,7 @@ async function main() {
   const demoUser: typeof usersTable.$inferInsert = {
     id: demoDomainUserId,
     auth_user_id: demoAuthUserId,
-    organisation_id: org.id,
+    organization_id: org.id,
     name: "Demo User",
     email: "example@demo.com",
     role: "Senior Developer",
@@ -123,7 +123,10 @@ async function main() {
   await db.insert(usersTable).values([demoUser, ...mockUsers]);
   console.log("10 users created (1 loginable demo user + 9 sample users)!");
 
-  const allUserIds = [demoDomainUserId, ...mockUsers.map((u) => u.id as string)];
+  const allUserIds = [
+    demoDomainUserId,
+    ...mockUsers.map((u) => u.id as string),
+  ];
 
   // Visas — mock users only (demo user is assumed to be a UK national)
   const visas = generateVisas(mockUsers);

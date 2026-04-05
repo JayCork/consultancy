@@ -31,7 +31,7 @@ export const getReadinessForUser = async (
 ): Promise<ReadinessData> => {
   // Resolve the user's org for threshold settings
   const [user] = await db
-    .select({ organisation_id: usersTable.organisation_id })
+    .select({ organization_id: usersTable.organization_id })
     .from(usersTable)
     .where(eq(usersTable.id, internalUserId))
     .limit(1);
@@ -53,7 +53,7 @@ export const getReadinessForUser = async (
         organizationsTable.promotion_readiness_threshold,
     })
     .from(organizationsTable)
-    .where(eq(organizationsTable.id, user.organisation_id))
+    .where(eq(organizationsTable.id, user.organization_id))
     .limit(1);
 
   // Get the current role assignment

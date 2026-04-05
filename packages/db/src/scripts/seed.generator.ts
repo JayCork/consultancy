@@ -27,13 +27,13 @@ const jobTitles = [
 
 const customSimpleFaker = new SimpleFaker();
 
-export const generateUsers = (count: number, organisationId: string) => {
+export const generateUsers = (count: number, organizationId: string) => {
   const users: (typeof usersTable.$inferInsert)[] = [];
   for (let i = 0; i < count; i++) {
     users.push({
       id: faker.string.uuid(),
       auth_user_id: faker.string.uuid(),
-      organisation_id: organisationId,
+      organization_id: organizationId,
       name: faker.person.fullName(),
       email: faker.internet.email(),
       role: customSimpleFaker.helpers.arrayElement(jobTitles),
@@ -135,7 +135,7 @@ const SKILL_DEFINITIONS = [
       {
         level_number: 5,
         criteria:
-          "Sets frontend engineering strategy for the organisation. Contributes to open-source projects or web standards. Recognised externally as an authority on frontend engineering at scale.",
+          "Sets frontend engineering strategy for the organization. Contributes to open-source projects or web standards. Recognised externally as an authority on frontend engineering at scale.",
       },
     ],
   },
@@ -167,7 +167,7 @@ const SKILL_DEFINITIONS = [
       {
         level_number: 5,
         criteria:
-          "Sets backend engineering strategy for the organisation. Authors foundational platforms or shared libraries. Shapes industry practice and is recognised externally as an authority.",
+          "Sets backend engineering strategy for the organization. Authors foundational platforms or shared libraries. Shapes industry practice and is recognised externally as an authority.",
       },
     ],
   },
@@ -231,7 +231,7 @@ const SKILL_DEFINITIONS = [
       {
         level_number: 5,
         criteria:
-          "Shapes the organisation's approach to engineering quality. Drives industry-level adoption of testing best practices. Recognised authority on software quality at scale.",
+          "Shapes the organization's approach to engineering quality. Drives industry-level adoption of testing best practices. Recognised authority on software quality at scale.",
       },
     ],
   },
@@ -263,7 +263,7 @@ const SKILL_DEFINITIONS = [
       {
         level_number: 5,
         criteria:
-          "Shapes the organisation's engineering platform and DevOps culture. Influences tooling strategy at an organisational or industry level. Recognised authority on continuous delivery at scale.",
+          "Shapes the organization's engineering platform and DevOps culture. Influences tooling strategy at an organizational or industry level. Recognised authority on continuous delivery at scale.",
       },
     ],
   },
@@ -295,7 +295,7 @@ const SKILL_DEFINITIONS = [
       {
         level_number: 5,
         criteria:
-          "Shapes the organisation's data infrastructure strategy. Recognised expert in data storage and retrieval at scale. Influences technology selection at the portfolio level.",
+          "Shapes the organization's data infrastructure strategy. Recognised expert in data storage and retrieval at scale. Influences technology selection at the portfolio level.",
       },
     ],
   },
@@ -327,7 +327,7 @@ const SKILL_DEFINITIONS = [
       {
         level_number: 5,
         criteria:
-          "Shapes the organisation's API strategy. Contributes to industry standards or influential open-source API tooling. Recognised authority on API design at scale.",
+          "Shapes the organization's API strategy. Contributes to industry standards or influential open-source API tooling. Recognised authority on API design at scale.",
       },
     ],
   },
@@ -359,7 +359,7 @@ const SKILL_DEFINITIONS = [
       {
         level_number: 5,
         criteria:
-          "Shapes the organisation's security posture. Recognised authority on web application security. Contributes to security standards or community knowledge at an industry level.",
+          "Shapes the organization's security posture. Recognised authority on web application security. Contributes to security standards or community knowledge at an industry level.",
       },
     ],
   },
@@ -458,7 +458,7 @@ export const generateJobRoles = (
   orgId: string,
 ): (typeof jobRolesTable.$inferInsert)[] =>
   ROLE_DEFINITIONS.map((r) => ({
-    organisation_id: orgId,
+    organization_id: orgId,
     name: r.name,
     seniority_level: r.seniority_level,
     description: r.description,
