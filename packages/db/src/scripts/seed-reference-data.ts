@@ -1,15 +1,30 @@
-import { eq } from "drizzle-orm";
+import { eq, isNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import {
   clearanceLevelsTable,
+  frameworkLevelEnum,
+  frameworkRoleFamiliesTable,
+  frameworkRolesTable,
   referenceFrameworksTable,
   referenceRolesTable,
   referenceSkillsTable,
 } from "../schema";
 import { ddatSkills, sfiaNineSkills } from "./fixtures/skills";
+import { PgTableWithColumns } from "drizzle-orm/pg-core/table";
 
 function nameToCode(name: string): string {
   return name.toLowerCase().replace(/[(),]/g, "").trim().replace(/\s+/g, "-");
+}
+
+async function getItemIdByNameFromTable(
+  table: PgTableWithColumns<any>,
+  name: string,
+): Promise<string | null> {
+  const [result] = await db
+    .select({ id: table.id })
+    .from(table)
+    .where(eq(table.name, name));
+  return result ? result.id : null;
 }
 
 const db = drizzle(process.env.DATABASE_URL!);
@@ -47,96 +62,96 @@ await db
   ])
   .onConflictDoNothing();
 
-const [ddatFramework] = await db
-  .select({ id: referenceFrameworksTable.id })
-  .from(referenceFrameworksTable)
-  .where(eq(referenceFrameworksTable.name, "DDaT"));
+const ddatFramework = await getItemIdByNameFromTable(
+  referenceFrameworksTable,
+  "DDaT",
+);
 
 if (ddatFramework) {
   await db
     .insert(referenceRolesTable)
     .values([
       // Architecture roles
-      { framework_id: ddatFramework.id, name: "Business architect" },
-      { framework_id: ddatFramework.id, name: "Data architect" },
-      { framework_id: ddatFramework.id, name: "Enterprise architect" },
-      { framework_id: ddatFramework.id, name: "Network architect" },
-      { framework_id: ddatFramework.id, name: "Security architect" },
-      { framework_id: ddatFramework.id, name: "Solution architect" },
-      { framework_id: ddatFramework.id, name: "Technical architect" },
+      { framework_id: ddatFramework, name: "Business architect" },
+      { framework_id: ddatFramework, name: "Data architect" },
+      { framework_id: ddatFramework, name: "Enterprise architect" },
+      { framework_id: ddatFramework, name: "Network architect" },
+      { framework_id: ddatFramework, name: "Security architect" },
+      { framework_id: ddatFramework, name: "Solution architect" },
+      { framework_id: ddatFramework, name: "Technical architect" },
       // Chief digital and data roles
-      { framework_id: ddatFramework.id, name: "Chief data officer" },
+      { framework_id: ddatFramework, name: "Chief data officer" },
       {
-        framework_id: ddatFramework.id,
+        framework_id: ddatFramework,
         name: "Chief digital and information officer",
       },
       {
-        framework_id: ddatFramework.id,
+        framework_id: ddatFramework,
         name: "Chief information security officer",
       },
-      { framework_id: ddatFramework.id, name: "Chief technology officer" },
+      { framework_id: ddatFramework, name: "Chief technology officer" },
       // Data roles
-      { framework_id: ddatFramework.id, name: "Analytics engineer" },
-      { framework_id: ddatFramework.id, name: "Data analyst" },
-      { framework_id: ddatFramework.id, name: "Data engineer" },
-      { framework_id: ddatFramework.id, name: "Data ethicist" },
-      { framework_id: ddatFramework.id, name: "Data governance manager" },
-      { framework_id: ddatFramework.id, name: "Data scientist" },
-      { framework_id: ddatFramework.id, name: "Digital evaluator" },
-      { framework_id: ddatFramework.id, name: "Machine learning engineer" },
-      { framework_id: ddatFramework.id, name: "Performance analyst" },
+      { framework_id: ddatFramework, name: "Analytics engineer" },
+      { framework_id: ddatFramework, name: "Data analyst" },
+      { framework_id: ddatFramework, name: "Data engineer" },
+      { framework_id: ddatFramework, name: "Data ethicist" },
+      { framework_id: ddatFramework, name: "Data governance manager" },
+      { framework_id: ddatFramework, name: "Data scientist" },
+      { framework_id: ddatFramework, name: "Digital evaluator" },
+      { framework_id: ddatFramework, name: "Machine learning engineer" },
+      { framework_id: ddatFramework, name: "Performance analyst" },
       // IT operations roles
       {
-        framework_id: ddatFramework.id,
+        framework_id: ddatFramework,
         name: "Application operations engineer",
       },
-      { framework_id: ddatFramework.id, name: "Business relationship manager" },
-      { framework_id: ddatFramework.id, name: "Change and release manager" },
+      { framework_id: ddatFramework, name: "Business relationship manager" },
+      { framework_id: ddatFramework, name: "Change and release manager" },
       {
-        framework_id: ddatFramework.id,
+        framework_id: ddatFramework,
         name: "Command and control centre manager",
       },
-      { framework_id: ddatFramework.id, name: "End user computing engineer" },
-      { framework_id: ddatFramework.id, name: "Incident manager" },
-      { framework_id: ddatFramework.id, name: "Infrastructure engineer" },
+      { framework_id: ddatFramework, name: "End user computing engineer" },
+      { framework_id: ddatFramework, name: "Incident manager" },
+      { framework_id: ddatFramework, name: "Infrastructure engineer" },
       {
-        framework_id: ddatFramework.id,
+        framework_id: ddatFramework,
         name: "Infrastructure operations engineer",
       },
-      { framework_id: ddatFramework.id, name: "IT service manager" },
-      { framework_id: ddatFramework.id, name: "Problem manager" },
-      { framework_id: ddatFramework.id, name: "Service desk manager" },
-      { framework_id: ddatFramework.id, name: "Service transition manager" },
+      { framework_id: ddatFramework, name: "IT service manager" },
+      { framework_id: ddatFramework, name: "Problem manager" },
+      { framework_id: ddatFramework, name: "Service desk manager" },
+      { framework_id: ddatFramework, name: "Service transition manager" },
       // Product and delivery roles
-      { framework_id: ddatFramework.id, name: "Business analyst" },
-      { framework_id: ddatFramework.id, name: "Delivery manager" },
-      { framework_id: ddatFramework.id, name: "Digital portfolio manager" },
-      { framework_id: ddatFramework.id, name: "Product manager" },
-      { framework_id: ddatFramework.id, name: "Programme delivery manager" },
-      { framework_id: ddatFramework.id, name: "Service owner" },
+      { framework_id: ddatFramework, name: "Business analyst" },
+      { framework_id: ddatFramework, name: "Delivery manager" },
+      { framework_id: ddatFramework, name: "Digital portfolio manager" },
+      { framework_id: ddatFramework, name: "Product manager" },
+      { framework_id: ddatFramework, name: "Programme delivery manager" },
+      { framework_id: ddatFramework, name: "Service owner" },
       // Quality assurance testing (QAT) roles
       {
-        framework_id: ddatFramework.id,
+        framework_id: ddatFramework,
         name: "Quality assurance test analyst",
       },
-      { framework_id: ddatFramework.id, name: "Test engineer" },
-      { framework_id: ddatFramework.id, name: "Test manager" },
+      { framework_id: ddatFramework, name: "Test engineer" },
+      { framework_id: ddatFramework, name: "Test manager" },
       // Software development roles
       {
-        framework_id: ddatFramework.id,
+        framework_id: ddatFramework,
         name: "Development operations (DevOps) engineer",
       },
-      { framework_id: ddatFramework.id, name: "Frontend developer" },
-      { framework_id: ddatFramework.id, name: "Software developer" },
+      { framework_id: ddatFramework, name: "Frontend developer" },
+      { framework_id: ddatFramework, name: "Software developer" },
       // User-centred design roles
-      { framework_id: ddatFramework.id, name: "Accessibility specialist" },
-      { framework_id: ddatFramework.id, name: "Content designer" },
-      { framework_id: ddatFramework.id, name: "Content strategist" },
-      { framework_id: ddatFramework.id, name: "Graphic designer" },
-      { framework_id: ddatFramework.id, name: "Interaction designer" },
-      { framework_id: ddatFramework.id, name: "Service designer" },
-      { framework_id: ddatFramework.id, name: "Technical writer" },
-      { framework_id: ddatFramework.id, name: "User researcher" },
+      { framework_id: ddatFramework, name: "Accessibility specialist" },
+      { framework_id: ddatFramework, name: "Content designer" },
+      { framework_id: ddatFramework, name: "Content strategist" },
+      { framework_id: ddatFramework, name: "Graphic designer" },
+      { framework_id: ddatFramework, name: "Interaction designer" },
+      { framework_id: ddatFramework, name: "Service designer" },
+      { framework_id: ddatFramework, name: "Technical writer" },
+      { framework_id: ddatFramework, name: "User researcher" },
     ])
     .onConflictDoNothing();
 
@@ -145,7 +160,7 @@ if (ddatFramework) {
     .insert(referenceSkillsTable)
     .values(
       ddatSkills.map((skill) => ({
-        framework_id: ddatFramework.id,
+        framework_id: ddatFramework,
         code: nameToCode(skill.name),
         name: skill.name,
         description: skill.description,
@@ -156,17 +171,17 @@ if (ddatFramework) {
     .onConflictDoNothing();
 }
 
-const [sfiaNineFramework] = await db
-  .select({ id: referenceFrameworksTable.id })
-  .from(referenceFrameworksTable)
-  .where(eq(referenceFrameworksTable.name, "SFIA 9"));
+const sfiaNineFramework = await getItemIdByNameFromTable(
+  referenceFrameworksTable,
+  "SFIA 9",
+);
 
 if (sfiaNineFramework) {
   await db
     .insert(referenceSkillsTable)
     .values(
       sfiaNineSkills.map((skill) => ({
-        framework_id: sfiaNineFramework.id,
+        framework_id: sfiaNineFramework,
         code: skill.code,
         name: skill.name,
         description: skill.description,
@@ -176,3 +191,85 @@ if (sfiaNineFramework) {
     )
     .onConflictDoNothing();
 }
+
+// To add a new platform-wide role family, add an entry here — all levels are seeded automatically.
+const roleFamilyDefinitions = [
+  {
+    name: "Cloud Engineer",
+    description:
+      "A Cloud Engineer is responsible for any technological duties associated with cloud computing, including design, planning, management, maintenance and support of cloud systems and services.",
+  },
+  { name: "Talent Acquisition Specialist", description: "" },
+  {
+    name: "Software Developer",
+    description:
+      "A software developer designs, runs and improves software that meets user needs.",
+  },
+  { name: "IT Support", description: "" },
+  { name: "PMO", description: "" },
+  {
+    name: "Test Engineer",
+    description:
+      "A test engineer designs, builds, automates and executes comprehensive, robust and maintainable test suites. They apply test engineering standards, perform exploratory testing and use diverse techniques to identify risks and improve testing efficiency and quality.",
+  },
+  {
+    name: "Data Scientist",
+    description:
+      "Data science is a broad and fast-moving field spanning maths, statistics, software engineering and communications. Data scientists will often work as part of a multidisciplinary team, using data and analytics to inform and achieve organisational goals.",
+  },
+  { name: "Agile Delivery Manager", description: "" },
+  {
+    name: "Solution Architect",
+    description:
+      "A solution architect designs solutions for problems that affect the organisation.",
+  },
+  {
+    name: "Service Designer",
+    description:
+      "Service designers design the end-to-end journey of a service. This helps a user complete their goal and government deliver a policy intent. In this role, your work may involve the creation of, or change to, transactions, products and content across both digital and offline channels provided by different parts of government.",
+  },
+  { name: "Digital Service Manager", description: "" },
+  { name: "Content Designer", description: "" },
+  { name: "Business Analyst", description: "" },
+  { name: "UX Designer", description: "" },
+  { name: "Product Manager", description: "" },
+];
+
+await db
+  .insert(frameworkRoleFamiliesTable)
+  .values(roleFamilyDefinitions.map((f) => ({ ...f, organization_id: null })))
+  .onConflictDoNothing();
+
+const seededFamilies = await db
+  .select({
+    id: frameworkRoleFamiliesTable.id,
+    name: frameworkRoleFamiliesTable.name,
+  })
+  .from(frameworkRoleFamiliesTable)
+  .where(isNull(frameworkRoleFamiliesTable.organization_id));
+
+const levelPrefixes: Record<
+  (typeof frameworkLevelEnum.enumValues)[number],
+  string
+> = {
+  associate: "Associate",
+  junior: "Junior",
+  mid: "Mid-Level",
+  senior: "Senior",
+  lead: "Lead",
+  principal: "Principal",
+};
+
+await db
+  .insert(frameworkRolesTable)
+  .values(
+    seededFamilies.flatMap((family) =>
+      frameworkLevelEnum.enumValues.map((level) => ({
+        organization_id: null,
+        family_id: family.id,
+        level,
+        display_name: `${levelPrefixes[level]} ${family.name}`,
+      })),
+    ),
+  )
+  .onConflictDoNothing();
