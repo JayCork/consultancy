@@ -79,7 +79,8 @@ const roleFamilyDefinitions: Array<{
   },
   {
     name: "Agile Delivery Manager",
-    description: "",
+    description:
+      "A delivery manager is accountable for the delivery of products and services.",
     referenceDdatRole: "Delivery manager",
   },
   {
@@ -101,12 +102,14 @@ const roleFamilyDefinitions: Array<{
   },
   {
     name: "Content Designer",
-    description: "",
+    description:
+      "Content designers make things easier for people to understand and use. This can involve working on a single piece of content or on the end-to-end journey of a service to help users complete their goal and government deliver a policy intent. In this role your work may involve the creation of, or change to, a transaction, product or single piece of content that stretches across digital and offline channels.",
     referenceDdatRole: "Content designer",
   },
   {
     name: "Business Analyst",
-    description: "",
+    description:
+      "Business analysts help teams to: analyse and understand a business problem or opportunity, undertake research and analysis to understand how a business or business area works, considering the people, organisation, processes, information, data and technology, identify areas for improvement, explore feasible options, analyse the effects of change and define success measures, identify and elaborate user and business needs to enable effective design, development and testing of services and business change, make decisions related to prioritisation and minimum viable product by using analysis led insights, ensure new products and services meet business and user needs, and are aligned with organisational goals, understand any business and policy constraints that need to be considered, and assess the implications.",
     referenceDdatRole: "Business analyst",
   },
   {
@@ -116,7 +119,8 @@ const roleFamilyDefinitions: Array<{
   },
   {
     name: "Product Manager",
-    description: "",
+    description:
+      "A product manager makes sure that their products provide value and achieve the right outcomes by balancing user and business needs.",
     referenceDdatRole: "Product manager",
   },
 ];
@@ -299,9 +303,7 @@ async function main() {
 
   await db
     .insert(frameworkRoleFamiliesTable)
-    .values(
-      roleFamilyDefinitions.map((f) => ({ ...f, organization_id: null })),
-    )
+    .values(roleFamilyDefinitions.map((f) => ({ ...f, organization_id: null })))
     .onConflictDoNothing();
 
   const seededFamilies = await db
