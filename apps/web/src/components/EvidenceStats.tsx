@@ -16,7 +16,9 @@ export function EvidenceStats() {
 
   const [counts] = createResource(userId, async (id) => {
     if (!id) return null;
-    const res = await fetch(`${API}/api/v0/evidence?userId=${id}`);
+    const res = await fetch(`${API}/api/v0/evidence`, {
+      credentials: "include",
+    });
     const json = await res.json();
     const entries = (json.data ?? []) as { status: string }[];
     return entries.reduce(

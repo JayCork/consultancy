@@ -60,12 +60,10 @@ cp .env.example .env   # or create .env manually
 
 #3. Create and start the database container (if not using the dev script to manage it)
 docker run --name drizzle-postgres \
-  -e POSTGRES_PASSWORD=mypassword \
-  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=projam_password \
+  -e POSTGRES_USER=consult_hub \
+  -e POSTGRES_DB=projam_db \
   -d -p 5432:5432 postgres
-
-docker exec -it drizzle-postgres psql -U admin -c "CREATE DATABASE mydatabase;"
-
 
 # 4. Start Docker Desktop, then push the schema and seed demo data
 pnpm --filter @consultancy/db db:push
@@ -86,7 +84,7 @@ Create a `.env` file in the project root with the following values:
 
 ```env
 # Database — matches the Docker container created by the dev script
-DATABASE_URL=postgres://admin:mypassword@localhost:5432/mydatabase
+DATABASE_URL=postgres://consult_hub:projam_password@localhost:5432/projam_db
 
 # API server port and environment
 PORT=5173

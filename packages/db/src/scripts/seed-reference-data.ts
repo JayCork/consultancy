@@ -12,6 +12,7 @@ import {
 } from "../schema";
 import { ddatSkills, sfiaNineSkills } from "./fixtures/skills";
 import type { AnyPgTable } from "drizzle-orm/pg-core";
+import { getItemIdByNameFromTable } from "./utils";
 
 if (!process.env.DATABASE_URL) {
   console.error("DATABASE_URL environment variable is not set");
@@ -22,17 +23,6 @@ const db = drizzle(process.env.DATABASE_URL);
 
 function nameToCode(name: string): string {
   return name.toLowerCase().replace(/[(),]/g, "").trim().replace(/\s+/g, "-");
-}
-
-async function getItemIdByNameFromTable(
-  table: AnyPgTable & { id: any; name: any },
-  name: string,
-): Promise<string | null> {
-  const [result] = await db
-    .select({ id: table.id })
-    .from(table)
-    .where(eq(table.name, name));
-  return result ? result.id : null;
 }
 
 // To add a new platform-wide role family, add an entry here — all levels are seeded automatically.
@@ -172,6 +162,7 @@ async function main() {
     .onConflictDoNothing();
 
   const ddatFramework = await getItemIdByNameFromTable(
+    db,
     referenceFrameworksTable,
     "DDaT",
   );
@@ -281,6 +272,7 @@ async function main() {
   }
 
   const sfiaNineFramework = await getItemIdByNameFromTable(
+    db,
     referenceFrameworksTable,
     "SFIA 9",
   );

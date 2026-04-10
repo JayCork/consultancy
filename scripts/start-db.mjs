@@ -6,7 +6,7 @@ try {
 } catch {
   try {
     execSync(
-      "docker run --name drizzle-postgres -e POSTGRES_PASSWORD=mypassword -d -p 5432:5432 postgres",
+      "docker run --name drizzle-postgres -e POSTGRES_USER=consult_hub -e POSTGRES_PASSWORD=projam_password -e POSTGRES_DB=projam_db -d -p 5432:5432 postgres",
       { stdio: "inherit" },
     );
     console.log("Database container created and started.");

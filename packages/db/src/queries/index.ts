@@ -1,4 +1,4 @@
-export { getUserByClearance, getAllUsers, getUserById, getUserByAuthId } from "./users";
+export { getAllUsers, getUserById, getUserByAuthId } from "./users";
 export {
   createEvidence,
   getEvidenceByUser,
@@ -9,7 +9,9 @@ export {
   getEvidenceWithDetails,
 } from "./evidence";
 export { getAllProjects } from "./projects";
-export { getAllSkills, getSkillLevels } from "./skills";
+export { getAllSkills, getUsersFrameworkSkills } from "./skills";
 export { getReadinessForUser } from "./readiness";
 export { getCurrentRoleForUser } from "./roles";
 export { getOrgConfig, getJobRolesWithRequirements } from "./admin";
+export { getOrganisationCount } from "./organizations";
+export { hasActiveRelationship } from "./relationships";

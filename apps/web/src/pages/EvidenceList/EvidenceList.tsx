@@ -18,7 +18,9 @@ export function EvidenceList() {
 
   const [entries] = createResource(userId, async (id) => {
     if (!id) return [];
-    const res = await fetch(`${API}/api/v0/evidence?userId=${id}`);
+    const res = await fetch(`${API}/api/v0/evidence`, {
+      credentials: "include",
+    });
     const json = await res.json();
     return json.data as EvidenceEntry[];
   });

@@ -19,20 +19,21 @@ export const auth = betterAuth({
     // We'll add this when onboarding the first real customer
   },
   trustedOrigins: [env.webUrl],
+  user: { modelName: "bauth_user" },
+  session: { modelName: "bauth_session" },
+  account: { modelName: "bauth_account" },
+  verification: { modelName: "bauth_verification" },
   databaseHooks: {
     user: {
       create: {
         after: async (user) => {
           const [org] = await db.select().from(organizationsTable).limit(1);
 
-          if (!org) return;
-
           await db.insert(usersTable).values({
-            auth_user_id: user.id,
-            organization_id: org.id,
+            better_auth_id: user.id,
+            organization_id: org?.id ?? null,
             name: user.name,
             email: user.email,
-            role: "Consultant",
           });
         },
       },

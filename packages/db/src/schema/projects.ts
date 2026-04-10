@@ -11,6 +11,7 @@ import { organizationsTable } from "./organizations";
 import { clearanceLevelsTable } from "./reference";
 import { usersTable } from "./users";
 import { sql } from "drizzle-orm/sql/sql";
+import { timestamps } from "../columns.helpers";
 
 export const projectsTable = pgTable("projects", {
   id: uuid().primaryKey().defaultRandom(),
@@ -22,6 +23,7 @@ export const projectsTable = pgTable("projects", {
   code_name: text(),
   is_name_classified: boolean().notNull().default(false),
   minimum_clearance_id: uuid().references(() => clearanceLevelsTable.id),
+  ...timestamps,
 });
 
 export const projectMembersTable = pgTable(

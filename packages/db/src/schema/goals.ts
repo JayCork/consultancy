@@ -3,6 +3,7 @@ import { goalStatusEnum, goalVisibilityEnum } from "./enums";
 import { evidenceTable } from "./evidence";
 import { usersTable } from "./users";
 import { timestamps } from "../columns.helpers";
+import { frameworkRoleFamiliesTable, frameworkRolesTable } from "./reference";
 
 export const goalsTable = pgTable("goals", {
   id: uuid().primaryKey().defaultRandom(),
@@ -14,6 +15,7 @@ export const goalsTable = pgTable("goals", {
   target_date: date(),
   status: goalStatusEnum().notNull().default("active"),
   visibility: goalVisibilityEnum().notNull().default("private"),
+  target_role_id: uuid().references(() => frameworkRolesTable.id),
   ...timestamps,
 });
 

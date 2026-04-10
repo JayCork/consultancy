@@ -4,19 +4,19 @@ import {
   text,
   timestamp,
   uniqueIndex,
-  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { organizationsTable } from "./organizations";
 import { clearanceLevelsTable } from "./reference";
 import { user } from "./auth";
+import { userStatusEnum } from "./enums";
+import { timestamps } from "../columns.helpers";
 
 export const usersTable = pgTable(
   "users",
   {
     id: uuid().primaryKey().defaultRandom(),
-    organization_id: uuid()
-      .notNull()
-      .references(() => organizationsTable.id),
+    status: userStatusEnum("status").notNull().default("pending_org"),
+    organization_id: uuid().references(() => organizationsTable.id),
     name: text().notNull(),
     email: text().notNull().unique(),
     external_id: text(),
@@ -45,4 +45,5 @@ export const userClearancesTable = pgTable("user_clearances", {
     .references(() => clearanceLevelsTable.id),
   granted_at: timestamp().notNull(),
   expires_at: timestamp(),
+  ...timestamps,
 });

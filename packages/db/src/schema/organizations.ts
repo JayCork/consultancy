@@ -7,13 +7,13 @@ import {
   integer,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { endorsementRoutingPolicyEnum } from "./enums";
+import { endorsementRoutingPolicyEnum, regionEnum } from "./enums";
 
 export const organizationsTable = pgTable(
   "organizations",
   {
     id: uuid().primaryKey().defaultRandom(),
-    name: text().notNull(),
+    name: text(),
     promotion_threshold: integer().notNull().default(80),
     endorsements_required: integer().notNull().default(2),
     endorsement_routing_policy: endorsementRoutingPolicyEnum()
@@ -22,6 +22,7 @@ export const organizationsTable = pgTable(
     feedback_review_required: boolean().notNull().default(true),
     external_id: text(),
     external_source: text(),
+    region: regionEnum().notNull().default("GBR"),
     ...timestamps,
   },
   (table) => [

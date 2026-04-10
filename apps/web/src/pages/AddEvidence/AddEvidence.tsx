@@ -39,7 +39,10 @@ async function fetchProjects() {
 }
 
 async function fetchSkills() {
-  const res = await fetch(`${API}/api/v0/skills`);
+  const session = useSession();
+  const userId = session()?.data?.user?.id;
+  if (!userId) return [];
+  const res = await fetch(`${API}/api/v0/skills?userId=${userId}`);
   const json = await res.json();
   return json.data as { id: string; name: string }[];
 }

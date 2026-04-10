@@ -2,6 +2,8 @@ import { pgTable, uuid, text, date } from "drizzle-orm/pg-core";
 import { organizationsTable } from "./organizations";
 import { frameworkRolesTable } from "./reference";
 import { usersTable } from "./users";
+import { timestamp } from "drizzle-orm/gel-core";
+import { timestamps } from "../columns.helpers";
 
 export const jobGradesTable = pgTable("job_grades", {
   id: uuid().primaryKey().defaultRandom(),
@@ -17,6 +19,7 @@ export const jobGradesTable = pgTable("job_grades", {
   // e.g. different pay bands at the same seniority level.
   external_id: text(),
   external_source: text(),
+  ...timestamp,
 });
 
 export const userGradeAssignmentsTable = pgTable("user_grade_assignments", {
@@ -29,7 +32,5 @@ export const userGradeAssignmentsTable = pgTable("user_grade_assignments", {
     .references(() => jobGradesTable.id),
   start_date: date().notNull(),
   end_date: date(),
-  // Current assignment = end_date IS NULL.
-  // Never use a boolean is_current — requires updating old rows on transition
-  // and creates race conditions. Derive currency from end_date at query time.
+  ...timestamps,
 });

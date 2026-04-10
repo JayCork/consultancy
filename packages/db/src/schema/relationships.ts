@@ -13,4 +13,5 @@ export const userRelationshipsTable = pgTable("user_relationships", {
   relationship_type: userRelationshipTypeEnum().notNull(),
   start_date: date().notNull(),
   end_date: date(),
+  organization_id: uuid().notNull(), // to support organization-specific relationships (e.g. manager, mentor) without needing global relationship types
 });

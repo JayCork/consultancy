@@ -1,7 +1,16 @@
-import { pgTable, uuid, text, integer, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  text,
+  integer,
+  boolean,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 import { organizationsTable } from "./organizations";
-import { frameworkLevelEnum } from "./enums";
-import { min } from "drizzle-orm";
+import { frameworkLevelEnum, regionEnum } from "./enums";
+
+import { skillsTable } from "./skills";
+import { timestamps } from "../columns.helpers";
 
 // ── Reference frameworks (SFIA, DDaT, future) ────────────────────────────────
 // Global reference data — seeded at deploy time, never org-specific.
@@ -11,6 +20,7 @@ export const referenceFrameworksTable = pgTable("reference_frameworks", {
   name: text().notNull(), // e.g. "SFIA", "DDaT"
   version: text(), // e.g. "9.0.0" — nullable, DDaT has no version number
   url: text(),
+  ...timestamps,
 });
 
 // DDaT roles, SFIA skills — one table each, distinguished by framework_id.
@@ -24,6 +34,7 @@ export const referenceRolesTable = pgTable("reference_roles", {
   code: text(), // Framework-assigned code where applicable
   name: text().notNull(),
   description: text(),
+  ...timestamps,
 });
 
 export const referenceSkillsTable = pgTable("reference_skills", {
@@ -36,6 +47,7 @@ export const referenceSkillsTable = pgTable("reference_skills", {
   description: text(),
   min_level: integer().notNull().default(0),
   max_level: integer().notNull().default(7),
+  ...timestamps,
 });
 
 // ── Internal framework ────────────────────────────────────────────────────────
@@ -84,23 +96,43 @@ export const frameworkRoleSkillExpectationsTable = pgTable(
     framework_role_id: uuid()
       .notNull()
       .references(() => frameworkRolesTable.id),
-    reference_skill_id: uuid()
+    skill_id: uuid()
       .notNull()
-      .references(() => referenceSkillsTable.id),
-    minimum_level: integer().notNull(), // Minimum SFIA level expected at this role
+      .references(() => skillsTable.id),
+    minimum_level: frameworkLevelEnum().notNull(), // Minimum SFIA level expected at this role
     is_primary: boolean().notNull().default(false),
-    // is_primary = true → gates promotion readiness score
-    // is_primary = false → supporting context, not a blocker
+    ...timestamps,
   },
+  (table) => [
+    uniqueIndex("frse_role_skill_unique").on(
+      table.framework_role_id,
+      table.skill_id,
+    ),
+  ],
 );
 
 // ── Clearance levels ──────────────────────────────────────────────────────────
 // Global reference data. rank enforces ordering (higher = more sensitive).
 
-export const clearanceLevelsTable = pgTable("clearance_levels", {
-  id: uuid().primaryKey().defaultRandom(),
-  name: text().notNull(),
-  shortName: text().notNull(),
-  level: integer().notNull().unique(),
-  description: text(),
-});
+export const clearanceLevelsTable = pgTable(
+  "clearance_levels",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    name: text().notNull(),
+    shortName: text().notNull(),
+    rank: integer().notNull().unique(),
+    description: text(),
+    region: regionEnum().notNull().default("GBR"), // To support different clearance schemes in different regions if needed
+    ...timestamps,
+  },
+  (table) => [
+    uniqueIndex("clearance_levels_region_rank_unique").on(
+      table.region,
+      table.rank,
+    ),
+    uniqueIndex("clearance_levels_region_name_unique").on(
+      table.region,
+      table.name,
+    ),
+  ],
+);
