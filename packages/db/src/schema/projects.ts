@@ -5,8 +5,9 @@ import {
   boolean,
   date,
   uniqueIndex,
+  timestamp,
 } from "drizzle-orm/pg-core";
-import { projectRoleEnum } from "./enums";
+import { projectRoleEnum, regionEnum } from "./enums";
 import { organizationsTable } from "./organizations";
 import { clearanceLevelsTable } from "./reference";
 import { usersTable } from "./users";
@@ -23,6 +24,9 @@ export const projectsTable = pgTable("projects", {
   code_name: text(),
   is_name_classified: boolean().notNull().default(false),
   minimum_clearance_id: uuid().references(() => clearanceLevelsTable.id),
+  start_date: timestamp().notNull(),
+  end_date: timestamp(),
+  region: regionEnum().notNull().default("GBR"),
   ...timestamps,
 });
 

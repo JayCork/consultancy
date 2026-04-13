@@ -13,10 +13,22 @@ enum competency_proficiency {
   leading
 }
 
+enum competency_source {
+  verified_evidence
+  self_reported
+  imported
+}
+
 enum competency_type {
   technology
   practice
   methodology
+}
+
+enum data_classification {
+  official
+  official_sensitive
+  secret
 }
 
 enum endorsement_routing_policy {
@@ -66,6 +78,13 @@ enum goal_visibility {
   shared_with_manager
 }
 
+enum invitation_status {
+  pending
+  accepted
+  expired
+  revoked
+}
+
 enum project_role {
   developer
   tech_lead
@@ -73,6 +92,23 @@ enum project_role {
   analyst
   designer
   project_manager
+}
+
+enum region {
+  GBR
+  USA
+  CAN
+  AUS
+  NZL
+  IRL
+}
+
+enum tag_type {
+  technology
+  tool
+  practice
+  methodology
+  domain
 }
 
 enum user_relationship_type {
@@ -83,7 +119,14 @@ enum user_relationship_type {
   peer
 }
 
-table account {
+enum user_status {
+  pending_org
+  pending_approval
+  active
+  suspended
+}
+
+table bauth_accounts {
   id text [pk, not null]
   account_id text [not null]
   provider_id text [not null]
@@ -106,23 +149,38 @@ table account {
 table clearance_levels {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   name text [not null]
+  shortName text [not null]
   rank integer [not null, unique]
   description text
+  region region [not null, default: 'GBR']
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+
+  indexes {
+    (region, rank) [name: 'clearance_levels_region_rank_unique', unique]
+    (region, name) [name: 'clearance_levels_region_name_unique', unique]
+  }
 }
 
 table competencies {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   user_id uuid [not null]
-  name text [not null]
-  competency_type competency_type [not null]
+  skill_id uuid [not null]
+  organization_id uuid [not null]
   proficiency competency_proficiency [not null]
   disposition competency_disposition [not null, default: 'neutral']
   disposition_note text
+  source competency_source [not null, default: 'self_reported']
   last_used_at date
-  is_inferred boolean [not null, default: false]
   external_id text
   external_source text
-  organization_id uuid [not null]
+  created_at "timestamp (6)" [not null, default: `now()`]
+  updated_at "timestamp (6)"
+
+  indexes {
+    (user_id, skill_id) [name: 'competencies_user_skill_unique', unique]
+  }
 }
 
 table credentials {
@@ -148,17 +206,27 @@ table endorsements {
   status endorsement_status [not null, default: 'pending']
   note text
   responded_at timestamp
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 
   indexes {
     (evidence_id, endorser_id) [name: 'endorsements_evidence_endorser_unique', unique]
   }
 }
 
-table evidence_competencies {
+table evidence_skills {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   evidence_id uuid [not null]
-  competency_id uuid [not null]
-  competency_type competency_type [not null]
+  skill_id uuid [not null]
+  level_claimed framework_level [not null]
+  is_primary boolean [not null, default: false]
+  created_at "timestamp (6)" [not null, default: `now()`]
+  updated_at "timestamp (6)"
+
+  indexes {
+    (evidence_id, skill_id) [name: 'evidence_skills_unique', unique]
+  }
 }
 
 table evidence {
@@ -172,6 +240,21 @@ table evidence {
   action text [not null]
   result text [not null]
   status evidence_status [not null, default: 'draft']
+  data_classification data_classification [not null, default: 'official']
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table evidence_tags {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  evidence_id uuid [not null]
+  tag_id uuid [not null]
+  created_at "timestamp (6)" [not null, default: `now()`]
+
+  indexes {
+    (evidence_id, tag_id) [name: 'evidence_tags_unique', unique]
+  }
 }
 
 table feedback {
@@ -184,6 +267,9 @@ table feedback {
   visibility feedback_visibility [not null, default: 'pending_review']
   content text [not null]
   organization_id uuid [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table framework_role_families {
@@ -191,20 +277,33 @@ table framework_role_families {
   organization_id uuid
   name text [not null]
   description text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table framework_role_mappings {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   framework_role_id uuid [not null]
   reference_role_id uuid [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table framework_role_skill_expectations {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   framework_role_id uuid [not null]
-  reference_skill_id uuid [not null]
-  minimum_level integer [not null]
+  skill_id uuid [not null]
+  minimum_level framework_level [not null]
   is_primary boolean [not null, default: false]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+
+  indexes {
+    (framework_role_id, skill_id) [name: 'frse_role_skill_unique', unique]
+  }
 }
 
 table framework_roles {
@@ -213,12 +312,16 @@ table framework_roles {
   family_id uuid [not null]
   level framework_level [not null]
   display_name text [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table goal_evidence {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   goal_id uuid [not null]
   evidence_id uuid [not null]
+  created_at timestamp [not null, default: `now()`]
 
   indexes {
     (goal_id, evidence_id) [name: 'goal_evidence_unique', unique]
@@ -233,6 +336,21 @@ table goals {
   target_date date
   status goal_status [not null, default: 'active']
   visibility goal_visibility [not null, default: 'private']
+  target_role_id uuid
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table invitations {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  organization_id uuid [not null]
+  email varchar [not null]
+  token text [not null, unique]
+  status invitation_status [not null, default: 'pending']
+  invited_by uuid [not null]
+  expires_at timestamp [not null]
+  accepted_at timestamp
   updated_at "timestamp (6)"
   created_at "timestamp (6)" [not null, default: `now()`]
   deleted_at "timestamp (6)"
@@ -245,6 +363,9 @@ table job_grades {
   name text [not null]
   external_id text
   external_source text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table organizations {
@@ -256,6 +377,7 @@ table organizations {
   feedback_review_required boolean [not null, default: true]
   external_id text
   external_source text
+  region region [not null, default: 'GBR']
   updated_at "timestamp (6)"
   created_at "timestamp (6)" [not null, default: `now()`]
   deleted_at "timestamp (6)"
@@ -272,6 +394,10 @@ table project_members {
   project_role project_role [not null]
   start_date date [not null]
   end_date date
+
+  indexes {
+    (project_id, user_id) [name: 'project_members_active_unique', unique]
+  }
 }
 
 table projects {
@@ -282,6 +408,12 @@ table projects {
   code_name text
   is_name_classified boolean [not null, default: false]
   minimum_clearance_id uuid
+  start_date timestamp [not null]
+  end_date timestamp
+  region region [not null, default: 'GBR']
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table reference_frameworks {
@@ -289,6 +421,9 @@ table reference_frameworks {
   name text [not null]
   version text
   url text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table reference_roles {
@@ -297,6 +432,9 @@ table reference_roles {
   code text
   name text [not null]
   description text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table reference_skills {
@@ -305,10 +443,14 @@ table reference_skills {
   code text [not null]
   name text [not null]
   description text
+  min_level integer [not null, default: 0]
   max_level integer [not null, default: 7]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
-table session {
+table bauth_sessions {
   id text [pk, not null]
   expires_at timestamp [not null]
   token text [not null, unique]
@@ -323,7 +465,45 @@ table session {
   }
 }
 
-table sso_provider {
+table skill_framework_mappings {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  skill_id uuid [not null]
+  reference_skill_id uuid [not null]
+  notes text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table skill_levels {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  skill_id uuid [not null]
+  level framework_level [not null]
+  description text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+
+  indexes {
+    (skill_id, level) [name: 'skill_levels_skill_level_unique', unique]
+  }
+}
+
+table skills {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  organization_id uuid
+  name text [not null]
+  description text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+
+  indexes {
+    (organization_id, name) [name: 'skills_org_name_unique', unique]
+  }
+}
+
+table bauth_sso_providers {
   id text [pk, not null]
   issuer text [not null]
   oidc_config text
@@ -334,7 +514,22 @@ table sso_provider {
   domain text [not null]
 }
 
-table user {
+table tags {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  organization_id uuid
+  name text [not null]
+  tag_type tag_type [not null]
+  notes text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+
+  indexes {
+    (organization_id, name) [name: 'tags_org_name_unique', unique]
+  }
+}
+
+table bauth_users {
   id text [pk, not null]
   name text [not null]
   email text [not null, unique]
@@ -348,8 +543,11 @@ table user_clearances {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   user_id uuid [not null]
   clearance_level_id uuid [not null]
-  granted_at date [not null]
-  expires_at date
+  granted_at timestamp [not null]
+  expires_at timestamp
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table user_grade_assignments {
@@ -358,6 +556,9 @@ table user_grade_assignments {
   job_grade_id uuid [not null]
   start_date date [not null]
   end_date date
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table user_relationships {
@@ -367,11 +568,16 @@ table user_relationships {
   relationship_type user_relationship_type [not null]
   start_date date [not null]
   end_date date
+  organization_id uuid [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 }
 
 table users {
   id uuid [pk, not null, default: `gen_random_uuid()`]
-  organization_id uuid [not null]
+  status user_status [not null, default: 'pending_org']
+  organization_id uuid
   name text [not null]
   email text [not null, unique]
   external_id text
@@ -383,7 +589,7 @@ table users {
   }
 }
 
-table verification {
+table bauth_verifications {
   id text [pk, not null]
   identifier text [not null]
   value text [not null]
@@ -396,9 +602,11 @@ table verification {
   }
 }
 
-ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade, update: no action]
+ref bauth_accounts_user_id_bauth_users_id_fk: bauth_accounts.user_id > bauth_users.id [delete: cascade, update: no action]
 
 ref competencies_user_id_users_id_fk: competencies.user_id > users.id [delete: no action, update: no action]
+
+ref competencies_skill_id_skills_id_fk: competencies.skill_id > skills.id [delete: no action, update: no action]
 
 ref competencies_organization_id_organizations_id_fk: competencies.organization_id > organizations.id [delete: no action, update: no action]
 
@@ -408,15 +616,19 @@ ref endorsements_evidence_id_evidence_id_fk: endorsements.evidence_id > evidence
 
 ref endorsements_endorser_id_users_id_fk: endorsements.endorser_id > users.id [delete: no action, update: no action]
 
-ref evidence_competencies_evidence_id_evidence_id_fk: evidence_competencies.evidence_id > evidence.id [delete: no action, update: no action]
+ref evidence_skills_evidence_id_evidence_id_fk: evidence_skills.evidence_id > evidence.id [delete: no action, update: no action]
 
-ref evidence_competencies_competency_id_competencies_id_fk: evidence_competencies.competency_id > competencies.id [delete: no action, update: no action]
+ref evidence_skills_skill_id_skills_id_fk: evidence_skills.skill_id > skills.id [delete: no action, update: no action]
 
 ref evidence_user_id_users_id_fk: evidence.user_id > users.id [delete: no action, update: no action]
 
 ref evidence_project_id_projects_id_fk: evidence.project_id > projects.id [delete: no action, update: no action]
 
 ref evidence_parent_id_evidence_id_fk: evidence.parent_id > evidence.id [delete: no action, update: no action]
+
+ref evidence_tags_evidence_id_evidence_id_fk: evidence_tags.evidence_id > evidence.id [delete: no action, update: no action]
+
+ref evidence_tags_tag_id_tags_id_fk: evidence_tags.tag_id > tags.id [delete: no action, update: no action]
 
 ref feedback_author_id_users_id_fk: feedback.author_id > users.id [delete: no action, update: no action]
 
@@ -436,7 +648,7 @@ ref framework_role_mappings_reference_role_id_reference_roles_id_fk: framework_r
 
 ref framework_role_skill_expectations_framework_role_id_framework_roles_id_fk: framework_role_skill_expectations.framework_role_id > framework_roles.id [delete: no action, update: no action]
 
-ref framework_role_skill_expectations_reference_skill_id_reference_skills_id_fk: framework_role_skill_expectations.reference_skill_id > reference_skills.id [delete: no action, update: no action]
+ref framework_role_skill_expectations_skill_id_skills_id_fk: framework_role_skill_expectations.skill_id > skills.id [delete: no action, update: no action]
 
 ref framework_roles_organization_id_organizations_id_fk: framework_roles.organization_id > organizations.id [delete: no action, update: no action]
 
@@ -447,6 +659,12 @@ ref goal_evidence_goal_id_goals_id_fk: goal_evidence.goal_id > goals.id [delete:
 ref goal_evidence_evidence_id_evidence_id_fk: goal_evidence.evidence_id > evidence.id [delete: no action, update: no action]
 
 ref goals_user_id_users_id_fk: goals.user_id > users.id [delete: no action, update: no action]
+
+ref goals_target_role_id_framework_roles_id_fk: goals.target_role_id > framework_roles.id [delete: no action, update: no action]
+
+ref invitations_organization_id_organizations_id_fk: invitations.organization_id > organizations.id [delete: no action, update: no action]
+
+ref invitations_invited_by_users_id_fk: invitations.invited_by > users.id [delete: no action, update: no action]
 
 ref job_grades_organization_id_organizations_id_fk: job_grades.organization_id > organizations.id [delete: no action, update: no action]
 
@@ -464,9 +682,19 @@ ref reference_roles_framework_id_reference_frameworks_id_fk: reference_roles.fra
 
 ref reference_skills_framework_id_reference_frameworks_id_fk: reference_skills.framework_id > reference_frameworks.id [delete: no action, update: no action]
 
-ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade, update: no action]
+ref bauth_sessions_user_id_bauth_users_id_fk: bauth_sessions.user_id > bauth_users.id [delete: cascade, update: no action]
 
-ref sso_provider_user_id_user_id_fk: sso_provider.user_id > user.id [delete: cascade, update: no action]
+ref skill_framework_mappings_skill_id_skills_id_fk: skill_framework_mappings.skill_id > skills.id [delete: no action, update: no action]
+
+ref skill_framework_mappings_reference_skill_id_reference_skills_id_fk: skill_framework_mappings.reference_skill_id > reference_skills.id [delete: no action, update: no action]
+
+ref skill_levels_skill_id_skills_id_fk: skill_levels.skill_id > skills.id [delete: no action, update: no action]
+
+ref skills_organization_id_organizations_id_fk: skills.organization_id > organizations.id [delete: no action, update: no action]
+
+ref bauth_sso_providers_user_id_bauth_users_id_fk: bauth_sso_providers.user_id > bauth_users.id [delete: cascade, update: no action]
+
+ref tags_organization_id_organizations_id_fk: tags.organization_id > organizations.id [delete: no action, update: no action]
 
 ref user_clearances_user_id_users_id_fk: user_clearances.user_id > users.id [delete: no action, update: no action]
 
@@ -482,4 +710,4 @@ ref user_relationships_target_id_users_id_fk: user_relationships.target_id > use
 
 ref users_organization_id_organizations_id_fk: users.organization_id > organizations.id [delete: no action, update: no action]
 
-ref users_better_auth_id_user_id_fk: users.better_auth_id > user.id [delete: no action, update: no action]
+ref users_better_auth_id_bauth_users_id_fk: users.better_auth_id > bauth_users.id [delete: no action, update: no action]

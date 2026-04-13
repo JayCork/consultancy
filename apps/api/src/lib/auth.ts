@@ -27,13 +27,12 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          const [org] = await db.select().from(organizationsTable).limit(1);
-
           await db.insert(usersTable).values({
             better_auth_id: user.id,
-            organization_id: org?.id ?? null,
+            organization_id: null, // explicitly pending_org — assigned during onboarding
             name: user.name,
             email: user.email,
+            status: "pending_org",
           });
         },
       },

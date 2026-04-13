@@ -1000,7 +1000,7 @@ export const sfiaNineSkills: SfiaNineSkillFixture[] = [
   },
   {
     code: "CFMG",
-    name: "Configuration management",
+    name: "",
     description:
       "Planning, identifying, controlling, accounting for and auditing of configuration items (CIs) and their interrelationships.",
     max_level: 6,
@@ -1938,5 +1938,93 @@ export const sfiaNineSkills: SfiaNineSkillFixture[] = [
       "Strategically projecting the demand for people and skills and proactively planning the workforce supply to meet organisational needs.",
     min_level: 4,
     max_level: 6,
+  },
+];
+
+export const roleFamilyDefinitions: Array<{
+  name: string;
+  description: string;
+  referenceDdatRole?: string;
+}> = [
+  {
+    name: "Cloud Engineer",
+    description:
+      "A Cloud Engineer is responsible for any technological duties associated with cloud computing, including design, planning, management, maintenance and support of cloud systems and services.",
+    referenceDdatRole: "Infrastructure engineer",
+  },
+  { name: "Talent Acquisition Specialist", description: "" },
+  {
+    name: "Software Developer",
+    description:
+      "A software developer designs, runs and improves software that meets user needs.",
+    referenceDdatRole: "Software developer",
+  },
+  {
+    name: "IT Support",
+    description: "",
+    referenceDdatRole: "End user computing engineer",
+  },
+  {
+    name: "PMO",
+    description: "",
+    referenceDdatRole: "Programme delivery manager",
+  },
+  {
+    name: "Test Engineer",
+    description:
+      "A test engineer designs, builds, automates and executes comprehensive, robust and maintainable test suites. They apply test engineering standards, perform exploratory testing and use diverse techniques to identify risks and improve testing efficiency and quality.",
+    referenceDdatRole: "Test engineer",
+  },
+  {
+    name: "Data Scientist",
+    description:
+      "Data science is a broad and fast-moving field spanning maths, statistics, software engineering and communications. Data scientists will often work as part of a multidisciplinary team, using data and analytics to inform and achieve organisational goals.",
+    referenceDdatRole: "Data scientist",
+  },
+  {
+    name: "Agile Delivery Manager",
+    description:
+      "A delivery manager is accountable for the delivery of products and services.",
+    referenceDdatRole: "Delivery manager",
+  },
+  {
+    name: "Solution Architect",
+    description:
+      "A solution architect designs solutions for problems that affect the organisation.",
+    referenceDdatRole: "Solution architect",
+  },
+  {
+    name: "Service Designer",
+    description:
+      "Service designers design the end-to-end journey of a service. This helps a user complete their goal and government deliver a policy intent. In this role, your work may involve the creation of, or change to, transactions, products and content across both digital and offline channels provided by different parts of government.",
+    referenceDdatRole: "Service designer",
+  },
+  {
+    name: "Digital Service Manager",
+    description: "",
+    referenceDdatRole: "Service owner",
+  },
+  {
+    name: "Content Designer",
+    description:
+      "Content designers make things easier for people to understand and use. This can involve working on a single piece of content or on the end-to-end journey of a service to help users complete their goal and government deliver a policy intent. In this role your work may involve the creation of, or change to, a transaction, product or single piece of content that stretches across digital and offline channels.",
+    referenceDdatRole: "Content designer",
+  },
+  {
+    name: "Business Analyst",
+    description:
+      "Business analysts help teams to: analyse and understand a business problem or opportunity, undertake research and analysis to understand how a business or business area works, considering the people, organisation, processes, information, data and technology, identify areas for improvement, explore feasible options, analyse the effects of change and define success measures, identify and elaborate user and business needs to enable effective design, development and testing of services and business change, make decisions related to prioritisation and minimum viable product by using analysis led insights, ensure new products and services meet business and user needs, and are aligned with organisational goals, understand any business and policy constraints that need to be considered, and assess the implications.",
+    referenceDdatRole: "Business analyst",
+  },
+  {
+    name: "UX Designer",
+    description: "",
+    referenceDdatRole: "Interaction designer",
+  },
+  {
+    name: "Product Manager",
+    description:
+      "A product manager makes sure that their products provide value and achieve the right outcomes by balancing user and business needs.",
+    referenceDdatRole: "Product manager",
   },
 ];

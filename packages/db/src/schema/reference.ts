@@ -8,7 +8,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { organizationsTable } from "./organizations";
 import { frameworkLevelEnum, regionEnum } from "./enums";
-
 import { skillsTable } from "./skills";
 import { timestamps } from "../columns.helpers";
 
@@ -62,6 +61,7 @@ export const frameworkRoleFamiliesTable = pgTable("framework_role_families", {
   organization_id: uuid().references(() => organizationsTable.id), // nullable = platform default
   name: text().notNull(), // e.g. "Software Developer", "User Researcher"
   description: text(),
+  ...timestamps,
 });
 
 export const frameworkRolesTable = pgTable("framework_roles", {
@@ -72,6 +72,7 @@ export const frameworkRolesTable = pgTable("framework_roles", {
     .references(() => frameworkRoleFamiliesTable.id),
   level: frameworkLevelEnum().notNull(),
   display_name: text().notNull(), // e.g. "Senior Software Developer"
+  ...timestamps,
 });
 
 // ── Mapping layer ─────────────────────────────────────────────────────────────
@@ -87,6 +88,7 @@ export const frameworkRoleMappingsTable = pgTable("framework_role_mappings", {
     .references(() => referenceRolesTable.id),
   // Unique constraint in migration: (framework_role_id, reference_role_id)
   // One internal role maps to one DDaT role per reference framework.
+  ...timestamps,
 });
 
 export const frameworkRoleSkillExpectationsTable = pgTable(

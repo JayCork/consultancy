@@ -1,9 +1,16 @@
-import { pgTable, uuid, text, date, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  text,
+  date,
+  uniqueIndex,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { goalStatusEnum, goalVisibilityEnum } from "./enums";
 import { evidenceTable } from "./evidence";
 import { usersTable } from "./users";
 import { timestamps } from "../columns.helpers";
-import { frameworkRoleFamiliesTable, frameworkRolesTable } from "./reference";
+import { frameworkRolesTable } from "./reference";
 
 export const goalsTable = pgTable("goals", {
   id: uuid().primaryKey().defaultRandom(),
@@ -29,6 +36,7 @@ export const goalEvidenceTable = pgTable(
     evidence_id: uuid()
       .notNull()
       .references(() => evidenceTable.id),
+    created_at: timestamp().notNull().defaultNow(),
   },
   (table) => [
     uniqueIndex("goal_evidence_unique").on(table.goal_id, table.evidence_id),

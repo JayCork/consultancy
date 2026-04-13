@@ -14,7 +14,7 @@
     "db:push": "dotenvx run --env-file=../../.env -- drizzle-kit push",
     "db:generate": "dotenvx run --env-file=../../.env -- drizzle-kit generate",
     "db:apply-migrations": "dotenvx run --env-file=../../.env -- drizzle-kit apply",
-    "db:start": "docker run --name drizzle-postgres -e POSTGRES_PASSWORD=mypassword -d -p 5432:5432 postgres",
+    "db:start": "set -a && [ -f ../../.env ] && . ../../.env; docker run --name consultancy_hub -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME -d -p 5432:5432 postgres",
     "db:view": "dotenvx run --env-file=../../.env -- drizzle-kit studio",
     "db:seed": "dotenvx run --env-file=../../.env -- tsx src/scripts/seed-reference-data.ts",
     "db:seed-test-data":  "dotenvx run --env-file=../../.env -- tsx src/scripts/dev/fixtures.ts",

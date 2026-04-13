@@ -13,7 +13,7 @@ export const organizationsTable = pgTable(
   "organizations",
   {
     id: uuid().primaryKey().defaultRandom(),
-    name: text(),
+    name: text().notNull(),
     promotion_threshold: integer().notNull().default(80),
     endorsements_required: integer().notNull().default(2),
     endorsement_routing_policy: endorsementRoutingPolicyEnum()

@@ -25,7 +25,9 @@ export const competenciesTable = pgTable(
     user_id: uuid()
       .notNull()
       .references(() => usersTable.id),
-    skill_id: uuid().references(() => skillsTable.id),
+    skill_id: uuid()
+      .notNull()
+      .references(() => skillsTable.id),
     organization_id: uuid()
       .notNull()
       .references(() => organizationsTable.id),

@@ -31,7 +31,7 @@ export const evidenceTable = pgTable("evidence", {
   action: text().notNull(),
   result: text().notNull(),
   status: evidenceStatusEnum().notNull().default("draft"),
-  data_classification: dataClassificationEnum().notNull().default("internal"), // e.g. "public", "internal", "confidential" — determines where/how evidence can be shared
+  data_classification: dataClassificationEnum().notNull().default("official"), // e.g. "public", "internal", "confidential" — determines where/how evidence can be shared
   ...timestamps,
 });
 

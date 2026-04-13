@@ -30,9 +30,9 @@ export const competencySourceEnum = pgEnum("competency_source", [
 
 // Data classification for evidence
 export const dataClassificationEnum = pgEnum("data_classification", [
-  "public",
-  "internal",
-  "confidential",
+  "official",
+  "official_sensitive",
+  "secret",
 ]);
 
 // organizations

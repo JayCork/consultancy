@@ -2,7 +2,6 @@ import { pgTable, uuid, text, date } from "drizzle-orm/pg-core";
 import { organizationsTable } from "./organizations";
 import { frameworkRolesTable } from "./reference";
 import { usersTable } from "./users";
-import { timestamp } from "drizzle-orm/gel-core";
 import { timestamps } from "../columns.helpers";
 
 export const jobGradesTable = pgTable("job_grades", {
@@ -19,7 +18,7 @@ export const jobGradesTable = pgTable("job_grades", {
   // e.g. different pay bands at the same seniority level.
   external_id: text(),
   external_source: text(),
-  ...timestamp,
+  ...timestamps,
 });
 
 export const userGradeAssignmentsTable = pgTable("user_grade_assignments", {

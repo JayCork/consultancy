@@ -8,8 +8,6 @@ import {
 import { organizationsTable } from "./organizations";
 import { timestamps } from "../columns.helpers";
 import { frameworkLevelEnum } from "./enums";
-import { table } from "console";
-import { ref } from "process";
 import { referenceSkillsTable } from "./reference";
 
 export const skillsTable = pgTable(
@@ -19,7 +17,6 @@ export const skillsTable = pgTable(
     organization_id: uuid().references(() => organizationsTable.id),
     name: text().notNull(),
     description: text(),
-    parent_skill_id: uuid().references((): AnyPgColumn => skillsTable.id),
     ...timestamps,
   },
   (table) => [
@@ -56,15 +53,4 @@ export const skillFrameworkMappingsTable = pgTable("skill_framework_mappings", {
     .references(() => referenceSkillsTable.id),
   notes: text(), // Any notes about the mapping, e.g. rationale for mapping, areas of partial alignment, etc.
   ...timestamps,
-});
-
-export const skillFrameworkMapping = pgTable("skill_framework_mapping", {
-  id: uuid().primaryKey().defaultRandom(),
-  skill_id: uuid()
-    .notNull()
-    .references(() => skillsTable.id),
-  reference_skill_id: uuid()
-    .notNull()
-    .references(() => referenceSkillsTable.id), // The skill ID in the framework that this skill maps to
-  notes: text(), // Any notes about the mapping, e.g. rationale for mapping, areas of partial alignment, etc.
 });

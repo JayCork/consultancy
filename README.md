@@ -10,9 +10,9 @@ Consultants log STAR-format evidence entries, mentors verify them, and verified 
 
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
 - [Environment Variables](#environment-variables)
 - [Database Setup](#database-setup)
+- [Quick Start](#quick-start)
 - [Seed Demo Data](#seed-demo-data)
 - [Creating Your User Account](#creating-your-user-account)
 - [Running the App](#running-the-app)
@@ -45,9 +45,76 @@ Before you begin, install the following:
 
 ---
 
+## Environment Variables
+
+Before you do anything else, create a `.env` file in the project root with the following values:
+
+```env
+# Database — matches the Docker container created by the dev script
+DATABASE_URL=postgres://basic_dev:butter_iron_knife@localhost:5432/consultancy_hub
+
+# API server port and environment
+PORT=5173
+NODE_ENV=development
+
+# API server base URL (used by better-auth for redirects)
+BETTER_AUTH_URL=http://localhost:5173
+
+# Generate this with: npx auth secret
+BETTER_AUTH_SECRET=your_secret_here
+
+# Web app origin (used by auth for CORS)
+WEB_URL=http://localhost:3000
+
+# Tells the web app where the API lives
+VITE_API_URL=http://localhost:5173
+```
+
+**Generating `BETTER_AUTH_SECRET`:**
+
+```bash
+npx auth secret
+```
+
+Copy the output into your `.env` file.
+
+---
+
+## Database Setup
+
+The database runs in a Docker container. The dev script manages it automatically, but you need to push the schema first.
+
+**Step 1 — Start Docker Desktop and create the database container:**
+
+```bash
+docker run --name consultancy_hub \
+  -e POSTGRES_PASSWORD=butter_iron_knife \
+  -e POSTGRES_USER=basic_dev \
+  -e POSTGRES_DB=consultancy_hub \
+  -d -p 5432:5432 postgres
+```
+
+**Step 2 — Push the Drizzle schema to the database (creates all tables):**
+
+```bash
+pnpm --filter @consultancy/db db:generate
+pnpm --filter @consultancy/db db:push
+```
+
+This creates the `consultancy_hub` container on its first run (or starts it if it already exists).
+
+**Inspect the database** with Drizzle Studio:
+
+```bash
+pnpm --filter @consultancy/db db:view
+# Opens at http://localhost:4983
+```
+
+---
+
 ## Quick Start
 
-For the impatient — full setup from scratch:
+For a full setup from scratch:
 
 ```bash
 # 1. Clone and install
@@ -55,18 +122,11 @@ git clone <repo-url>
 cd consultancy
 pnpm install
 
-# 2. Create your .env file (see Environment Variables below)
-cp .env.example .env   # or create .env manually
+# 2. Set up your .env file (see Environment Variables above)
 
-#3. Create and start the database container (if not using the dev script to manage it)
-docker run --name drizzle-postgres \
-  -e POSTGRES_PASSWORD=projam_password \
-  -e POSTGRES_USER=consult_hub \
-  -e POSTGRES_DB=projam_db \
-  -d -p 5432:5432 postgres
+# 3. Start Docker Desktop and set up the database (see Database Setup above)
 
-# 4. Start Docker Desktop, then push the schema and seed demo data
-pnpm --filter @consultancy/db db:push
+# 4. Seed demo data
 pnpm --filter @consultancy/db db:seed
 
 # 5. Start all services
@@ -84,7 +144,7 @@ Create a `.env` file in the project root with the following values:
 
 ```env
 # Database — matches the Docker container created by the dev script
-DATABASE_URL=postgres://consult_hub:projam_password@localhost:5432/projam_db
+DATABASE_URL=postgres://basic_dev:butter_iron_knife@localhost:5432/consultancy_hub
 
 # API server port and environment
 PORT=5173
@@ -121,10 +181,11 @@ The database runs in a Docker container. The dev script manages it automatically
 
 ```bash
 # Push the Drizzle schema to the database (creates all tables)
+pnpm --filter @consultancy/db db:generate
 pnpm --filter @consultancy/db db:push
 ```
 
-This creates the `drizzle-postgres` container on its first run (or starts it if it already exists).
+This creates the `consultancy_hub` container on its first run (or starts it if it already exists).
 
 **Inspect the database** with Drizzle Studio:
 

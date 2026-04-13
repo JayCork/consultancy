@@ -1,6 +1,7 @@
 import { pgTable, uuid, date } from "drizzle-orm/pg-core";
 import { userRelationshipTypeEnum } from "./enums";
 import { usersTable } from "./users";
+import { timestamps } from "../columns.helpers";
 
 export const userRelationshipsTable = pgTable("user_relationships", {
   id: uuid().primaryKey().defaultRandom(),
@@ -14,4 +15,5 @@ export const userRelationshipsTable = pgTable("user_relationships", {
   start_date: date().notNull(),
   end_date: date(),
   organization_id: uuid().notNull(), // to support organization-specific relationships (e.g. manager, mentor) without needing global relationship types
+  ...timestamps,
 });
