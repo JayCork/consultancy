@@ -23,6 +23,7 @@ render(
       <Route path="/peer-review" component={PeerReview} />
       <Route path="/peer-review/:id" component={EvidenceReview} />
       <Route path="/admin" component={AdminConfig} />
+      <Route path="/organization" component={OrganizationPage} />
     </Router>
   ),
   document.getElementById("root")!,

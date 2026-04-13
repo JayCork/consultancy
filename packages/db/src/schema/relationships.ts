@@ -1,28 +1,19 @@
-import { SQL, sql } from "drizzle-orm";
-import { uuid, pgTable, timestamp, boolean } from "drizzle-orm/pg-core";
-import { timestamps } from "../columns.helpers";
-import { relationshipEnum } from "./enums";
+import { pgTable, uuid, date } from "drizzle-orm/pg-core";
+import { userRelationshipTypeEnum } from "./enums";
 import { usersTable } from "./users";
+import { timestamps } from "../columns.helpers";
 
 export const userRelationshipsTable = pgTable("user_relationships", {
   id: uuid().primaryKey().defaultRandom(),
   actor_id: uuid()
     .notNull()
     .references(() => usersTable.id),
-  subject_id: uuid()
+  target_id: uuid()
     .notNull()
     .references(() => usersTable.id),
-  start_date: timestamp({ precision: 3 }).defaultNow(),
-  end_date: timestamp({ precision: 3 }),
-
-  ...timestamps,
-});
-
-export const relationshipRolesTable = pgTable("relationship_to_role", {
-  id: uuid().primaryKey().defaultRandom(),
-  relationship_id: uuid()
-    .notNull()
-    .references(() => userRelationshipsTable.id),
-  role: relationshipEnum().notNull(),
+  relationship_type: userRelationshipTypeEnum().notNull(),
+  start_date: date().notNull(),
+  end_date: date(),
+  organization_id: uuid().notNull(), // to support organization-specific relationships (e.g. manager, mentor) without needing global relationship types
   ...timestamps,
 });

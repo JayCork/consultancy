@@ -26,13 +26,13 @@ If you need to create the database container manually (the dev script normally h
 
 ```bash
 # Create and start the container
-docker run --name drizzle-postgres \
+docker run --name consultancy_hub \
   -e POSTGRES_PASSWORD=mypassword \
   -e POSTGRES_USER=admin \
   -d -p 5432:5432 postgres
 
 # Create the database inside the container
-docker exec -it drizzle-postgres psql -U admin -c "CREATE DATABASE mydatabase;"
+docker exec -it consultancy_hub psql -U admin -c "CREATE DATABASE mydatabase;"
 ```
 
 Connection string:
@@ -44,9 +44,9 @@ postgres://admin:mypassword@localhost:5432/mydatabase
 **Stopping and starting:**
 
 ```bash
-docker stop drizzle-postgres
-docker start drizzle-postgres
-docker rm drizzle-postgres   # remove entirely
+docker stop consultancy_hub
+docker start consultancy_hub
+docker rm consultancy_hub   # remove entirely
 ```
 
 ## Structure

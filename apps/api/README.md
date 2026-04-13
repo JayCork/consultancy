@@ -42,7 +42,7 @@ GET  /api/v0/evidence?userId=...  # Get evidence entries for a user
 POST /api/v0/projects             # Manage projects
 GET  /api/v0/skills               # Get all skills and their levels
 GET  /api/v0/readiness            # Career readiness score for current user
-GET  /api/v0/admin/config         # Organisation config and job role requirements
+GET  /api/v0/admin/config         # organization config and job role requirements
 ```
 
 ## Health Check

@@ -6,7 +6,7 @@ const admin = new Hono();
 admin.get("/config", async (c) => {
   const org = await getOrgConfig();
   if (!org) {
-    return c.json({ ok: false, error: "No organisation found" }, 404);
+    return c.json({ ok: false, error: "No organization found" }, 404);
   }
 
   const roles = await getJobRolesWithRequirements(org.id);
@@ -14,7 +14,7 @@ admin.get("/config", async (c) => {
   return c.json({
     ok: true,
     data: {
-      organisation: {
+      organization: {
         id: org.id,
         name: org.name,
         promotion_readiness_threshold: org.promotion_readiness_threshold,

@@ -39,7 +39,7 @@ The initial target customer is a mid-size UK IT consultancy doing government con
 
 In an IT consultancy, the product is the collective expertise of its people. Most companies manage this inventory with spreadsheets and disconnected documents. This creates five compounding failures.
 
-**Inventory blindness.** Leadership cannot see what skills and experience exist across the organisation, let alone what is available for a specific bid. The information exists only in the heads of individual managers.
+**Inventory blindness.** Leadership cannot see what skills and experience exist across the organization, let alone what is available for a specific bid. The information exists only in the heads of individual managers.
 
 **Framework mapping friction.** Government tenders require staff to be mapped to rigid frameworks (SFIA v9, DDaT). A consultancy using different internal terminology has to manually retrofit experience into framework definitions every time an RFP lands — a scramble during a critical window.
 
@@ -67,7 +67,7 @@ Contractor Hub solves these problems through a self-sustaining Value Loop where 
 
 ### The AI-Ready Cumulative Effect
 
-Every pass through the Value Loop enriches the organisation's structured metadata. By month six there is a heatmap of technical gaps. By month twelve there is a verified evidence library that AI can query in natural language — asking questions like "who has Home Office experience, active SC clearance, and DDaT Data Architect at Working level?"
+Every pass through the Value Loop enriches the organization's structured metadata. By month six there is a heatmap of technical gaps. By month twelve there is a verified evidence library that AI can query in natural language — asking questions like "who has Home Office experience, active SC clearance, and DDaT Data Architect at Working level?"
 
 ---
 
@@ -163,7 +163,7 @@ The most sensitive area of the application. Manages sovereign data required for 
 
 ### 6.4 The Bid Intelligence Centre
 
-The interface for leadership and bid teams to query the organisation's inventory.
+The interface for leadership and bid teams to query the organization's inventory.
 
 - Advanced filtering by clearance level, DDaT role, availability, sector experience, security context
 - High-side safeguard: bid searches for classified projects only surface people who meet the clearance baseline — no accidental exposure of unqualified candidates
@@ -219,21 +219,22 @@ All component styles (inline styles, CSS Modules) **must** use CSS custom proper
 
 **Colour semantics:**
 
-| Token | Use |
-|---|---|
-| `--color-primary` (amber) | Brand colour — CTA buttons, interactive links, "Read more" controls |
-| `--color-accent` (teal) | Skills, data visualisation, progress indicators, level badges |
-| `--color-text-primary` | Headings and body copy |
-| `--color-text-secondary` | Supporting labels, secondary information |
-| `--color-text-muted` | Captions, metadata, overline labels |
-| `--color-container` | Card and panel backgrounds |
-| `--color-surface` | Page-layer backgrounds, tag/chip backgrounds |
-| `--color-overlay` | Elevated surfaces, neutral badge backgrounds |
-| `--color-success-subtle` + `--color-success` | Verified status badges |
-| `--color-warning-subtle` + `--color-on-warning` | Pending-review status badges |
-| `--color-error-subtle` + `--color-error` | Error and rejected states |
+| Token                                           | Use                                                                 |
+| ----------------------------------------------- | ------------------------------------------------------------------- |
+| `--color-primary` (amber)                       | Brand colour — CTA buttons, interactive links, "Read more" controls |
+| `--color-accent` (teal)                         | Skills, data visualisation, progress indicators, level badges       |
+| `--color-text-primary`                          | Headings and body copy                                              |
+| `--color-text-secondary`                        | Supporting labels, secondary information                            |
+| `--color-text-muted`                            | Captions, metadata, overline labels                                 |
+| `--color-container`                             | Card and panel backgrounds                                          |
+| `--color-surface`                               | Page-layer backgrounds, tag/chip backgrounds                        |
+| `--color-overlay`                               | Elevated surfaces, neutral badge backgrounds                        |
+| `--color-success-subtle` + `--color-success`    | Verified status badges                                              |
+| `--color-warning-subtle` + `--color-on-warning` | Pending-review status badges                                        |
+| `--color-error-subtle` + `--color-error`        | Error and rejected states                                           |
 
 **Enforcement:**
+
 - Never use `, fallback` values in `var()` calls — they mask missing-token bugs that would otherwise surface as broken dark-mode contrast.
 - Dark mode is handled automatically via `light-dark()` inside token definitions. Components do not need `prefers-color-scheme` media queries.
 - If a value you need is not covered by an existing token, add the token to the relevant file in `packages/tokens/` before using it.
@@ -252,7 +253,7 @@ All component styles (inline styles, CSS Modules) **must** use CSS custom proper
 
 ### Model Type
 
-PostgreSQL with a graph-relational hybrid pattern. The organisation and its relationships are modelled as a Directed Acyclic Graph stored within a relational database.
+PostgreSQL with a graph-relational hybrid pattern. The organization and its relationships are modelled as a Directed Acyclic Graph stored within a relational database.
 
 - **Nodes:** Users, Skills, Projects, Frameworks
 - **Edges:** User Relationships (with temporal start/end dates and multi-role support)
@@ -264,7 +265,7 @@ Graph traversal uses PostgreSQL Recursive CTEs. No separate graph database is re
 
 | Table                   | Purpose                                                                                |
 | ----------------------- | -------------------------------------------------------------------------------------- |
-| `organizations`         | Multi-tenancy root — every user belongs to an organisation                             |
+| `organizations`         | Multi-tenancy root — every user belongs to an organization                             |
 | `users`                 | Application users, linked to Better Auth via `auth_user_id`                            |
 | `user_relationships`    | Directed edges between users with temporal columns and generated `is_active`           |
 | `relationship_to_role`  | Many roles per relationship edge (e.g. LINE_MANAGER + TECHNICAL_MENTOR simultaneously) |
@@ -292,7 +293,7 @@ Graph traversal uses PostgreSQL Recursive CTEs. No separate graph database is re
 
 **Audit log is immutable by design.** The `audit_logs` table has no UPDATE or DELETE grants for any database user including the admin role. This is enforced at the PostgreSQL level, not just application logic.
 
-**Multi-tenancy from day one.** Every user has an `organisation_id` foreign key. Row-Level Security policies filter all queries by organisation. A user from Consultancy A can never see data from Consultancy B.
+**Multi-tenancy from day one.** Every user has an `organization_id` foreign key. Row-Level Security policies filter all queries by organization. A user from Consultancy A can never see data from Consultancy B.
 
 ---
 
@@ -338,7 +339,7 @@ Note: React and Next.js were deliberately excluded. Next.js has deepening vendor
 | Concern        | Choice                                     | Rationale                                                                                                                                                                                                        |
 | -------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Auth library   | Better Auth                                | Open source, TypeScript-native, SolidJS adapter, Drizzle adapter, no per-user pricing                                                                                                                            |
-| Enterprise SSO | OIDC via Better Auth SSO plugin            | Target company uses Okta — OIDC configured per-organisation at runtime, not hardcoded                                                                                                                            |
+| Enterprise SSO | OIDC via Better Auth SSO plugin            | Target company uses Okta — OIDC configured per-organization at runtime, not hardcoded                                                                                                                            |
 | Strategy       | Separate auth users from application users | `auth_user_id` foreign key on `usersTable` links Better Auth identity to application profile. Auth credentials in Better Auth schema, application data in own schema. Provider-swappable without data migration. |
 
 ### Environment Management
@@ -495,7 +496,7 @@ This is the internal pitch artefact. Not a full product — a working proof of t
 
 **pgvector for bid matching.** The current Bid Intelligence Centre design uses structured SQL queries. If semantic search over STAR entries proves valuable (searching by meaning rather than exact tags), `pgvector` is already available as a PostgreSQL extension. This avoids a separate vector database at current scale.
 
-**Framework scoping for non-technical roles.** The schema supports multiple frameworks per organisation. The product currently assumes SFIA for engineers and DDaT for digital roles. Framework scoping for sales, account management, or other non-technical functions is architecturally ready but not yet designed at the product level.
+**Framework scoping for non-technical roles.** The schema supports multiple frameworks per organization. The product currently assumes SFIA for engineers and DDaT for digital roles. Framework scoping for sales, account management, or other non-technical functions is architecturally ready but not yet designed at the product level.
 
 **Amendment policy for the append-only rule.** The "never overwrite, always append" principle is correct for audit integrity. Genuine data entry errors (wrong start date, misspelled project name) need an amendment system with a reason field and visible correction history. The policy for what constitutes a correctable error versus a new evidence entry needs definition before the UI is built.
 

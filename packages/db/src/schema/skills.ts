@@ -1,47 +1,56 @@
-import { uuid, pgTable, varchar, text, integer } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  text,
+  AnyPgColumn,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
+import { organizationsTable } from "./organizations";
 import { timestamps } from "../columns.helpers";
+import { frameworkLevelEnum } from "./enums";
+import { referenceSkillsTable } from "./reference";
 
-export const skillsTable = pgTable("skills", {
-  id: uuid().primaryKey().defaultRandom(),
-  name: varchar({ length: 255 }).notNull(),
-  description: text().notNull(),
-  ...timestamps,
-});
+export const skillsTable = pgTable(
+  "skills",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    organization_id: uuid().references(() => organizationsTable.id),
+    name: text().notNull(),
+    description: text(),
+    ...timestamps,
+  },
+  (table) => [
+    uniqueIndex("skills_org_name_unique").on(table.organization_id, table.name),
+  ],
+);
 
-export const skillsLevelTable = pgTable("skill_levels", {
+export const skillsLevelsTable = pgTable(
+  "skill_levels",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    skill_id: uuid()
+      .notNull()
+      .references(() => skillsTable.id),
+    level: frameworkLevelEnum().notNull(),
+    description: text(),
+    ...timestamps,
+  },
+  (table) => [
+    uniqueIndex("skill_levels_skill_level_unique").on(
+      table.skill_id,
+      table.level,
+    ),
+  ],
+);
+
+export const skillFrameworkMappingsTable = pgTable("skill_framework_mappings", {
   id: uuid().primaryKey().defaultRandom(),
   skill_id: uuid()
     .notNull()
     .references(() => skillsTable.id),
-  level_number: integer().notNull(),
-  criteria: text().notNull(),
-  ...timestamps,
-});
-
-export const externalFrameworksTable = pgTable("external_frameworks", {
-  id: uuid().primaryKey().defaultRandom(),
-  name: varchar({ length: 255 }).notNull(),
-  version: varchar({ length: 255 }).notNull(),
-  ...timestamps,
-});
-
-export const externalSkillsTable = pgTable("external_skills", {
-  id: uuid().primaryKey().defaultRandom(),
-  framework_id: uuid()
+  reference_skill_id: uuid()
     .notNull()
-    .references(() => externalFrameworksTable.id),
-  code: varchar({ length: 25 }).notNull(),
-  name: varchar({ length: 255 }).notNull(),
-  category: varchar({ length: 255 }).notNull(),
-  level_number: integer().notNull(),
-  description: text().notNull(),
-  ...timestamps,
-});
-
-export const frameworkMappingsTable = pgTable("framework_mappings", {
-  id: uuid().primaryKey().defaultRandom(),
-  level_id: uuid().references(() => skillsLevelTable.id),
-  external_skill_id: uuid().references(() => externalSkillsTable.id),
-  notes: text(), // "Justification for this mapping for auditors"
+    .references(() => referenceSkillsTable.id),
+  notes: text(), // Any notes about the mapping, e.g. rationale for mapping, areas of partial alignment, etc.
   ...timestamps,
 });

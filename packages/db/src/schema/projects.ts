@@ -1,37 +1,52 @@
-import { SQL, sql } from "drizzle-orm";
 import {
-  uuid,
-  real,
   pgTable,
-  varchar,
-  timestamp,
-  boolean,
+  uuid,
   text,
+  boolean,
+  date,
+  uniqueIndex,
+  timestamp,
 } from "drizzle-orm/pg-core";
-import { timestamps } from "../columns.helpers";
-import { projectRoleEnum, sectorEnum } from "./enums";
+import { projectRoleEnum, regionEnum } from "./enums";
+import { organizationsTable } from "./organizations";
+import { clearanceLevelsTable } from "./reference";
 import { usersTable } from "./users";
+import { sql } from "drizzle-orm/sql/sql";
+import { timestamps } from "../columns.helpers";
 
 export const projectsTable = pgTable("projects", {
   id: uuid().primaryKey().defaultRandom(),
-  name: varchar({ length: 610 }).notNull(),
-  description: text().notNull(),
-  category: varchar({ length: 100 }), // e.g., "Engineering", "Delivery"
-  sector: sectorEnum().notNull().default("commercial"),
+  organization_id: uuid()
+    .notNull()
+    .references(() => organizationsTable.id),
+  name: text().notNull(),
+  short_name: text(),
+  code_name: text(),
+  is_name_classified: boolean().notNull().default(false),
+  minimum_clearance_id: uuid().references(() => clearanceLevelsTable.id),
+  start_date: timestamp().notNull(),
+  end_date: timestamp(),
+  region: regionEnum().notNull().default("GBR"),
   ...timestamps,
 });
 
-export const userProjectRolesTable = pgTable("user_project_roles", {
-  id: uuid().primaryKey().defaultRandom(),
-  user_id: uuid()
-    .notNull()
-    .references(() => usersTable.id),
-  project_id: uuid()
-    .notNull()
-    .references(() => projectsTable.id),
-  role: projectRoleEnum().notNull(),
-  start_date: timestamp({ precision: 3 }).defaultNow(),
-  end_date: timestamp({ precision: 3 }),
-  allocation_percentage: real().notNull().default(100),
-  ...timestamps,
-});
+export const projectMembersTable = pgTable(
+  "project_members",
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    project_id: uuid()
+      .notNull()
+      .references(() => projectsTable.id),
+    user_id: uuid()
+      .notNull()
+      .references(() => usersTable.id),
+    project_role: projectRoleEnum().notNull(),
+    start_date: date().notNull(),
+    end_date: date(),
+  },
+  (table) => [
+    uniqueIndex("project_members_active_unique")
+      .on(table.project_id, table.user_id)
+      .where(sql`${table.end_date} is null`),
+  ],
+);

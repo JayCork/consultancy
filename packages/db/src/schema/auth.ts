@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
 
-export const user = pgTable("user", {
+export const user = pgTable("bauth_users", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
@@ -15,7 +15,7 @@ export const user = pgTable("user", {
 });
 
 export const session = pgTable(
-  "session",
+  "bauth_sessions",
   {
     id: text("id").primaryKey(),
     expiresAt: timestamp("expires_at").notNull(),
@@ -34,7 +34,7 @@ export const session = pgTable(
 );
 
 export const account = pgTable(
-  "account",
+  "bauth_accounts",
   {
     id: text("id").primaryKey(),
     accountId: text("account_id").notNull(),
@@ -58,7 +58,7 @@ export const account = pgTable(
 );
 
 export const verification = pgTable(
-  "verification",
+  "bauth_verifications",
   {
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
@@ -73,7 +73,7 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const ssoProvider = pgTable("sso_provider", {
+export const ssoProvider = pgTable("bauth_sso_providers", {
   id: text("id").primaryKey(),
   issuer: text("issuer").notNull(),
   oidcConfig: text("oidc_config"),

@@ -5,8 +5,10 @@ import {
   getEvidenceWithDetails,
   getPendingEvidenceForReviewer,
   getUserByAuthId,
+  getUserById,
   canUserVerifyEvidence,
   updateEvidenceStatus,
+  hasActiveRelationship,
   type EvidenceStatus,
 } from "@consultancy/db";
 import { auth } from "../lib";
@@ -39,15 +41,35 @@ evidence.get("/:id", async (c) => {
 });
 
 evidence.get("/", async (c) => {
-  const authUserId = c.req.query("userId");
-  if (!authUserId) {
-    return c.json({ ok: false, error: "Missing userId query parameter" }, 400);
+  const session = await auth.api.getSession({ headers: c.req.raw.headers });
+  if (!session) {
+    return c.json({ ok: false, error: "Unauthorised" }, 401);
   }
-  const user = await getUserByAuthId(authUserId);
-  if (!user) {
+
+  const viewer = await getUserByAuthId(session.user.id);
+  if (!viewer) {
     return c.json({ ok: false, error: "User not found" }, 404);
   }
-  const entries = await getEvidenceByUser(user.id);
+
+  const targetUserId = c.req.query("userId");
+
+  // No target specified, or target is the viewer themselves
+  if (!targetUserId || targetUserId === viewer.id) {
+    const entries = await getEvidenceByUser(viewer.id);
+    return c.json({ ok: true, data: entries });
+  }
+
+  const target = await getUserById(targetUserId);
+  if (!target) {
+    return c.json({ ok: false, error: "User not found" }, 404);
+  }
+
+  const related = await hasActiveRelationship(viewer.id, target.id);
+  if (!related) {
+    return c.json({ ok: false, error: "Forbidden: no active relationship with this user" }, 403);
+  }
+
+  const entries = await getEvidenceByUser(target.id);
   return c.json({ ok: true, data: entries });
 });
 

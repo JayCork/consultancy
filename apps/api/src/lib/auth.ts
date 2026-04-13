@@ -15,27 +15,24 @@ export const auth = betterAuth({
     enabled: true,
   },
   socialProviders: {
-    // Okta is an OIDC provider — configured per-organisation at runtime
+    // Okta is an OIDC provider — configured per-organization at runtime
     // We'll add this when onboarding the first real customer
   },
   trustedOrigins: [env.webUrl],
+  user: { modelName: "bauth_user" },
+  session: { modelName: "bauth_session" },
+  account: { modelName: "bauth_account" },
+  verification: { modelName: "bauth_verification" },
   databaseHooks: {
     user: {
       create: {
         after: async (user) => {
-          const [org] = await db
-            .select()
-            .from(organizationsTable)
-            .limit(1);
-
-          if (!org) return;
-
           await db.insert(usersTable).values({
-            auth_user_id: user.id,
-            organisation_id: org.id,
+            better_auth_id: user.id,
+            organization_id: null, // explicitly pending_org — assigned during onboarding
             name: user.name,
             email: user.email,
-            role: "Consultant",
+            status: "pending_org",
           });
         },
       },

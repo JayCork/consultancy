@@ -1,15 +1,40 @@
 import { Hono } from "hono";
-import { getAllSkills, getSkillLevels } from "@consultancy/db";
+import {
+  getAllSkills,
+  getUserByAuthId,
+  getUsersFrameworkSkills,
+  user,
+} from "@consultancy/db";
 
 const skills = new Hono();
 
 skills.get("/", async (c) => {
-  const data = await getAllSkills();
+  console.group("GET /skills");
+  const authUserId = c.req.query("userId");
+  if (!authUserId) {
+    console.debug("Missing userId query parameter");
+    console.groupEnd();
+    return c.json({ ok: false, error: "Missing userId query parameter" }, 400);
+  }
+  const user = await getUserByAuthId(authUserId);
+
+  if (!user) {
+    console.debug(`No user found for auth ID: ${authUserId}`);
+    console.groupEnd();
+    return c.json({ ok: false, error: "User not found" }, 404);
+  }
+  const data = await getUsersFrameworkSkills(user.id);
+  console.groupEnd();
   return c.json({ ok: true, data });
 });
 
-skills.get("/:id/levels", async (c) => {
-  const data = await getSkillLevels(c.req.param("id"));
+// Get all skills for an organization
+skills.get("/all", async (c) => {
+  const orgId = c.req.query("orgId");
+  if (!orgId) {
+    return c.json({ ok: false, error: "Missing orgId query parameter" }, 400);
+  }
+  const data = await getAllOrgSkills(orgId);
   return c.json({ ok: true, data });
 });
 
