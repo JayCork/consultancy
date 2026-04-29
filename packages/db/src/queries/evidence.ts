@@ -1,7 +1,19 @@
-import { InferInsertModel, eq, and, isNull, desc, getTableColumns } from "drizzle-orm";
+import {
+  InferInsertModel,
+  eq,
+  and,
+  isNull,
+  desc,
+  getTableColumns,
+} from "drizzle-orm";
 
 import { db } from "..";
-import { evidenceTable, evidenceSkillsTable, skillsTable } from "../schema";
+import {
+  evidenceTable,
+  evidenceSkillsTable,
+  skillsTable,
+  endorsementsTable,
+} from "../schema";
 
 type NewEvidence = Omit<
   InferInsertModel<typeof evidenceTable>,
@@ -37,6 +49,38 @@ export const getEvidenceByUser = async (userId: string) => {
         eq(evidenceTable.user_id, userId),
         isNull(evidenceTable.deleted_at),
         isNull(evidenceTable.parent_id),
+      ),
+    )
+    .orderBy(desc(evidenceTable.created_at));
+};
+
+export const getPendingEvidenceByUser = async (userId: string) => {
+  return db
+    .select({
+      ...getTableColumns(evidenceTable),
+      skill_name: skillsTable.name,
+      level_claimed: evidenceSkillsTable.level_claimed,
+    })
+    .from(evidenceTable)
+    .leftJoin(
+      evidenceSkillsTable,
+      and(
+        eq(evidenceSkillsTable.evidence_id, evidenceTable.id),
+        eq(evidenceSkillsTable.is_primary, true),
+      ),
+    )
+    .leftJoin(skillsTable, eq(evidenceSkillsTable.skill_id, skillsTable.id))
+    .leftJoin(
+      endorsementsTable,
+      eq(endorsementsTable.evidence_id, evidenceTable.id),
+    )
+
+    .where(
+      and(
+        eq(evidenceTable.user_id, userId),
+        isNull(evidenceTable.deleted_at),
+        isNull(evidenceTable.parent_id),
+        eq(evidenceTable.status, "submitted"),
       ),
     )
     .orderBy(desc(evidenceTable.created_at));

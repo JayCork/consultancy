@@ -9,6 +9,7 @@ import {
   getAllOrgSkills,
 } from "@consultancy/db";
 import type { HonoVariables } from "../lib";
+import { getPendingEvidenceByUser } from "packages/db/src/queries/evidence";
 
 const evidence = new Hono<{ Variables: HonoVariables }>();
 
@@ -47,6 +48,7 @@ evidence.post("/", async (context) => {
     task: task as string,
     action: action as string,
     result: result as string,
+    status: "submitted",
     ...(project_id ? { project_id: project_id as string } : {}),
     ...(data_classification
       ? {
@@ -71,6 +73,21 @@ evidence.get("/", async (context) => {
   }
 
   const evidence = await getEvidenceByUser(user.id);
+
+  return context.json({ ok: true, data: evidence });
+});
+
+// Get a user's evidence that is in the pending state for peer review, including the primary skill and level claimed for that skill (if any), and the name of the project (if any)
+evidence.get("/pending", async (context) => {
+  const session = context.get("session");
+  const user = await getUserByAuthId(session.userId);
+
+  if (!user) {
+    return context.json({ ok: false, error: "User not found" }, 404);
+  }
+
+  const evidence = await getPendingEvidenceByUser(user.id);
+  console.log("Pending evidence for user", user.id, evidence);
 
   return context.json({ ok: true, data: evidence });
 });
