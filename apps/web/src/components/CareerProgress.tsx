@@ -18,7 +18,9 @@ export function CareerProgress() {
 
   const [data] = createResource(userId, async (id) => {
     if (!id) return null;
-    const res = await fetch(`${API}/api/v0/readiness?userId=${id}`);
+    const res = await fetch(`${API}/api/v0/readiness`, {
+      credentials: "include",
+    });
     const json = await res.json();
     return json.data as ReadinessResponse;
   });

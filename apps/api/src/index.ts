@@ -8,7 +8,7 @@ import readinessRoutes from "./routes/readiness";
 import adminRoutes from "./routes/admin";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
-import { env, auth } from "./lib";
+import { env, auth, requireAuth } from "./lib";
 import setupRoutes from "./routes/setup";
 
 const PORT = process.env.PORT || 5173;
@@ -33,6 +33,8 @@ api.use(
 api.on(["POST", "GET"], "/auth/*", (c) => {
   return auth.handler(c.req.raw);
 });
+
+api.use("/v0/*", requireAuth);
 
 api.route("/v0/users", userRoutes);
 api.route("/v0/evidence", evidenceRoutes);

@@ -23,6 +23,8 @@
   "devDependencies": {
     "@storybook/addon-a11y": "^10.2.7",
     "@storybook/addon-docs": "^10.2.7",
+    "msw": "^2.13.4",
+    "msw-storybook-addon": "^2.0.7",
     "storybook": "^10.2.7",
     "storybook-css-modules": "^1.0.8",
     "storybook-solidjs-vite": "^10.0.9",

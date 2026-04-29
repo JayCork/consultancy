@@ -1,35 +1,45 @@
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, isNull } from "drizzle-orm";
 import { db } from "..";
 import {
   usersTable,
-  userRoleAssignmentsTable,
-  jobRolesTable,
-  roleSkillRequirementsTable,
-  skillsTable,
-  skillsLevelTable,
   organizationsTable,
-  evidenceTable,
+  userGradeAssignmentsTable,
+  jobGradesTable,
+  frameworkRolesTable,
+  frameworkRoleSkillExpectationsTable,
+  skillsTable,
 } from "../schema";
+
+const FRAMEWORK_LEVEL_ORDER = [
+  "associate",
+  "junior",
+  "mid",
+  "senior",
+  "lead",
+  "principal",
+] as const;
+
+type FrameworkLevel = (typeof FRAMEWORK_LEVEL_ORDER)[number];
 
 export interface ReadinessSkillRow {
   skill_id: string;
   skill_name: string;
-  level_id: string;
-  level_number: number;
-  verified_count: number;
+  required_level: string;
+  endorsed_count: number;
 }
 
 export interface ReadinessData {
-  role: { name: string; seniority_level: number } | null;
+  current_role: { display_name: string; level: string } | null;
+  next_role: { display_name: string; level: string } | null;
   required_skills: ReadinessSkillRow[];
-  evidence_required_per_skill: number;
-  promotion_readiness_threshold: number;
+  endorsements_required: number;
+  promotion_threshold: number;
+  score: number;
 }
 
 export const getReadinessForUser = async (
   internalUserId: string,
 ): Promise<ReadinessData> => {
-  // Resolve the user's org for threshold settings
   const [user] = await db
     .select({ organization_id: usersTable.organization_id })
     .from(usersTable)
@@ -38,90 +48,154 @@ export const getReadinessForUser = async (
 
   if (!user) {
     return {
-      role: null,
+      current_role: null,
+      next_role: null,
       required_skills: [],
-      evidence_required_per_skill: 0,
-      promotion_readiness_threshold: 0,
+      endorsements_required: 0,
+      promotion_threshold: 0,
+      score: 0,
     };
   }
 
   const [org] = await db
     .select({
-      evidence_required_per_skill:
-        organizationsTable.evidence_required_per_skill,
-      promotion_readiness_threshold:
-        organizationsTable.promotion_readiness_threshold,
+      endorsements_required: organizationsTable.endorsements_required,
+      promotion_threshold: organizationsTable.promotion_threshold,
     })
     .from(organizationsTable)
     .where(eq(organizationsTable.id, user.organization_id))
     .limit(1);
 
-  // Get the current role assignment
+  const endorsementsRequired = org?.endorsements_required ?? 2;
+  const promotionThreshold = org?.promotion_threshold ?? 80;
+
   const [assignment] = await db
     .select({
-      role_id: userRoleAssignmentsTable.role_id,
-      role_name: jobRolesTable.name,
-      seniority_level: jobRolesTable.seniority_level,
+      display_name: frameworkRolesTable.display_name,
+      level: frameworkRolesTable.level,
+      family_id: frameworkRolesTable.family_id,
+      organization_id: frameworkRolesTable.organization_id,
     })
-    .from(userRoleAssignmentsTable)
+    .from(userGradeAssignmentsTable)
     .innerJoin(
-      jobRolesTable,
-      eq(userRoleAssignmentsTable.role_id, jobRolesTable.id),
+      jobGradesTable,
+      eq(userGradeAssignmentsTable.job_grade_id, jobGradesTable.id),
+    )
+    .innerJoin(
+      frameworkRolesTable,
+      eq(jobGradesTable.framework_role_id, frameworkRolesTable.id),
     )
     .where(
       and(
-        eq(userRoleAssignmentsTable.user_id, internalUserId),
-        eq(userRoleAssignmentsTable.is_current, true),
+        eq(userGradeAssignmentsTable.user_id, internalUserId),
+        isNull(userGradeAssignmentsTable.end_date),
       ),
     )
     .limit(1);
 
   if (!assignment) {
     return {
-      role: null,
+      current_role: null,
+      next_role: null,
       required_skills: [],
-      evidence_required_per_skill: org?.evidence_required_per_skill ?? 3,
-      promotion_readiness_threshold: org?.promotion_readiness_threshold ?? 80,
+      endorsements_required: endorsementsRequired,
+      promotion_threshold: promotionThreshold,
+      score: 0,
     };
   }
 
-  // Get required skills with verified evidence count per skill
+  const currentLevelIndex = FRAMEWORK_LEVEL_ORDER.indexOf(
+    assignment.level as FrameworkLevel,
+  );
+  const nextLevel: FrameworkLevel | null =
+    currentLevelIndex >= 0 &&
+    currentLevelIndex < FRAMEWORK_LEVEL_ORDER.length - 1
+      ? FRAMEWORK_LEVEL_ORDER[currentLevelIndex + 1]
+      : null;
+
+  if (!nextLevel) {
+    return {
+      current_role: { display_name: assignment.display_name, level: assignment.level },
+      next_role: null,
+      required_skills: [],
+      endorsements_required: endorsementsRequired,
+      promotion_threshold: promotionThreshold,
+      score: 100,
+    };
+  }
+
+  const orgCondition = assignment.organization_id
+    ? eq(frameworkRolesTable.organization_id, assignment.organization_id)
+    : isNull(frameworkRolesTable.organization_id);
+
+  const [nextRole] = await db
+    .select({
+      id: frameworkRolesTable.id,
+      display_name: frameworkRolesTable.display_name,
+      level: frameworkRolesTable.level,
+    })
+    .from(frameworkRolesTable)
+    .where(
+      and(
+        eq(frameworkRolesTable.family_id, assignment.family_id),
+        eq(frameworkRolesTable.level, nextLevel),
+        orgCondition,
+      ),
+    )
+    .limit(1);
+
+  if (!nextRole) {
+    return {
+      current_role: { display_name: assignment.display_name, level: assignment.level },
+      next_role: null,
+      required_skills: [],
+      endorsements_required: endorsementsRequired,
+      promotion_threshold: promotionThreshold,
+      score: 0,
+    };
+  }
+
   const required_skills = await db
     .select({
-      skill_id: roleSkillRequirementsTable.skill_id,
+      skill_id: frameworkRoleSkillExpectationsTable.skill_id,
       skill_name: skillsTable.name,
-      level_id: roleSkillRequirementsTable.level_id,
-      level_number: skillsLevelTable.level_number,
-      verified_count: sql<number>`
-        (
-          SELECT COUNT(*)::int
-          FROM evidence_entries e
-          WHERE e.author_id = ${internalUserId}
-            AND e.skill_id = ${roleSkillRequirementsTable.skill_id}
-            AND e.level_id = ${roleSkillRequirementsTable.level_id}
-            AND e.status = 'verified'
-            AND e.deleted_at IS NULL
-        )
-      `,
+      required_level: frameworkRoleSkillExpectationsTable.minimum_level,
+      endorsed_count: sql<number>`(
+        SELECT COUNT(DISTINCT ev.id)::int
+        FROM evidence ev
+        INNER JOIN evidence_skills es ON es.evidence_id = ev.id
+        WHERE ev.user_id = ${internalUserId}
+          AND es.skill_id = ${frameworkRoleSkillExpectationsTable.skill_id}
+          AND es.level_claimed >= ${frameworkRoleSkillExpectationsTable.minimum_level}
+          AND ev.deleted_at IS NULL
+          AND (
+            SELECT COUNT(*)
+            FROM endorsements en
+            WHERE en.evidence_id = ev.id
+              AND en.status = 'endorsed'
+          ) >= ${endorsementsRequired}
+      )`,
     })
-    .from(roleSkillRequirementsTable)
+    .from(frameworkRoleSkillExpectationsTable)
     .innerJoin(
       skillsTable,
-      eq(roleSkillRequirementsTable.skill_id, skillsTable.id),
+      eq(frameworkRoleSkillExpectationsTable.skill_id, skillsTable.id),
     )
-    .innerJoin(
-      skillsLevelTable,
-      eq(roleSkillRequirementsTable.level_id, skillsLevelTable.id),
-    )
-    .where(eq(roleSkillRequirementsTable.role_id, assignment.role_id));
+    .where(
+      eq(frameworkRoleSkillExpectationsTable.framework_role_id, nextRole.id),
+    );
+
+  const totalSkills = required_skills.length;
+  const coveredSkills = required_skills.filter((s) => s.endorsed_count > 0).length;
+  const score =
+    totalSkills === 0 ? 0 : Math.round((coveredSkills / totalSkills) * 100);
 
   return {
-    role: {
-      name: assignment.role_name,
-      seniority_level: assignment.seniority_level,
-    },
+    current_role: { display_name: assignment.display_name, level: assignment.level },
+    next_role: { display_name: nextRole.display_name, level: nextRole.level },
     required_skills,
-    evidence_required_per_skill: org?.evidence_required_per_skill ?? 3,
-    promotion_readiness_threshold: org?.promotion_readiness_threshold ?? 80,
+    endorsements_required: endorsementsRequired,
+    promotion_threshold: promotionThreshold,
+    score,
   };
 };

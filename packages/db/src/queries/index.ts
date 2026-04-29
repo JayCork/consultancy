@@ -9,7 +9,7 @@ export {
   getEvidenceWithDetails,
 } from "./evidence";
 export { getAllProjects } from "./projects";
-export { getAllSkills, getUsersFrameworkSkills } from "./skills";
+export { getAllSkills, getUsersFrameworkSkills, getAllOrgSkills, getSkillLevels, getOrgSkillById } from "./skills";
 export { getReadinessForUser } from "./readiness";
 export { getCurrentRoleForUser } from "./roles";
 export { getOrgConfig, getJobRolesWithRequirements } from "./admin";
