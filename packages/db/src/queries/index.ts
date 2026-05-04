@@ -2,8 +2,12 @@ export { getAllUsers, getUserById, getUserByAuthId } from "./users";
 export {
   createEvidence,
   getEvidenceByUser,
+  getPendingEvidenceByUser,
   getEvidenceById,
   updateDraftEvidence,
+  createEvidenceRevision,
+  deleteEvidence,
+  softDeleteEvidence,
   upsertPrimaryEvidenceSkill,
 } from "./evidence";
 export { getAllProjects } from "./projects";
@@ -27,4 +31,5 @@ export {
   deleteEndorsement,
   addEndorsementToEvidence,
   getSuggestedEndorsers,
+  replaceEndorsementsForEvidence,
 } from "./endorsements";

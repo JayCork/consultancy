@@ -1,8 +1,8 @@
-import { createMemo, createResource, Show } from "solid-js";
+import { createMemo, createResource, Show, createEffect } from "solid-js";
 import { useNavigate, useParams } from "@solidjs/router";
 import { useSession } from "../../lib/auth-client";
 import { useAuthGuard } from "../../lib/use-auth-guard";
-import { Container, EvidenceAdd } from "@consultancy/ui";
+import { Container, EvidenceForm } from "@consultancy/ui";
 import type {
   EvidenceFormData,
   EvidenceFormInitialData,
@@ -141,6 +141,15 @@ export function AddEvidence() {
     };
   });
 
+  const evidenceStatus = createMemo(() => draftEvidence()?.status ?? null);
+
+  // Verified evidence is immutable — redirect away rather than showing a broken form.
+  createEffect(() => {
+    if (isEditMode() && evidenceStatus() === "verified") {
+      navigate("/evidence");
+    }
+  });
+
   const isFormLoading = createMemo(
     () =>
       projects.loading ||
@@ -149,11 +158,6 @@ export function AddEvidence() {
       (isEditMode() && (draftEvidence.loading || existingEndorserIds.loading)),
   );
 
-  console.log(`projects.loading: ${projects.loading}`);
-  console.log(`skills.loading: ${skills.loading}`);
-  console.log(`suggestedEndorsers.loading: ${suggestedEndorsers.loading}`);
-  console.log(`draftEvidence.loading: ${draftEvidence.loading}`);
-  console.log(`existingEndorserIds.loading: ${existingEndorserIds.loading}`);
   const handleSubmit = async (
     data: EvidenceFormData,
     action: EvidenceSubmitAction,
@@ -178,7 +182,11 @@ export function AddEvidence() {
         result: data.result,
         project_id: data.projectId || null,
         data_classification: data.dataClassification || "official",
-        status: action === "submit" ? "submitted" : "draft",
+        // For submitted evidence the API always creates a new submitted version;
+        // for draft/new evidence the action controls whether to save or submit.
+        ...(evidenceStatus() !== "submitted" && {
+          status: action === "submit" ? "submitted" : "draft",
+        }),
         main_skill_id: data.mainSkillId || null,
         level_claimed: data.levelClaimed || null,
         tag_ids: data.tagIds,
@@ -200,15 +208,35 @@ export function AddEvidence() {
             when={!isEditMode() || !!draftEvidence()}
             fallback={<p role="alert">Unable to load this draft evidence.</p>}
           >
-            <EvidenceAdd
-              title={isEditMode() ? "Edit Draft Evidence" : "Record Evidence"}
-              intro={
-                isEditMode()
-                  ? "Update your draft using the STAR method before submitting it for review."
-                  : undefined
+            <Show
+              when={evidenceStatus() === "submitted"}
+              fallback={
+                <>
+                  <h1>{isEditMode() ? "Edit Draft" : "Record Evidence"}</h1>
+                  <p>
+                    {isEditMode()
+                      ? "Update your draft using the STAR method before submitting it for review."
+                      : "Record a piece of evidence using the STAR method. Be specific, the more detail you provide, the more useful it is for your progression reviews."}
+                  </p>
+                </>
               }
-              submitLabel={isEditMode() ? "Update draft" : "Save evidence"}
-              submitAndSubmitLabel={isEditMode() ? "Submit" : undefined}
+            >
+              <h1>Revise Evidence</h1>
+              <p>
+                This evidence has been submitted for review. Your changes will
+                be saved as a new version — the previous version is preserved
+                for audit purposes.
+              </p>
+            </Show>
+            <EvidenceForm
+              submitLabel={
+                evidenceStatus() === "submitted"
+                  ? "Resubmit with changes"
+                  : "Submit for review"
+              }
+              saveDraftLabel={
+                evidenceStatus() !== "submitted" ? "Save draft" : undefined
+              }
               initialData={initialData()}
               projects={projects() ?? []}
               skills={skills() ?? []}

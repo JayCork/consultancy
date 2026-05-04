@@ -37,8 +37,10 @@ export interface EvidenceFormProps {
   tags: { value: string; label: string }[];
   suggested_endorsers: { id: string; name: string }[];
   initialData?: EvidenceFormInitialData;
+  /** Label for the primary submit button (e.g. "Submit for review", "Resubmit") */
   submitLabel?: string;
-  submitAndSubmitLabel?: string;
+  /** When provided, a secondary "Save draft" button is shown with this label */
+  saveDraftLabel?: string;
   onSubmit: (
     data: EvidenceFormData,
     action: EvidenceSubmitAction,
@@ -72,33 +74,29 @@ export const EvidenceForm = (props: EvidenceFormProps) => {
   const [endorsers, setEndorsers] = createSignal<string[]>(
     props.initialData?.endorsers ?? [],
   );
-  const [endorsersInitialized, setEndorsersInitialized] = createSignal(
-    !!props.initialData?.endorsers,
-  );
+
+  let defaultEndorsersApplied = false;
 
   createEffect(() => {
     const initial = props.initialData;
-    if (!initial) return;
-
-    setSituation(initial.situation ?? "");
-    setTask(initial.task ?? "");
-    setAction(initial.action ?? "");
-    setResult(initial.result ?? "");
-    setProjectId(initial.projectId ?? "");
-    setDataClassification(initial.dataClassification ?? "");
-    setMainSkillId(initial.mainSkillId ?? "");
-    setLevelClaimed(initial.levelClaimed ?? "");
-    setTagIds(initial.tagIds ?? []);
-    setEndorsers(initial.endorsers ?? []);
-    setEndorsersInitialized(true);
-  });
-
-  createEffect(() => {
-    if (endorsersInitialized()) return;
+    if (initial) {
+      setSituation(initial.situation ?? "");
+      setTask(initial.task ?? "");
+      setAction(initial.action ?? "");
+      setResult(initial.result ?? "");
+      setProjectId(initial.projectId ?? "");
+      setDataClassification(initial.dataClassification ?? "");
+      setMainSkillId(initial.mainSkillId ?? "");
+      setLevelClaimed(initial.levelClaimed ?? "");
+      setTagIds(initial.tagIds ?? []);
+      setEndorsers(initial.endorsers ?? []);
+      return;
+    }
+    if (defaultEndorsersApplied) return;
     const suggested = props.suggested_endorsers;
     if (suggested.length === 0) return;
-    setEndorsers(suggested.map((endorser) => endorser.id));
-    setEndorsersInitialized(true);
+    setEndorsers(suggested.map((e) => e.id));
+    defaultEndorsersApplied = true;
   });
 
   const handleSubmit = async (e: SubmitEvent) => {
@@ -267,13 +265,13 @@ export const EvidenceForm = (props: EvidenceFormProps) => {
         </section>
       </div>
       <div class={styles.actions}>
-        {/* TODO: Add secondary button for alternaive actions such as "Save as Draft" */}
+        <Show when={props.saveDraftLabel}>
+          <Button type="submit" value="save-draft" disabled={submitting()}>
+            {props.saveDraftLabel}
+          </Button>
+        </Show>
         <Button type="submit" value="submit" disabled={submitting()}>
-          {submitting()
-            ? "Saving..."
-            : (props.submitAndSubmitLabel ??
-              props.submitLabel ??
-              "Save evidence")}
+          {submitting() ? "Saving..." : (props.submitLabel ?? "Submit for review")}
         </Button>
       </div>
     </form>

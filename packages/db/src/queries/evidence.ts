@@ -31,68 +31,55 @@ type UpdateDraftEvidence = Pick<
   | "status"
 >;
 
+const evidenceWithPrimarySkillSelection = {
+  ...getTableColumns(evidenceTable),
+  main_skill_id: evidenceSkillsTable.skill_id,
+  skill_name: skillsTable.name,
+  level_claimed: evidenceSkillsTable.level_claimed,
+};
+
+const buildEvidenceWithPrimarySkillQuery = () =>
+  db
+    .select(evidenceWithPrimarySkillSelection)
+    .from(evidenceTable)
+    .leftJoin(
+      evidenceSkillsTable,
+      and(
+        eq(evidenceSkillsTable.evidence_id, evidenceTable.id),
+        eq(evidenceSkillsTable.is_primary, true),
+      ),
+    )
+    .leftJoin(skillsTable, eq(evidenceSkillsTable.skill_id, skillsTable.id));
+
+// "Active latest" means not soft-deleted. parent_id is not used as a filter here
+// because revisions soft-delete the previous version, so deleted_at alone is
+// sufficient to exclude superseded entries.
+const byUserActiveLatestEvidence = (userId: string) =>
+  and(
+    eq(evidenceTable.user_id, userId),
+    isNull(evidenceTable.deleted_at),
+  );
+
 export const createEvidence = async (data: NewEvidence) => {
   const [entry] = await db.insert(evidenceTable).values(data).returning();
   return entry;
 };
 
-// Get all the current user's evidence, ordered by creation date desc, including primary skill and level claimed for that skill (if any)
-// Filter out any evidence marked as deleted (soft delete via deleted_at timestamp)
-// Filter out any evidence with a parent_id (i.e. only return the latest version of each piece of evidence, not the revision history)
 export const getEvidenceByUser = async (userId: string) => {
-  return db
-    .select({
-      ...getTableColumns(evidenceTable),
-      main_skill_id: evidenceSkillsTable.skill_id,
-      skill_name: skillsTable.name,
-      level_claimed: evidenceSkillsTable.level_claimed,
-    })
-    .from(evidenceTable)
-    .leftJoin(
-      evidenceSkillsTable,
-      and(
-        eq(evidenceSkillsTable.evidence_id, evidenceTable.id),
-        eq(evidenceSkillsTable.is_primary, true),
-      ),
-    )
-    .leftJoin(skillsTable, eq(evidenceSkillsTable.skill_id, skillsTable.id))
-    .where(
-      and(
-        eq(evidenceTable.user_id, userId),
-        isNull(evidenceTable.deleted_at),
-        isNull(evidenceTable.parent_id),
-      ),
-    )
+  return buildEvidenceWithPrimarySkillQuery()
+    .where(byUserActiveLatestEvidence(userId))
     .orderBy(desc(evidenceTable.created_at));
 };
 
 export const getPendingEvidenceByUser = async (userId: string) => {
-  return db
-    .select({
-      ...getTableColumns(evidenceTable),
-      main_skill_id: evidenceSkillsTable.skill_id,
-      skill_name: skillsTable.name,
-      level_claimed: evidenceSkillsTable.level_claimed,
-    })
-    .from(evidenceTable)
-    .leftJoin(
-      evidenceSkillsTable,
-      and(
-        eq(evidenceSkillsTable.evidence_id, evidenceTable.id),
-        eq(evidenceSkillsTable.is_primary, true),
-      ),
-    )
-    .leftJoin(skillsTable, eq(evidenceSkillsTable.skill_id, skillsTable.id))
+  return buildEvidenceWithPrimarySkillQuery()
     .leftJoin(
       endorsementsTable,
       eq(endorsementsTable.evidence_id, evidenceTable.id),
     )
-
     .where(
       and(
-        eq(evidenceTable.user_id, userId),
-        isNull(evidenceTable.deleted_at),
-        isNull(evidenceTable.parent_id),
+        byUserActiveLatestEvidence(userId),
         eq(evidenceTable.status, "submitted"),
       ),
     )
@@ -100,22 +87,7 @@ export const getPendingEvidenceByUser = async (userId: string) => {
 };
 
 export const getEvidenceById = async (id: string) => {
-  return db
-    .select({
-      ...getTableColumns(evidenceTable),
-      main_skill_id: evidenceSkillsTable.skill_id,
-      skill_name: skillsTable.name,
-      level_claimed: evidenceSkillsTable.level_claimed,
-    })
-    .from(evidenceTable)
-    .leftJoin(
-      evidenceSkillsTable,
-      and(
-        eq(evidenceSkillsTable.evidence_id, evidenceTable.id),
-        eq(evidenceSkillsTable.is_primary, true),
-      ),
-    )
-    .leftJoin(skillsTable, eq(evidenceSkillsTable.skill_id, skillsTable.id))
+  return buildEvidenceWithPrimarySkillQuery()
     .where(and(eq(evidenceTable.id, id), isNull(evidenceTable.deleted_at)))
     .limit(1)
     .then((rows) => rows[0] || null);
@@ -137,6 +109,58 @@ export const updateDraftEvidence = async (
     )
     .returning();
 
+  return updated ?? null;
+};
+
+// Creates a new version of submitted evidence. The old row is soft-deleted so
+// it is excluded from list queries but remains in the database for audit.
+export const createEvidenceRevision = async (
+  oldEvidence: { id: string; version: number; user_id: string },
+  data: Omit<NewEvidence, "parent_id" | "version" | "user_id">,
+) => {
+  return db.transaction(async (tx) => {
+    await tx
+      .update(evidenceTable)
+      .set({ deleted_at: new Date() })
+      .where(eq(evidenceTable.id, oldEvidence.id));
+
+    const [newEntry] = await tx
+      .insert(evidenceTable)
+      .values({
+        ...data,
+        user_id: oldEvidence.user_id,
+        parent_id: oldEvidence.id,
+        version: oldEvidence.version + 1,
+        status: "submitted",
+      })
+      .returning();
+
+    return newEntry;
+  });
+};
+
+// Hard-deletes a draft. Only valid when status is draft.
+export const deleteEvidence = async (id: string) => {
+  const [deleted] = await db
+    .delete(evidenceTable)
+    .where(and(eq(evidenceTable.id, id), eq(evidenceTable.status, "draft")))
+    .returning();
+  return deleted ?? null;
+};
+
+// Soft-deletes verified evidence. Only valid when status is verified.
+export const softDeleteEvidence = async (id: string) => {
+  const [updated] = await db
+    .update(evidenceTable)
+    .set({ deleted_at: new Date() })
+    .where(
+      and(
+        eq(evidenceTable.id, id),
+        eq(evidenceTable.status, "verified"),
+        isNull(evidenceTable.deleted_at),
+      ),
+    )
+    .returning();
   return updated ?? null;
 };
 

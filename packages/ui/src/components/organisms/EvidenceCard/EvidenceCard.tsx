@@ -17,17 +17,17 @@ export type EvidenceEntry = {
   result: string;
   data_classification: string;
   skill_name: string;
-  level_number: number;
+  level_claimed: string;
   sector: string;
   security_context: string;
   project_id: string | null;
-  status: "draft" | "pending_verification" | "verified";
+  status: "draft" | "submitted" | "verified";
   created_at: string;
 };
 
 const STATUS_CONFIG = {
   draft: { label: "Draft", icon: FilePenLine },
-  pending_verification: { label: "Pending Review", icon: Clock },
+  submitted: { label: "Pending Review", icon: Clock },
   verified: { label: "Verified", icon: BadgeCheck },
 } as const;
 
@@ -80,9 +80,7 @@ export function EvidenceCard(props: EvidenceCardProps) {
       <header class={styles.header}>
         <div class={styles.skillBadge}>
           <span class={styles.skillName}>{props.entry.skill_name}</span>
-          <span class={styles.levelBadge}>
-            Level {props.entry.level_number}
-          </span>
+          <span class={styles.levelBadge}>{props.entry.level_claimed}</span>
         </div>
 
         <div class={styles.metaRight}>

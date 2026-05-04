@@ -153,6 +153,26 @@ export const addEndorsementToEvidence = async (
   return created ?? null;
 };
 
+// Replaces all endorsements for a piece of evidence atomically. Used when
+// the user edits endorser selections on a draft or creates a revision.
+export const replaceEndorsementsForEvidence = async (
+  evidenceId: string,
+  records: Omit<NewEndorsement, "evidence_id">[],
+) => {
+  return db.transaction(async (tx) => {
+    await tx
+      .delete(endorsementsTable)
+      .where(eq(endorsementsTable.evidence_id, evidenceId));
+
+    if (records.length === 0) return [];
+
+    return tx
+      .insert(endorsementsTable)
+      .values(records.map((r) => ({ ...r, evidence_id: evidenceId })))
+      .returning();
+  });
+};
+
 export const getSuggestedEndorsers = async (
   userId: string,
   orgId: string,
