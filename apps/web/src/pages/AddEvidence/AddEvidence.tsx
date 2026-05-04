@@ -39,6 +39,15 @@ async function fetchSkills(): Promise<{ value: string; label: string }[]> {
   ];
 }
 
+async function fetchSuggestedEndorsers(): Promise<string[]> {
+  const res = await fetch(`${API}/api/v0/endorsements/suggested`, {
+    credentials: "include",
+  });
+  const json = await res.json();
+  if (!json.ok) return [];
+  return json.data ?? [];
+}
+
 export function AddEvidence() {
   useAuthGuard();
   const session = useSession();
@@ -46,7 +55,7 @@ export function AddEvidence() {
 
   const [projects] = createResource(fetchProjects);
   const [skills] = createResource(fetchSkills);
-
+  const [suggestedEndorsers] = createResource(fetchSuggestedEndorsers);
   const handleSubmit = async (data: EvidenceFormData) => {
     const userId = session()?.data?.user?.id;
     if (!userId) throw new Error("No active session — please sign in again.");
@@ -61,10 +70,11 @@ export function AddEvidence() {
         action: data.action,
         result: data.result,
         project_id: data.projectId || null,
-        data_classification: data.classification || "official",
+        data_classification: data.dataClassification || "official",
         main_skill_id: data.mainSkillId || null,
         level_claimed: data.levelClaimed || null,
         tag_ids: data.tagIds,
+        endorser_ids: data.endorsers,
       }),
     });
 
@@ -80,8 +90,9 @@ export function AddEvidence() {
         <EvidenceAdd
           projects={projects() ?? []}
           skills={skills() ?? []}
-          classifications={CLASSIFICATION_OPTIONS}
+          dataClassifications={CLASSIFICATION_OPTIONS}
           tags={[]}
+          suggested_endorsers={suggestedEndorsers() ?? []}
           onSubmit={handleSubmit}
         />
       </Container>

@@ -1,5 +1,4 @@
 .base {
-  max-width: 720px;
   margin: 0 auto;
   padding: var(--space-8, 2rem);
 }

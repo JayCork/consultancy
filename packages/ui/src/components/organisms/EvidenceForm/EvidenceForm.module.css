@@ -1,7 +1,22 @@
 .form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--space-10, 2.5rem);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: var(--space-4, 1rem);
+  grid-row-gap: var(--space-4, 1rem);
+}
+
+.main {
+  grid-column: 1 / 4;
+  grid-row: 1;
+}
+
+.side {
+  grid-column: 4 / 5;
+  grid-row: 1;
 }
 
 .section {

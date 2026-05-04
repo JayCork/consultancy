@@ -2,11 +2,9 @@ import { Hono } from "hono";
 import {
   createEvidence,
   getEvidenceByUser,
-  db,
-  evidenceSkillsTable,
-  evidenceTagsTable,
   getUserByAuthId,
-  getAllOrgSkills,
+  createEndorsements,
+  getSuggestedEndorsers,
 } from "@consultancy/db";
 import type { HonoVariables } from "../lib";
 import { getPendingEvidenceByUser } from "packages/db/src/queries/evidence";
@@ -32,13 +30,27 @@ evidence.post("/", async (context) => {
     );
   }
 
-  const { situation, task, action, result, project_id, data_classification } =
-    body;
+  const {
+    situation,
+    task,
+    action,
+    result,
+    project_id,
+    data_classification,
+    endorser_ids,
+  } = body;
 
   if (!situation || !task || !action || !result) {
     return context.json(
       { ok: false, error: "situation, task, action, and result are required" },
       400,
+    );
+  }
+
+  if (!user.organization_id) {
+    return context.json(
+      { ok: false, error: "User is not assigned to an organisation" },
+      403,
     );
   }
 
@@ -60,6 +72,32 @@ evidence.post("/", async (context) => {
         }
       : {}),
   });
+
+  // Determine the final set of endorsers: use the client-provided list if given,
+  // otherwise fall back to the org routing policy defaults.
+  const suggestedIds = await getSuggestedEndorsers(
+    user.id,
+    user.organization_id,
+    project_id as string | undefined,
+  );
+
+  let finalEndorserIds: string[];
+  if (Array.isArray(endorser_ids) && endorser_ids.length > 0) {
+    finalEndorserIds = endorser_ids as string[];
+  } else {
+    finalEndorserIds = suggestedIds;
+  }
+
+  const suggestedSet = new Set(suggestedIds);
+  if (finalEndorserIds.length > 0) {
+    await createEndorsements(
+      finalEndorserIds.map((endorser_id) => ({
+        evidence_id: entry.id,
+        endorser_id,
+        is_suggested: suggestedSet.has(endorser_id),
+      })),
+    );
+  }
 
   return context.json({ ok: true, data: entry }, 201);
 });
