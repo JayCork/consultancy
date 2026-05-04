@@ -27,6 +27,10 @@ export function EvidenceList() {
 
   createEffect(() => console.log("Evidence entries:", entries()));
 
+  const onEvidenceClick = (entry: EvidenceEntry) => {
+    navigate(`/evidence/${entry.id}/edit`);
+  };
+
   return (
     <Shell>
       <Container>
@@ -57,7 +61,12 @@ export function EvidenceList() {
         <Show when={(entries()?.length ?? 0) > 0}>
           <div class={styles.entryContainer}>
             <For each={entries()}>
-              {(entry) => <EvidenceCard entry={entry} />}
+              {(entry) => (
+                <EvidenceCard
+                  entry={entry}
+                  onClick={() => onEvidenceClick(entry)}
+                />
+              )}
             </For>
           </div>
         </Show>
