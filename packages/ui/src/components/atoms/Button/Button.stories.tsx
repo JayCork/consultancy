@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
 import Button from "./Button";
 
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button
+
 const meta: Meta<typeof Button> = {
   component: Button,
   title: "Atoms/Button",
@@ -32,3 +34,20 @@ export const WithFocus: Story = {
     button?.focus();
   },
 };
+
+export const AutoFocus: Story = {
+  args: {
+    ...Primary.args,
+    children: "Auto Focus Button",
+    autofocus: true,
+  },
+};
+
+// TODO: Add story for command and commandfor attributes once implemented in the Button component
+// export const CommandShowModal: Story = {
+//   args: {
+//     ...Primary.args,
+//     children: "Show Modal",
+//     command: "show-modal",
+//   },
+// };

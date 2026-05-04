@@ -7,6 +7,8 @@ import {
   frameworkRolesTable,
   frameworkRoleSkillExpectationsTable,
   referenceSkillsTable,
+  skillsTable,
+  skillsLevelsTable,
 } from "..";
 
 export const getAllSkills = async () => {
@@ -57,10 +59,25 @@ export const getUsersFrameworkSkills = async (internalUserId: string) => {
 
 export const getAllOrgSkills = async (orgId: string) => {
   return db
-    .select({
-      skill: referenceSkillsTable,
-    })
-    .from(referenceSkillsTable)
-    .where(eq(referenceSkillsTable.organization_id, orgId))
-    .orderBy(asc(referenceSkillsTable.name));
+    .select()
+    .from(skillsTable)
+    .where(eq(skillsTable.organization_id, orgId))
+    .orderBy(asc(skillsTable.name));
+};
+
+export const getOrgSkillById = async (skillId: string, orgId: string) => {
+  const [skill] = await db
+    .select()
+    .from(skillsTable)
+    .where(and(eq(skillsTable.id, skillId), eq(skillsTable.organization_id, orgId)))
+    .limit(1);
+  return skill ?? null;
+};
+
+export const getSkillLevels = async (skillId: string) => {
+  return db
+    .select()
+    .from(skillsLevelsTable)
+    .where(eq(skillsLevelsTable.skill_id, skillId))
+    .orderBy(asc(skillsLevelsTable.level));
 };

@@ -1,0 +1,48 @@
+.form {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-10, 2.5rem);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: var(--space-4, 1rem);
+  grid-row-gap: var(--space-4, 1rem);
+}
+
+.main {
+  grid-column: 1 / 4;
+  grid-row: 1;
+}
+
+.side {
+  grid-column: 4 / 5;
+  grid-row: 1;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+}
+
+.sectionTitle {
+  margin: 0;
+}
+
+.sectionIntro {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 1.5rem);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}

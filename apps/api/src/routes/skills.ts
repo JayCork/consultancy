@@ -1,41 +1,48 @@
 import { Hono } from "hono";
 import {
-  getAllSkills,
+  getAllOrgSkills,
+  getOrgSkillById,
+  getSkillLevels,
   getUserByAuthId,
-  getUsersFrameworkSkills,
-  user,
 } from "@consultancy/db";
+import type { HonoVariables } from "../lib";
 
-const skills = new Hono();
+const skills = new Hono<{ Variables: HonoVariables }>();
 
-skills.get("/", async (c) => {
-  console.group("GET /skills");
-  const authUserId = c.req.query("userId");
-  if (!authUserId) {
-    console.debug("Missing userId query parameter");
-    console.groupEnd();
-    return c.json({ ok: false, error: "Missing userId query parameter" }, 400);
-  }
-  const user = await getUserByAuthId(authUserId);
+skills.get("/", async (context) => {
+  const session = context.get("session");
+  const user = await getUserByAuthId(session.userId);
 
   if (!user) {
-    console.debug(`No user found for auth ID: ${authUserId}`);
-    console.groupEnd();
-    return c.json({ ok: false, error: "User not found" }, 404);
+    return context.json({ ok: false, error: "User not found" }, 404);
   }
-  const data = await getUsersFrameworkSkills(user.id);
-  console.groupEnd();
-  return c.json({ ok: true, data });
+  if (!user.organization_id) {
+    return context.json({ ok: false, error: "User has no organisation" }, 403);
+  }
+
+  const skills = await getAllOrgSkills(user.organization_id);
+  return context.json({ ok: true, data: skills });
 });
 
-// Get all skills for an organization
-skills.get("/all", async (c) => {
-  const orgId = c.req.query("orgId");
-  if (!orgId) {
-    return c.json({ ok: false, error: "Missing orgId query parameter" }, 400);
+skills.get("/:skillId/levels", async (context) => {
+  const session = context.get("session");
+  const user = await getUserByAuthId(session.userId);
+
+  if (!user) {
+    return context.json({ ok: false, error: "User not found" }, 404);
   }
-  const data = await getAllOrgSkills(orgId);
-  return c.json({ ok: true, data });
+  if (!user.organization_id) {
+    return context.json({ ok: false, error: "User has no organisation" }, 403);
+  }
+
+  const { skillId } = context.req.param();
+  const skill = await getOrgSkillById(skillId, user.organization_id);
+  if (!skill) {
+    return context.json({ ok: false, error: "Skill not found" }, 404);
+  }
+
+  const levels = await getSkillLevels(skillId);
+  return context.json({ ok: true, data: levels });
 });
 
 export default skills;

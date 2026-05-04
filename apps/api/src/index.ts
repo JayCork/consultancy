@@ -8,8 +8,9 @@ import readinessRoutes from "./routes/readiness";
 import adminRoutes from "./routes/admin";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
-import { env, auth } from "./lib";
+import { env, auth, requireAuth } from "./lib";
 import setupRoutes from "./routes/setup";
+import endorsmentsRoutes from "./routes/endorsements";
 
 const PORT = process.env.PORT || 5173;
 
@@ -34,6 +35,8 @@ api.on(["POST", "GET"], "/auth/*", (c) => {
   return auth.handler(c.req.raw);
 });
 
+api.use("/v0/*", requireAuth);
+
 api.route("/v0/users", userRoutes);
 api.route("/v0/evidence", evidenceRoutes);
 api.route("/v0/projects", projectRoutes);
@@ -41,6 +44,7 @@ api.route("/v0/skills", skillRoutes);
 api.route("/v0/readiness", readinessRoutes);
 api.route("/v0/admin", adminRoutes);
 api.route("/v0/setup", setupRoutes);
+api.route("/v0/endorsements", endorsmentsRoutes);
 
 api.get("/v0/health", (c) => {
   return c.json({

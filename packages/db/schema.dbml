@@ -26,6 +26,7 @@ enum competency_type {
 }
 
 enum data_classification {
+  public
   official
   official_sensitive
   secret

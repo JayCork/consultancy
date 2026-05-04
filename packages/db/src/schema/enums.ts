@@ -30,6 +30,7 @@ export const competencySourceEnum = pgEnum("competency_source", [
 
 // Data classification for evidence
 export const dataClassificationEnum = pgEnum("data_classification", [
+  "public",
   "official",
   "official_sensitive",
   "secret",
@@ -38,7 +39,7 @@ export const dataClassificationEnum = pgEnum("data_classification", [
 // organizations
 export const endorsementRoutingPolicyEnum = pgEnum(
   "endorsement_routing_policy",
-  ["project_and_managers", "project_only", "managers_only", "org_wide"],
+  ["project_and_managers", "project_only", "managers_only"],
 );
 
 // ISO 3166-1 alpha-3 country codes for potential future use in user profiles, project locations, etc.
