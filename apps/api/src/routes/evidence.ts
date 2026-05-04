@@ -398,7 +398,10 @@ evidence.delete("/:id", async (context) => {
   // verified
   const deleted = await softDeleteEvidence(id);
   if (!deleted) {
-    return context.json({ ok: false, error: "Evidence could not be deleted" }, 409);
+    return context.json(
+      { ok: false, error: "Evidence could not be deleted" },
+      409,
+    );
   }
   return context.json({ ok: true });
 });
