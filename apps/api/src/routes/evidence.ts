@@ -14,6 +14,7 @@ import {
   replaceEndorsementsForEvidence,
   getEndorsementsForEvidence,
   getPendingEvidenceByUser,
+  getEvidenceStatsByUser,
 } from "@consultancy/db";
 import type { HonoVariables } from "../lib";
 
@@ -198,6 +199,22 @@ evidence.get("/pending", async (context) => {
 
   const pending = await getPendingEvidenceByUser(user.id);
   return context.json({ ok: true, data: pending });
+});
+
+evidence.get("/stats", async (context) => {
+  const { user, response } = await getCurrentUserOrNotFound(context);
+  if (!user) return response;
+
+  const stats = await getEvidenceStatsByUser(user.id);
+  return context.json({
+    ok: true,
+    data: {
+      total: stats.total,
+      draft: stats.draft,
+      pendingVerification: stats.submitted,
+      verified: stats.verified,
+    },
+  });
 });
 
 evidence.get("/:id", async (context) => {

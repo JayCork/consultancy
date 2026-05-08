@@ -1,4 +1,5 @@
 import {
+  count,
   InferInsertModel,
   eq,
   and,
@@ -55,10 +56,7 @@ const buildEvidenceWithPrimarySkillQuery = () =>
 // because revisions soft-delete the previous version, so deleted_at alone is
 // sufficient to exclude superseded entries.
 const byUserActiveLatestEvidence = (userId: string) =>
-  and(
-    eq(evidenceTable.user_id, userId),
-    isNull(evidenceTable.deleted_at),
-  );
+  and(eq(evidenceTable.user_id, userId), isNull(evidenceTable.deleted_at));
 
 export const createEvidence = async (data: NewEvidence) => {
   const [entry] = await db.insert(evidenceTable).values(data).returning();
@@ -206,4 +204,25 @@ export const upsertPrimaryEvidenceSkill = async ({
     .returning();
 
   return created ?? null;
+};
+
+// Returns evidence counts by status for a given user (active/latest only)
+export const getEvidenceStatsByUser = async (userId: string) => {
+  // Drizzle ORM: count() must be aliased for correct result
+  const rows = await db
+    .select({ status: evidenceTable.status, count: count().as("count") })
+    .from(evidenceTable)
+    .where(byUserActiveLatestEvidence(userId))
+    .groupBy(evidenceTable.status);
+
+  const initial = { total: 0, draft: 0, submitted: 0, verified: 0 };
+  const result = rows.reduce((acc, row) => {
+    const count = Number(row.count);
+    acc.total += count;
+    if (row.status === "draft") acc.draft = count;
+    else if (row.status === "submitted") acc.submitted = count;
+    else if (row.status === "verified") acc.verified = count;
+    return acc;
+  }, initial);
+  return result;
 };

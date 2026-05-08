@@ -16,27 +16,12 @@ export function EvidenceStats() {
 
   const [counts] = createResource(userId, async (id) => {
     if (!id) return null;
-    const res = await fetch(`${API}/api/v0/evidence`, {
+    const res = await fetch(`${API}/api/v0/evidence/stats`, {
       credentials: "include",
     });
     const json = await res.json();
-    const entries = (json.data ?? []) as { status: string }[];
-    return entries.reduce(
-      (acc, e) => {
-        acc.total++;
-        if (e.status === "draft") acc.draft++;
-        else if (e.status === "pending_verification")
-          acc.pending_verification++;
-        else if (e.status === "verified") acc.verified++;
-        return acc;
-      },
-      {
-        total: 0,
-        draft: 0,
-        pending_verification: 0,
-        verified: 0,
-      } as EvidenceStatCounts,
-    );
+    if (!json.ok) return null;
+    return json.data as EvidenceStatCounts;
   });
 
   return (

@@ -9,6 +9,7 @@ export {
   deleteEvidence,
   softDeleteEvidence,
   upsertPrimaryEvidenceSkill,
+  getEvidenceStatsByUser,
 } from "./evidence";
 export { getAllProjects } from "./projects";
 export {
