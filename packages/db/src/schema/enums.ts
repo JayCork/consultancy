@@ -78,6 +78,32 @@ export const projectRoleEnum = pgEnum("project_role", [
   "project_manager",
 ]);
 
+export const projectStatusEnum = pgEnum("project_status", [
+  // Pre-contract
+  "opportunity",      // Potential work identified; no formal bid started
+  "qualifying",       // Assessing fit, capacity, clearance requirements
+  "bidding",          // Formal proposal / ITT response in progress
+  "bid_submitted",    // Awaiting client decision
+  "bid_won",          // Award confirmed; contract not yet signed
+  "bid_lost",         // Bid unsuccessful — terminal
+  // Contract / mobilisation
+  "contract_review",  // Legal/commercial review of terms
+  "contract_signed",  // Contract executed; mobilisation begins
+  "mobilising",       // Team assembly, accreditations, environment setup
+  // Delivery
+  "discovery",        // Requirements gathering, stakeholder mapping
+  "in_delivery",      // Active development / delivery sprints
+  "uat",              // User Acceptance Testing — client-led validation
+  "hypercare",        // Intensive post-go-live support window
+  // Sustain
+  "support",          // BAU support / long-term service management
+  "contract_renewal", // Renewal negotiation underway; project still live
+  // Close
+  "closing",          // Wind-down; knowledge transfer and handover
+  "closed",           // All obligations met — terminal
+  "cancelled",        // Stopped mid-stream by either party — terminal
+]);
+
 // Evidence
 export const evidenceStatusEnum = pgEnum("evidence_status", [
   "draft",

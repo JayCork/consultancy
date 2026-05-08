@@ -8,7 +8,7 @@ export {
   getPendingEvidenceForReviewer,
   getEvidenceWithDetails,
 } from "./evidence";
-export { getAllProjects } from "./projects";
+export { getAllProjects, getProjectsWithMilestones } from "./projects";
 export { getAllSkills, getUsersFrameworkSkills, getAllOrgSkills, getSkillLevels, getOrgSkillById } from "./skills";
 export { getReadinessForUser } from "./readiness";
 export { getCurrentRoleForUser } from "./roles";

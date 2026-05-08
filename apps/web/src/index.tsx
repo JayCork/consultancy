@@ -8,9 +8,11 @@ import {
   EvidenceList,
   EvidenceReview,
   PeerReview,
+  ProjectTimelinePage,
   Register,
   SignIn,
 } from "./pages";
+import { ProjectNewPage } from "./pages/ProjectNew/ProjectNew";
 
 render(
   () => (
@@ -22,6 +24,8 @@ render(
       <Route path="/evidence" component={EvidenceList} />
       <Route path="/peer-review" component={PeerReview} />
       <Route path="/peer-review/:id" component={EvidenceReview} />
+      <Route path="/projects" component={ProjectTimelinePage} />
+      <Route path="/projects/new" component={ProjectNewPage} />
       <Route path="/admin" component={AdminConfig} />
       {/* <Route path="/organization" component={OrganizationPage} /> */}
     </Router>

@@ -19,6 +19,8 @@ export * from "./components/organisms/EvidenceStats/EvidenceStats";
 export * from "./components/organisms/ReadinessCard/ReadinessCard";
 export * from "./components/organisms/SkillGapList/SkillGapList";
 export * from "./components/organisms/EvidenceForm/EvidenceForm";
+export * from "./components/organisms/GanttBar/GanttBar";
+export * from "./components/organisms/ProjectTimeline/ProjectTimeline";
 export * from "./components/atoms/StatCard/StatCard";
 export * from "./components/pages/EvidenceAdd/EvidenceAdd";
 export * from "./components/pages/EmployeeDashboard/EmployeeDashboard";

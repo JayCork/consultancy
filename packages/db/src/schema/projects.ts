@@ -7,7 +7,7 @@ import {
   uniqueIndex,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { projectRoleEnum, regionEnum } from "./enums";
+import { projectRoleEnum, projectStatusEnum, regionEnum } from "./enums";
 import { organizationsTable } from "./organizations";
 import { clearanceLevelsTable } from "./reference";
 import { usersTable } from "./users";
@@ -27,6 +27,19 @@ export const projectsTable = pgTable("projects", {
   start_date: timestamp().notNull(),
   end_date: timestamp(),
   region: regionEnum().notNull().default("GBR"),
+  status: projectStatusEnum().notNull().default("opportunity"),
+  ...timestamps,
+});
+
+
+export const projectMilestonesTable = pgTable("project_milestones", {
+  id: uuid().primaryKey().defaultRandom(),
+  project_id: uuid()
+    .notNull()
+    .references(() => projectsTable.id),
+  name: text().notNull(),
+  description: text(),
+  date: date().notNull(),
   ...timestamps,
 });
 
