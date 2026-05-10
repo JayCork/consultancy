@@ -1,5 +1,11 @@
 import { createSignal, Show } from "solid-js";
-import { Clock, FilePenLine, BadgeCheck, ChevronDown, ChevronUp } from "lucide-solid";
+import {
+  Clock,
+  FilePenLine,
+  BadgeCheck,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-solid";
 import styles from "./EvidenceCard.module.css";
 
 export type EvidenceEntry = {
@@ -9,17 +15,18 @@ export type EvidenceEntry = {
   action: string;
   result: string;
   skill_name: string;
-  level_number: number;
-  sector: string;
+  level_claimed: number;
+  data_classification: string;
   security_context: string;
   project_id: string | null;
-  status: "draft" | "pending_verification" | "verified";
+  status: "draft" | "submitted" | "verified";
   created_at: string;
 };
 
 const STATUS_CONFIG = {
   draft: { label: "Draft", icon: FilePenLine },
   pending_verification: { label: "Pending Review", icon: Clock },
+  submitted: { label: "Pending Review", icon: Clock },
   verified: { label: "Verified", icon: BadgeCheck },
 } as const;
 
@@ -71,7 +78,7 @@ export function EvidenceCard(props: EvidenceCardProps) {
       <header class={styles.header}>
         <div class={styles.skillBadge}>
           <span class={styles.skillName}>{props.entry.skill_name}</span>
-          <span class={styles.levelBadge}>Level {props.entry.level_number}</span>
+          <span class={styles.levelBadge}>{props.entry.level_claimed}</span>
         </div>
 
         <div class={styles.metaRight}>
@@ -84,7 +91,9 @@ export function EvidenceCard(props: EvidenceCardProps) {
             class={styles.expandBtn}
             onClick={() => setExpanded((v) => !v)}
             aria-expanded={expanded()}
-            aria-label={expanded() ? "Collapse STAR details" : "Expand STAR details"}
+            aria-label={
+              expanded() ? "Collapse STAR details" : "Expand STAR details"
+            }
           >
             <Show when={expanded()} fallback={<ChevronDown size={16} />}>
               <ChevronUp size={16} />
@@ -114,7 +123,8 @@ export function EvidenceCard(props: EvidenceCardProps) {
 
       <footer class={styles.footer}>
         <span class={styles.footerTag}>
-          {SECTOR_LABELS[props.entry.sector] ?? props.entry.sector}
+          {SECTOR_LABELS[props.entry.data_classification] ??
+            props.entry.data_classification}
         </span>
         <Show when={!props.entry.project_id}>
           <span class={styles.footerTag}>Non-project</span>
