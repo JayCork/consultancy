@@ -1,4 +1,4 @@
-import { createSignal, For, mergeProps, splitProps, type JSX } from "solid-js";
+import { createEffect, For, splitProps, type JSX } from "solid-js";
 import styles from "./Select.module.css";
 
 // Makes label and value required, but allows other option props like disabled
@@ -28,27 +28,32 @@ const Select = (_props: SelectProps) => {
   const description = () => props.description;
   const options = () => props.options;
   const fullWidth = () => props.fullWidth;
-  const [selectedOption, setSelectedOption] = createSignal("");
+  let selectRef: HTMLSelectElement | undefined;
+
+  createEffect(() => {
+    const currentValue = selectProps.value as string | undefined;
+    const optionCount = options().length;
+    if (!selectRef || currentValue === undefined) return;
+
+    // Ensure the selected value is reapplied when options load asynchronously.
+    if (optionCount > 0) {
+      selectRef.value = currentValue;
+    }
+  });
 
   return (
     <div class={`${styles.root} ${fullWidth() ? styles.fullWidth : ""}`}>
       <label for={id()}>{label()}</label>
       {description() && <span id={`${id()}-description`}>{description()}</span>}
       <select
+        ref={selectRef}
         class={styles.select}
         id={id()}
         aria-describedby={description() ? `${id()}-description` : undefined}
         {...selectProps}
       >
         <For each={options()}>
-          {(item, index) => (
-            <option
-              value={item.value}
-              selected={item.value === selectedOption()}
-            >
-              {item.label}
-            </option>
-          )}
+          {(item) => <option value={item.value}>{item.label}</option>}
         </For>
       </select>
     </div>

@@ -2,14 +2,23 @@ export { getAllUsers, getUserById, getUserByAuthId } from "./users";
 export {
   createEvidence,
   getEvidenceByUser,
+  getPendingEvidenceByUser,
   getEvidenceById,
-  updateEvidenceStatus,
-  canUserVerifyEvidence,
-  getPendingEvidenceForReviewer,
-  getEvidenceWithDetails,
+  updateDraftEvidence,
+  createEvidenceRevision,
+  deleteEvidence,
+  softDeleteEvidence,
+  upsertPrimaryEvidenceSkill,
+  getEvidenceStatsByUser,
 } from "./evidence";
 export { getAllProjects } from "./projects";
-export { getAllSkills, getUsersFrameworkSkills, getAllOrgSkills, getSkillLevels, getOrgSkillById } from "./skills";
+export {
+  getAllSkills,
+  getUsersFrameworkSkills,
+  getAllOrgSkills,
+  getSkillLevels,
+  getOrgSkillById,
+} from "./skills";
 export { getReadinessForUser } from "./readiness";
 export { getCurrentRoleForUser } from "./roles";
 export { getOrgConfig, getJobRolesWithRequirements } from "./admin";
@@ -23,4 +32,5 @@ export {
   deleteEndorsement,
   addEndorsementToEvidence,
   getSuggestedEndorsers,
+  replaceEndorsementsForEvidence,
 } from "./endorsements";

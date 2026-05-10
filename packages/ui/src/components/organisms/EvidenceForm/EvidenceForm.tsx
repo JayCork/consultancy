@@ -1,4 +1,4 @@
-import { createSignal, For, Show } from "solid-js";
+import { createEffect, createSignal, For, Show } from "solid-js";
 import { Button, Select, TextArea } from "../../atoms";
 import { TagPicker } from "../TagPicker/TagPicker";
 import styles from "./EvidenceForm.module.css";
@@ -26,48 +26,103 @@ export interface EvidenceFormData {
   endorsers: string[];
 }
 
+export type EvidenceSubmitAction = "save-draft" | "submit";
+
+export interface EvidenceFormInitialData extends Partial<EvidenceFormData> {}
+
 export interface EvidenceFormProps {
   projects: { value: string; label: string }[];
   skills: { value: string; label: string }[];
   dataClassifications: { value: string; label: string }[];
   tags: { value: string; label: string }[];
   suggested_endorsers: { id: string; name: string }[];
-  onSubmit: (data: EvidenceFormData) => void | Promise<void>;
+  initialData?: EvidenceFormInitialData;
+  /** Label for the primary submit button (e.g. "Submit for review", "Resubmit") */
+  submitLabel?: string;
+  /** When provided, a secondary "Save draft" button is shown with this label */
+  saveDraftLabel?: string;
+  onSubmit: (
+    data: EvidenceFormData,
+    action: EvidenceSubmitAction,
+  ) => void | Promise<void>;
 }
 
 export const EvidenceForm = (props: EvidenceFormProps) => {
-  const [situation, setSituation] = createSignal("");
-  const [task, setTask] = createSignal("");
-  const [action, setAction] = createSignal("");
-  const [result, setResult] = createSignal("");
-  const [projectId, setProjectId] = createSignal("");
-  const [dataClassification, setDataClassification] = createSignal("");
-  const [mainSkillId, setMainSkillId] = createSignal("");
-  const [levelClaimed, setLevelClaimed] = createSignal("");
-  const [tagIds, setTagIds] = createSignal<string[]>([]);
+  const [situation, setSituation] = createSignal(
+    props.initialData?.situation ?? "",
+  );
+  const [task, setTask] = createSignal(props.initialData?.task ?? "");
+  const [action, setAction] = createSignal(props.initialData?.action ?? "");
+  const [result, setResult] = createSignal(props.initialData?.result ?? "");
+  const [projectId, setProjectId] = createSignal(
+    props.initialData?.projectId ?? "",
+  );
+  const [dataClassification, setDataClassification] = createSignal(
+    props.initialData?.dataClassification ?? "",
+  );
+  const [mainSkillId, setMainSkillId] = createSignal(
+    props.initialData?.mainSkillId ?? "",
+  );
+  const [levelClaimed, setLevelClaimed] = createSignal(
+    props.initialData?.levelClaimed ?? "",
+  );
+  const [tagIds, setTagIds] = createSignal<string[]>(
+    props.initialData?.tagIds ?? [],
+  );
   const [submitting, setSubmitting] = createSignal(false);
   const [error, setError] = createSignal("");
   const [endorsers, setEndorsers] = createSignal<string[]>(
-    props.suggested_endorsers.map((e) => e.id),
+    props.initialData?.endorsers ?? [],
   );
+
+  let defaultEndorsersApplied = false;
+
+  createEffect(() => {
+    const initial = props.initialData;
+    if (initial) {
+      setSituation(initial.situation ?? "");
+      setTask(initial.task ?? "");
+      setAction(initial.action ?? "");
+      setResult(initial.result ?? "");
+      setProjectId(initial.projectId ?? "");
+      setDataClassification(initial.dataClassification ?? "");
+      setMainSkillId(initial.mainSkillId ?? "");
+      setLevelClaimed(initial.levelClaimed ?? "");
+      setTagIds(initial.tagIds ?? []);
+      setEndorsers(initial.endorsers ?? []);
+      return;
+    }
+    if (defaultEndorsersApplied) return;
+    const suggested = props.suggested_endorsers;
+    if (suggested.length === 0) return;
+    setEndorsers(suggested.map((e) => e.id));
+    defaultEndorsersApplied = true;
+  });
 
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     setError("");
     setSubmitting(true);
     try {
-      await props.onSubmit({
-        situation: situation(),
-        task: task(),
-        action: action(),
-        result: result(),
-        projectId: projectId(),
-        dataClassification: dataClassification(),
-        mainSkillId: mainSkillId(),
-        levelClaimed: levelClaimed(),
-        tagIds: tagIds(),
-        endorsers: endorsers(),
-      });
+      const submitAction =
+        (e.submitter as HTMLButtonElement | null)?.value === "submit"
+          ? "submit"
+          : "save-draft";
+      await props.onSubmit(
+        {
+          situation: situation(),
+          task: task(),
+          action: action(),
+          result: result(),
+          projectId: projectId(),
+          dataClassification: dataClassification(),
+          mainSkillId: mainSkillId(),
+          levelClaimed: levelClaimed(),
+          tagIds: tagIds(),
+          endorsers: endorsers(),
+        },
+        submitAction,
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Submission failed.");
     } finally {
@@ -123,12 +178,6 @@ export const EvidenceForm = (props: EvidenceFormProps) => {
         <Show when={error()}>
           <p role="alert">{error()}</p>
         </Show>
-
-        <div class={styles.actions}>
-          <Button type="submit" disabled={submitting()}>
-            {submitting() ? "Saving..." : "Save evidence"}
-          </Button>
-        </div>
       </div>
       <div class={styles.side}>
         <section>
@@ -167,6 +216,7 @@ export const EvidenceForm = (props: EvidenceFormProps) => {
               label="Main skill"
               description="Which skill is the primary focus of this evidence?"
               options={props.skills}
+              value={mainSkillId()}
               onChange={(e) => {
                 setMainSkillId(e.currentTarget.value);
                 setLevelClaimed("");
@@ -177,6 +227,7 @@ export const EvidenceForm = (props: EvidenceFormProps) => {
                 label="Skill level"
                 description="At what level does this evidence demonstrate your skill?"
                 options={LEVEL_OPTIONS}
+                value={levelClaimed()}
                 onChange={(e) => setLevelClaimed(e.currentTarget.value)}
               />
             </Show>
@@ -200,16 +251,28 @@ export const EvidenceForm = (props: EvidenceFormProps) => {
               label="Project name"
               description="Which project does this evidence relate to?"
               options={props.projects}
+              value={projectId()}
               onChange={(e) => setProjectId(e.currentTarget.value)}
             />
             <Select
               label="Data classification"
               description="Determine the sensitivity level of the evidence to ensure appropriate handling and sharing."
               options={props.dataClassifications}
+              value={dataClassification()}
               onChange={(e) => setDataClassification(e.currentTarget.value)}
             />
           </div>
         </section>
+      </div>
+      <div class={styles.actions}>
+        <Show when={props.saveDraftLabel}>
+          <Button type="submit" value="save-draft" disabled={submitting()}>
+            {props.saveDraftLabel}
+          </Button>
+        </Show>
+        <Button type="submit" value="submit" disabled={submitting()}>
+          {submitting() ? "Saving..." : (props.submitLabel ?? "Submit for review")}
+        </Button>
       </div>
     </form>
   );

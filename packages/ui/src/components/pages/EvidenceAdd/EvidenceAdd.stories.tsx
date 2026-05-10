@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "storybook-solidjs-vite";
-import { EvidenceAdd } from "./EvidenceAdd";
+import { EvidenceForm } from "../../organisms/EvidenceForm/EvidenceForm";
 
-const meta: Meta<typeof EvidenceAdd> = {
-  component: EvidenceAdd,
+const meta: Meta<typeof EvidenceForm> = {
+  component: EvidenceForm,
   title: "Pages/EvidenceAdd",
 };
 
 export default meta;
-type Story = StoryObj<typeof EvidenceAdd>;
+type Story = StoryObj<typeof EvidenceForm>;
 
 const mockProjects = [
   { value: "project-alpha", label: "Project Alpha" },
@@ -36,10 +36,10 @@ const mockTags = [
 export const Default: Story = {
   args: {
     projects: mockProjects,
-
-    classifications: mockClassifications,
+    dataClassifications: mockClassifications,
     skills: mockSkills,
     tags: mockTags,
+    suggested_endorsers: [],
     onSubmit: async (data) => {
       console.log("Evidence submitted:", data);
     },
