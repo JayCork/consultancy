@@ -22,6 +22,7 @@ render(
       <Route path="/register" component={Register} />
       <Route path="/evidence/add" component={AddEvidence} />
       <Route path="/evidence" component={EvidenceList} />
+      <Route path="/evidence/:id/edit" component={AddEvidence} />
       <Route path="/peer-review" component={PeerReview} />
       <Route path="/peer-review/:id" component={EvidenceReview} />
       <Route path="/projects" component={ProjectTimelinePage} />

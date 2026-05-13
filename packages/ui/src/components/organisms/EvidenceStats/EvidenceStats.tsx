@@ -5,7 +5,7 @@ import styles from "./EvidenceStats.module.css";
 export interface EvidenceStatCounts {
   total: number;
   draft: number;
-  pending_verification: number;
+  pendingVerification: number;
   verified: number;
 }
 
@@ -40,10 +40,10 @@ export function EvidenceStats(props: EvidenceStatsProps) {
         }
       />
       <StatCard
-        value={props.counts.pending_verification}
+        value={props.counts.pendingVerification}
         label="Pending review"
         sublabel={
-          props.counts.pending_verification > 0
+          props.counts.pendingVerification > 0
             ? "Awaiting verification by a peer"
             : undefined
         }

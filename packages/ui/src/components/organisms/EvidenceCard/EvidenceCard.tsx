@@ -7,6 +7,7 @@ import {
   ChevronUp,
 } from "lucide-solid";
 import styles from "./EvidenceCard.module.css";
+import { Button } from "../../atoms";
 
 export type EvidenceEntry = {
   id: string;
@@ -25,7 +26,6 @@ export type EvidenceEntry = {
 
 const STATUS_CONFIG = {
   draft: { label: "Draft", icon: FilePenLine },
-  pending_verification: { label: "Pending Review", icon: Clock },
   submitted: { label: "Pending Review", icon: Clock },
   verified: { label: "Verified", icon: BadgeCheck },
 } as const;
@@ -58,6 +58,7 @@ function formatDate(iso: string) {
 
 interface EvidenceCardProps {
   entry: EvidenceEntry;
+  onClick?: () => void;
 }
 
 export function EvidenceCard(props: EvidenceCardProps) {
@@ -122,12 +123,14 @@ export function EvidenceCard(props: EvidenceCardProps) {
       </Show>
 
       <footer class={styles.footer}>
-        <span class={styles.footerTag}>
-          {SECTOR_LABELS[props.entry.data_classification] ??
-            props.entry.data_classification}
-        </span>
+        <span class={styles.footerTag}>{props.entry.data_classification}</span>
         <Show when={!props.entry.project_id}>
           <span class={styles.footerTag}>Non-project</span>
+        </Show>
+        <Show when={props.entry.status === "draft"}>
+          <Button class={styles.footerTag} onClick={props.onClick}>
+            Update
+          </Button>
         </Show>
       </footer>
     </article>
