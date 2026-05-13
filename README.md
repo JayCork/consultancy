@@ -39,9 +39,11 @@ Consultants log STAR-format evidence entries, mentors verify them, and verified 
 
 Before you begin, install the following:
 
-- **Node.js** v20+
+- **Node.js** v20.19+ or v22.12+ (v26 LTS recommended)
 - **pnpm** v10 — `npm install -g pnpm`
 - **Docker Desktop** — must be running before `pnpm dev`
+
+If your machine has multiple Node versions, make sure your shell is using one of the supported versions before running the app.
 
 ---
 
@@ -254,6 +256,18 @@ When you register, a database hook in the API automatically:
 ## Running the App
 
 **Start everything at once** (recommended):
+
+```bash
+pnpm dev
+```
+
+If you see an error like `Cannot find native binding` from `rolldown`, run:
+
+```bash
+pnpm install --force --ignore-scripts=false
+```
+
+Then re-run:
 
 ```bash
 pnpm dev
