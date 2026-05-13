@@ -11,7 +11,7 @@ export {
   upsertPrimaryEvidenceSkill,
   getEvidenceStatsByUser,
 } from "./evidence";
-export { getAllProjects } from "./projects";
+export { getAllProjects, getProjectsWithMilestones } from "./projects";
 export {
   getAllSkills,
   getUsersFrameworkSkills,

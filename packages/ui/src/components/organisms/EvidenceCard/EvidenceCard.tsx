@@ -15,10 +15,9 @@ export type EvidenceEntry = {
   task: string;
   action: string;
   result: string;
-  data_classification: string;
   skill_name: string;
-  level_claimed: string;
-  sector: string;
+  level_claimed: number;
+  data_classification: string;
   security_context: string;
   project_id: string | null;
   status: "draft" | "submitted" | "verified";

@@ -5,6 +5,7 @@ import { useSession, signOut } from "./lib/auth-client";
 import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 import Archive from "lucide-solid/icons/archive";
 import Users from "lucide-solid/icons/users";
+import CalendarRange from "lucide-solid/icons/calendar-range";
 import Settings from "lucide-solid/icons/settings";
 
 interface NavEntry {
@@ -40,6 +41,13 @@ const NAV_ITEMS: NavEntry[] = [
   },
   {
     id: 4,
+    href: "/projects",
+    label: "Projects",
+    icon: CalendarRange,
+    match: "prefix",
+  },
+  {
+    id: 5,
     href: "/admin",
     label: "Admin",
     icon: Settings,

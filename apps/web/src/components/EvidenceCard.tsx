@@ -9,11 +9,11 @@ export type EvidenceEntry = {
   action: string;
   result: string;
   skill_name: string;
-  level_number: number;
-  sector: string;
+  level_claimed: string;
+  data_classification: string;
   security_context: string;
   project_id: string | null;
-  status: "draft" | "pending_verification" | "verified";
+  status: "draft" | "submitted" | "pending_verification" | "verified";
   created_at: string;
 };
 
@@ -25,6 +25,12 @@ const STATUS_CONFIG = {
     background: "var(--color-overlay)",
   },
   pending_verification: {
+    label: "Pending Review",
+    icon: Clock,
+    color: "var(--color-on-warning)",
+    background: "var(--color-warning-subtle)",
+  },
+  submitted: {
     label: "Pending Review",
     icon: Clock,
     color: "var(--color-on-warning)",
@@ -75,12 +81,14 @@ export function EvidenceCard(props: EvidenceCardProps) {
     return text.slice(0, 240) + "…";
   };
 
+  console.log(props.entry);
+
   return (
     <article style={cardStyle}>
       <header style={headerStyle}>
         <div style={skillBadgeStyle}>
           <span style={skillNameStyle}>{props.entry.skill_name}</span>
-          <span style={levelBadgeStyle}>Level {props.entry.level_number}</span>
+          <span style={levelBadgeStyle}>Level {props.entry.level_claimed}</span>
         </div>
 
         <div style={metaRightStyle}>
@@ -110,7 +118,8 @@ export function EvidenceCard(props: EvidenceCardProps) {
 
       <footer style={footerStyle}>
         <span style={footerTagStyle}>
-          {SECTOR_LABELS[props.entry.sector] ?? props.entry.sector}
+          {SECTOR_LABELS[props.entry.data_classification] ??
+            props.entry.data_classification}
         </span>
         <Show when={!props.entry.project_id}>
           <span style={footerTagStyle}>Non-project</span>

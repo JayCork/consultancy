@@ -1,0 +1,48 @@
+.track {
+  position: relative;
+  height: var(--space-8);
+  width: 100%;
+  background-color: var(--color-overlay);
+  border-radius: var(--radius-sm);
+  overflow: visible;
+}
+
+.bar {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-width: 4px;
+  transition: opacity var(--duration-fast) var(--ease-default);
+}
+
+.bar:hover {
+  opacity: 0.85;
+}
+
+.barLabel {
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-inverse);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.milestoneWrapper {
+  position: absolute;
+  top: -10px;
+  transform: translateX(-50%);
+  color: var(--color-text-primary);
+  cursor: default;
+  z-index: var(--z-raised);
+}
+
+.milestoneDiamond {
+  display: block;
+}
