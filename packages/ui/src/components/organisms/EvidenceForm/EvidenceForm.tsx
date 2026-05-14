@@ -182,27 +182,34 @@ export const EvidenceForm = (props: EvidenceFormProps) => {
       <div class={styles.side}>
         <section>
           <h2>Endorsers</h2>
-          <For each={props.suggested_endorsers}>
-            {(endorser) => (
-              <div>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={endorsers().includes(endorser.id)}
-                    onChange={(e) => {
-                      const checked = e.currentTarget.checked;
-                      setEndorsers((ids) =>
-                        checked
-                          ? [...ids, endorser.id]
-                          : ids.filter((id) => id !== endorser.id),
-                      );
-                    }}
-                  />
-                  {endorser.name}
-                </label>
-              </div>
-            )}
-          </For>
+          <Show
+            when={props.suggested_endorsers.length > 0}
+            fallback={
+              <p class={styles.sectionIntro}>No recommended endorsers</p>
+            }
+          >
+            <For each={props.suggested_endorsers}>
+              {(endorser) => (
+                <div>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={endorsers().includes(endorser.id)}
+                      onChange={(e) => {
+                        const checked = e.currentTarget.checked;
+                        setEndorsers((ids) =>
+                          checked
+                            ? [...ids, endorser.id]
+                            : ids.filter((id) => id !== endorser.id),
+                        );
+                      }}
+                    />
+                    {endorser.name}
+                  </label>
+                </div>
+              )}
+            </For>
+          </Show>
         </section>
         <section class={styles.section}>
           <h2>Skills</h2>
@@ -271,7 +278,9 @@ export const EvidenceForm = (props: EvidenceFormProps) => {
           </Button>
         </Show>
         <Button type="submit" value="submit" disabled={submitting()}>
-          {submitting() ? "Saving..." : (props.submitLabel ?? "Submit for review")}
+          {submitting()
+            ? "Saving..."
+            : (props.submitLabel ?? "Submit for review")}
         </Button>
       </div>
     </form>

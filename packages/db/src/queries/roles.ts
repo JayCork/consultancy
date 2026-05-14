@@ -1,22 +1,31 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 import { db } from "..";
-import { userRoleAssignmentsTable, jobRolesTable } from "../schema";
+import {
+  userGradeAssignmentsTable,
+  jobGradesTable,
+  frameworkRolesTable,
+} from "../schema";
 
 export const getCurrentRoleForUser = async (internalUserId: string) => {
   const [row] = await db
     .select({
-      name: jobRolesTable.name,
-      seniority_level: jobRolesTable.seniority_level,
+      name: frameworkRolesTable.display_name,
+      seniority_level: frameworkRolesTable.level,
+      job_grade: jobGradesTable.name,
     })
-    .from(userRoleAssignmentsTable)
+    .from(userGradeAssignmentsTable)
     .innerJoin(
-      jobRolesTable,
-      eq(userRoleAssignmentsTable.role_id, jobRolesTable.id),
+      jobGradesTable,
+      eq(userGradeAssignmentsTable.job_grade_id, jobGradesTable.id),
+    )
+    .innerJoin(
+      frameworkRolesTable,
+      eq(jobGradesTable.framework_role_id, frameworkRolesTable.id),
     )
     .where(
       and(
-        eq(userRoleAssignmentsTable.user_id, internalUserId),
-        eq(userRoleAssignmentsTable.is_current, true),
+        eq(userGradeAssignmentsTable.user_id, internalUserId),
+        isNull(userGradeAssignmentsTable.end_date),
       ),
     )
     .limit(1);

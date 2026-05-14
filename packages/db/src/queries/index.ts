@@ -21,7 +21,7 @@ export {
 } from "./skills";
 export { getReadinessForUser } from "./readiness";
 export { getCurrentRoleForUser } from "./roles";
-export { getOrgConfig, getJobRolesWithRequirements } from "./admin";
+export { getOrgConfig } from "./admin";
 export { getOrganisationCount } from "./organizations";
 export { hasActiveRelationship } from "./relationships";
 export {
