@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import {
   getUserByAuthId,
   getPendingEndorsementsForEndorser,
+  getEndorsementById,
   getEndorsementsForEvidence,
   updateEndorsement,
   deleteEndorsement,
@@ -104,6 +105,28 @@ endorsements.post("/evidence/:evidenceId", async (context) => {
   }
 
   return context.json({ ok: true, data: created }, 201);
+});
+
+// Get a single endorsement by ID (endorser only)
+endorsements.get("/:id", async (context) => {
+  const session = context.get("session");
+  const user = await getUserByAuthId(session.userId);
+
+  if (!user) {
+    return context.json({ ok: false, error: "User not found" }, 404);
+  }
+
+  const { id } = context.req.param();
+  const endorsement = await getEndorsementById(id, user.id);
+
+  if (!endorsement) {
+    return context.json(
+      { ok: false, error: "Endorsement not found or you are not the endorser" },
+      404,
+    );
+  }
+
+  return context.json({ ok: true, data: endorsement });
 });
 
 // Update endorsement status (endorser only: endorse / skip / flag)
