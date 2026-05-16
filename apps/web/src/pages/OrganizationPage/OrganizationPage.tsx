@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "@solidjs/router";
 import { useAuthGuard } from "../../lib/use-auth-guard";
 import { Button, Container } from "@consultancy/ui";
 import { Shell } from "../../Shell";
-import { type PendingEvidenceEntry } from "../PeerReview/PeerReview";
 import styles from "./EvidenceReview.module.css";
 
 const API = import.meta.env.VITE_API_URL;

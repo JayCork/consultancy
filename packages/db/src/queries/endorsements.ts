@@ -17,6 +17,7 @@ import {
   endorsementsTable,
   userRelationshipsTable,
   projectMembersTable,
+  projectsTable,
   organizationsTable,
   usersTable,
   evidenceTable,
@@ -68,6 +69,34 @@ export const getPendingEndorsementsForEndorser = async (endorserId: string) => {
         isNull(evidenceTable.deletedAt),
       ),
     );
+};
+
+export const getEndorsementById = async (id: string, endorserId: string) => {
+  const [row] = await db
+    .select({
+      ...getTableColumns(endorsementsTable),
+      evidenceSituation: evidenceTable.situation,
+      evidenceTask: evidenceTable.task,
+      evidenceAction: evidenceTable.action,
+      evidenceResult: evidenceTable.result,
+      evidenceCreatedAt: evidenceTable.createdAt,
+      evidenceDataClassification: evidenceTable.dataClassification,
+      subjectName: usersTable.name,
+      projectName: projectsTable.name,
+    })
+    .from(endorsementsTable)
+    .innerJoin(evidenceTable, eq(endorsementsTable.evidenceId, evidenceTable.id))
+    .innerJoin(usersTable, eq(evidenceTable.userId, usersTable.id))
+    .leftJoin(projectsTable, eq(evidenceTable.projectId, projectsTable.id))
+    .where(
+      and(
+        eq(endorsementsTable.id, id),
+        eq(endorsementsTable.endorserId, endorserId),
+        isNull(evidenceTable.deletedAt),
+      ),
+    )
+    .limit(1);
+  return row ?? null;
 };
 
 export const updateEndorsement = async (

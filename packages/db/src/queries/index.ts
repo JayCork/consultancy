@@ -29,6 +29,7 @@ export {
   createEndorsements,
   getEndorsementsForEvidence,
   getPendingEndorsementsForEndorser,
+  getEndorsementById,
   updateEndorsement,
   deleteEndorsement,
   addEndorsementToEvidence,

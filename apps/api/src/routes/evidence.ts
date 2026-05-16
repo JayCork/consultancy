@@ -227,7 +227,15 @@ evidence.get("/:id", async (context) => {
     return context.json({ ok: false, error: "Evidence not found" }, 404);
   }
   if (entry.userId !== user.id) {
-    return context.json({ ok: false, error: "Unauthorized" }, 403);
+    console.log(
+      `User ${user.id} is not the owner of evidence ${id}, checking endorsements...`,
+    );
+    const endorsements = await getEndorsementsForEvidence(id);
+    console.log(`Endorsements for evidence ${id}:`, endorsements);
+    const isEndorser = endorsements.some((e) => e.endorserId === user.id);
+    if (!isEndorser) {
+      return context.json({ ok: false, error: "Unauthorized" }, 403);
+    }
   }
   return context.json({ ok: true, data: entry });
 });
