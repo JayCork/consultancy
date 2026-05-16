@@ -34,18 +34,18 @@ endorsements.get("/suggested", async (context) => {
     return context.json({ ok: false, error: "User not found" }, 404);
   }
 
-  if (!user.organization_id) {
+  if (!user.organizationId) {
     return context.json(
       { ok: false, error: "User is not assigned to an organisation" },
       403,
     );
   }
 
-  const project_id = context.req.query("project_id");
+  const projectId = context.req.query("project_id");
   const suggested = await getSuggestedEndorsers(
     user.id,
-    user.organization_id,
-    project_id,
+    user.organizationId,
+    projectId,
   );
 
   return context.json({ ok: true, data: suggested });

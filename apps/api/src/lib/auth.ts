@@ -24,8 +24,8 @@ export const auth = betterAuth({
       create: {
         after: async (user) => {
           await db.insert(usersTable).values({
-            better_auth_id: user.id,
-            organization_id: null, // explicitly pending_org — assigned during onboarding
+            betterAuthId: user.id,
+            organizationId: null, // explicitly pending_org — assigned during onboarding
             name: user.name,
             email: user.email,
             status: "pending_org",

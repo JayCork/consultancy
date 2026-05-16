@@ -9,23 +9,23 @@ import {
 export const getCurrentRoleForUser = async (internalUserId: string) => {
   const [row] = await db
     .select({
-      name: frameworkRolesTable.display_name,
+      name: frameworkRolesTable.displayName,
       seniority_level: frameworkRolesTable.level,
       job_grade: jobGradesTable.name,
     })
     .from(userGradeAssignmentsTable)
     .innerJoin(
       jobGradesTable,
-      eq(userGradeAssignmentsTable.job_grade_id, jobGradesTable.id),
+      eq(userGradeAssignmentsTable.jobGradeId, jobGradesTable.id),
     )
     .innerJoin(
       frameworkRolesTable,
-      eq(jobGradesTable.framework_role_id, frameworkRolesTable.id),
+      eq(jobGradesTable.frameworkRoleId, frameworkRolesTable.id),
     )
     .where(
       and(
-        eq(userGradeAssignmentsTable.user_id, internalUserId),
-        isNull(userGradeAssignmentsTable.end_date),
+        eq(userGradeAssignmentsTable.userId, internalUserId),
+        isNull(userGradeAssignmentsTable.endDate),
       ),
     )
     .limit(1);

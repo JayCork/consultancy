@@ -19,17 +19,17 @@ export const hasActiveRelationship = async (
       and(
         or(
           and(
-            eq(userRelationshipsTable.actor_id, userAId),
-            eq(userRelationshipsTable.target_id, userBId),
+            eq(userRelationshipsTable.actorId, userAId),
+            eq(userRelationshipsTable.targetId, userBId),
           ),
           and(
-            eq(userRelationshipsTable.actor_id, userBId),
-            eq(userRelationshipsTable.target_id, userAId),
+            eq(userRelationshipsTable.actorId, userBId),
+            eq(userRelationshipsTable.targetId, userAId),
           ),
         ),
         or(
-          isNull(userRelationshipsTable.end_date),
-          gt(userRelationshipsTable.end_date, today),
+          isNull(userRelationshipsTable.endDate),
+          gt(userRelationshipsTable.endDate, today),
         ),
       ),
     )

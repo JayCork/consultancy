@@ -3,7 +3,6 @@ import { and, eq, isNull } from "drizzle-orm";
 import {
   user as authUserTable,
   clearanceLevelsTable,
-  competenciesTable,
   credentialsTable,
   endorsementsTable,
   evidenceTable,
@@ -41,7 +40,7 @@ async function getFrameworkRoleId(
     .where(
       and(
         eq(frameworkRoleFamiliesTable.name, familyName),
-        isNull(frameworkRoleFamiliesTable.organization_id),
+        isNull(frameworkRoleFamiliesTable.organizationId),
       ),
     );
   if (!family) return null;
@@ -51,7 +50,7 @@ async function getFrameworkRoleId(
     .from(frameworkRolesTable)
     .where(
       and(
-        eq(frameworkRolesTable.family_id, family.id),
+        eq(frameworkRolesTable.familyId, family.id),
         eq(frameworkRolesTable.level, level as any),
       ),
     );
@@ -178,78 +177,78 @@ async function main() {
         name: "Alice Smith",
         email: "alice.smith@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.alice,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.alice,
+        organizationId: orgId,
       },
       {
         name: "Bob Johnson",
         email: "bob.johnson@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.bob,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.bob,
+        organizationId: orgId,
       },
       {
         name: "Charlie Brown",
         email: "charlie.brown@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.charlie,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.charlie,
+        organizationId: orgId,
       },
       // UX designer
       {
         name: "Diana Prince",
         email: "diana.prince@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.diana,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.diana,
+        organizationId: orgId,
       },
       // Delivery manager
       {
         name: "Ethan Hunt",
         email: "ethan.hunt@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.ethan,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.ethan,
+        organizationId: orgId,
       },
       // Data scientist
       {
         name: "Fiona Gallagher",
         email: "fiona.gallagher@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.fiona,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.fiona,
+        organizationId: orgId,
       },
       // Associate developer (newest joiner, still pending approval)
       {
         name: "George Michael",
         email: "george.michael@demo.com",
         status: "pending_approval",
-        better_auth_id: AUTH_IDS.george,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.george,
+        organizationId: orgId,
       },
       // Test engineer
       {
         name: "Hannah Baker",
         email: "hannah.baker@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.hannah,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.hannah,
+        organizationId: orgId,
       },
       // Business analyst
       {
         name: "Ian Fleming",
         email: "ian.fleming@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.ian,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.ian,
+        organizationId: orgId,
       },
       // Principal product manager (most senior)
       {
         name: "Jane Doe",
         email: "jane.doe@demo.com",
         status: "active",
-        better_auth_id: AUTH_IDS.jane,
-        organization_id: orgId,
+        betterAuthId: AUTH_IDS.jane,
+        organizationId: orgId,
       },
     ])
     .onConflictDoNothing();
@@ -257,7 +256,7 @@ async function main() {
   const allUsers = await db
     .select({ id: usersTable.id, email: usersTable.email })
     .from(usersTable)
-    .where(eq(usersTable.organization_id, orgId));
+    .where(eq(usersTable.organizationId, orgId));
 
   const uid = Object.fromEntries(
     allUsers.map((u) => [u.email, u.id]),
@@ -288,24 +287,24 @@ async function main() {
       .insert(userClearancesTable)
       .values([
         {
-          user_id: U.alice,
-          clearance_level_id: bpssId,
-          granted_at: new Date("2022-03-01"),
+          userId: U.alice,
+          clearanceLevelId: bpssId,
+          grantedAt: new Date("2022-03-01"),
         },
         {
-          user_id: U.bob,
-          clearance_level_id: bpssId,
-          granted_at: new Date("2022-06-01"),
+          userId: U.bob,
+          clearanceLevelId: bpssId,
+          grantedAt: new Date("2022-06-01"),
         },
         {
-          user_id: U.hannah,
-          clearance_level_id: bpssId,
-          granted_at: new Date("2021-09-01"),
+          userId: U.hannah,
+          clearanceLevelId: bpssId,
+          grantedAt: new Date("2021-09-01"),
         },
         {
-          user_id: U.jane,
-          clearance_level_id: bpssId,
-          granted_at: new Date("2020-01-01"),
+          userId: U.jane,
+          clearanceLevelId: bpssId,
+          grantedAt: new Date("2020-01-01"),
         },
       ])
       .onConflictDoNothing();
@@ -316,14 +315,14 @@ async function main() {
       .insert(userClearancesTable)
       .values([
         {
-          user_id: U.ethan,
-          clearance_level_id: scId,
-          granted_at: new Date("2021-04-15"),
+          userId: U.ethan,
+          clearanceLevelId: scId,
+          grantedAt: new Date("2021-04-15"),
         },
         {
-          user_id: U.ian,
-          clearance_level_id: scId,
-          granted_at: new Date("2022-11-01"),
+          userId: U.ian,
+          clearanceLevelId: scId,
+          grantedAt: new Date("2022-11-01"),
         },
       ])
       .onConflictDoNothing();
@@ -402,8 +401,8 @@ async function main() {
         .insert(jobGradesTable)
         .values({
           name: grade.name,
-          organization_id: orgId,
-          framework_role_id: frameworkRoleId,
+          organizationId: orgId,
+          frameworkRoleId,
         })
         .onConflictDoNothing();
     }
@@ -412,7 +411,7 @@ async function main() {
   const allGrades = await db
     .select({ id: jobGradesTable.id, name: jobGradesTable.name })
     .from(jobGradesTable)
-    .where(eq(jobGradesTable.organization_id, orgId));
+    .where(eq(jobGradesTable.organizationId, orgId));
 
   const gradeByName = new Map(allGrades.map((g) => [g.name, g.id]));
 
@@ -481,10 +480,10 @@ async function main() {
       await db
         .insert(userGradeAssignmentsTable)
         .values({
-          user_id: assignment.userId,
-          job_grade_id: gradeId,
-          start_date: assignment.startDate,
-          end_date: null,
+          userId: assignment.userId,
+          jobGradeId: gradeId,
+          startDate: assignment.startDate,
+          endDate: null,
         })
         .onConflictDoNothing();
     }
@@ -499,29 +498,48 @@ async function main() {
     .values([
       {
         name: "Affordable Public Transport",
-        code_name: "Project Alpha",
-        short_name: "APT",
-        organization_id: orgId,
+        codeName: "APT-ALPHA",
+        shortName: "APT",
+        organizationId: orgId,
+        leadId: U.alice,
+        organizationUnitId: orgId, // placeholder — real fixtures would use a unit ID
+        startDate: new Date("2023-01-01"),
+        status: "in_delivery",
+        fundingModel: "time_and_materials",
       },
       {
         name: "Defence Innovation Lab",
-        code_name: "Project Beta",
-        short_name: "DIL",
-        is_name_classified: true,
-        organization_id: orgId,
-        minimum_clearance_id: scClearanceId,
+        codeName: "DIL-BETA",
+        shortName: "DIL",
+        organizationId: orgId,
+        leadId: U.ethan,
+        organizationUnitId: orgId,
+        minimumClearanceId: scClearanceId,
+        startDate: new Date("2022-06-01"),
+        status: "in_delivery",
+        fundingModel: "fixed_price",
       },
       {
         name: "Cybersecurity for Critical Infrastructure",
-        code_name: "Project Gamma",
-        short_name: "CCI",
-        organization_id: orgId,
+        codeName: "CCI-GAMM",
+        shortName: "CCI",
+        organizationId: orgId,
+        leadId: U.diana,
+        organizationUnitId: orgId,
+        startDate: new Date("2023-06-01"),
+        status: "in_delivery",
+        fundingModel: "time_and_materials",
       },
       {
         name: "AI-Powered Healthcare Diagnostics",
-        code_name: "Project Delta",
-        short_name: "AHD",
-        organization_id: orgId,
+        codeName: "AHD-DELT",
+        shortName: "AHD",
+        organizationId: orgId,
+        leadId: U.jane,
+        organizationUnitId: orgId,
+        startDate: new Date("2024-01-01"),
+        status: "discovery",
+        fundingModel: "time_and_materials",
       },
     ])
     .onConflictDoNothing();
@@ -529,7 +547,7 @@ async function main() {
   const allProjects = await db
     .select({ id: projectsTable.id, name: projectsTable.name })
     .from(projectsTable)
-    .where(eq(projectsTable.organization_id, orgId));
+    .where(eq(projectsTable.organizationId, orgId));
 
   const projectByName = new Map(allProjects.map((p) => [p.name, p.id]));
   const P = {
@@ -546,92 +564,92 @@ async function main() {
     .values([
       // Affordable Public Transport
       {
-        project_id: P.apt,
-        user_id: U.alice,
-        project_role: "tech_lead",
-        start_date: "2023-01-01",
+        projectId: P.apt,
+        userId: U.alice,
+        projectRole: "tech_lead",
+        startDate: new Date("2023-01-01"),
       },
       {
-        project_id: P.apt,
-        user_id: U.bob,
-        project_role: "developer",
-        start_date: "2023-02-01",
+        projectId: P.apt,
+        userId: U.bob,
+        projectRole: "developer",
+        startDate: new Date("2023-02-01"),
       },
       {
-        project_id: P.apt,
-        user_id: U.charlie,
-        project_role: "developer",
-        start_date: "2024-09-01",
+        projectId: P.apt,
+        userId: U.charlie,
+        projectRole: "developer",
+        startDate: new Date("2024-09-01"),
       },
       {
-        project_id: P.apt,
-        user_id: U.fiona,
-        project_role: "analyst",
-        start_date: "2023-03-01",
+        projectId: P.apt,
+        userId: U.fiona,
+        projectRole: "analyst",
+        startDate: new Date("2023-03-01"),
       },
       {
-        project_id: P.apt,
-        user_id: U.hannah,
-        project_role: "developer",
-        start_date: "2023-01-01",
+        projectId: P.apt,
+        userId: U.hannah,
+        projectRole: "developer",
+        startDate: new Date("2023-01-01"),
       },
       // Defence Innovation Lab (SC clearance required — only Ethan, Ian, Jane)
       {
-        project_id: P.dil,
-        user_id: U.ethan,
-        project_role: "delivery_manager",
-        start_date: "2022-06-01",
+        projectId: P.dil,
+        userId: U.ethan,
+        projectRole: "delivery_manager",
+        startDate: new Date("2022-06-01"),
       },
       {
-        project_id: P.dil,
-        user_id: U.ian,
-        project_role: "analyst",
-        start_date: "2022-07-01",
+        projectId: P.dil,
+        userId: U.ian,
+        projectRole: "analyst",
+        startDate: new Date("2022-07-01"),
       },
       {
-        project_id: P.dil,
-        user_id: U.jane,
-        project_role: "project_manager",
-        start_date: "2022-06-01",
+        projectId: P.dil,
+        userId: U.jane,
+        projectRole: "project_manager",
+        startDate: new Date("2022-06-01"),
       },
       // Cybersecurity for Critical Infrastructure
       {
-        project_id: P.cci,
-        user_id: U.diana,
-        project_role: "designer",
-        start_date: "2023-06-01",
+        projectId: P.cci,
+        userId: U.diana,
+        projectRole: "designer",
+        startDate: new Date("2023-06-01"),
       },
       {
-        project_id: P.cci,
-        user_id: U.bob,
-        project_role: "developer",
-        start_date: "2023-06-01",
-        end_date: "2024-03-01",
+        projectId: P.cci,
+        userId: U.bob,
+        projectRole: "developer",
+        startDate: new Date("2023-06-01"),
+        endDate: new Date("2024-03-01"),
       },
       {
-        project_id: P.cci,
-        user_id: U.fiona,
-        project_role: "analyst",
-        start_date: "2023-07-01",
+        projectId: P.cci,
+        userId: U.fiona,
+        projectRole: "analyst",
+        startDate: new Date("2023-07-01"),
       },
       // AI-Powered Healthcare Diagnostics
       {
-        project_id: P.ahd,
-        user_id: U.jane,
-        project_role: "project_manager",
-        start_date: "2024-01-01",
+        projectId: P.ahd,
+        userId: U.jane,
+        projectRole: "project_manager",
+        startDate: new Date("2024-01-01"),
       },
       {
-        project_id: P.ahd,
-        user_id: U.george,
-        project_role: "developer",
-        start_date: "2024-09-01",
+        projectId: P.ahd,
+        userId: U.george,
+        projectRole: "developer",
+        startDate: new Date("2024-09-01"),
       },
       {
-        project_id: P.ahd,
-        user_id: U.diana,
-        project_role: "designer",
-        start_date: "2024-02-01",
+        projectId: P.ahd,
+        userId: U.diana,
+        projectRole: "designer",
+        startDate: new Date("2024-02-01"),
       },
     ])
     .onConflictDoNothing();
@@ -644,381 +662,63 @@ async function main() {
     .values([
       // Line management: Jane manages Alice and Ethan
       {
-        actor_id: U.jane,
-        target_id: U.alice,
-        relationship_type: "line_manager",
-        start_date: "2021-01-01",
+        actorId: U.jane,
+        targetId: U.alice,
+        relationshipType: "line_manager",
+        startDate: "2021-01-01",
+        organizationId: orgId,
       },
       {
-        actor_id: U.jane,
-        target_id: U.ethan,
-        relationship_type: "line_manager",
-        start_date: "2019-04-01",
+        actorId: U.jane,
+        targetId: U.ethan,
+        relationshipType: "line_manager",
+        startDate: "2019-04-01",
+        organizationId: orgId,
       },
       {
-        actor_id: U.jane,
-        target_id: U.diana,
-        relationship_type: "line_manager",
-        start_date: "2020-06-01",
+        actorId: U.jane,
+        targetId: U.diana,
+        relationshipType: "line_manager",
+        startDate: "2020-06-01",
+        organizationId: orgId,
       },
       // Alice line-manages Bob and Charlie
       {
-        actor_id: U.alice,
-        target_id: U.bob,
-        relationship_type: "line_manager",
-        start_date: "2022-03-01",
+        actorId: U.alice,
+        targetId: U.bob,
+        relationshipType: "line_manager",
+        startDate: "2022-03-01",
+        organizationId: orgId,
       },
       {
-        actor_id: U.alice,
-        target_id: U.charlie,
-        relationship_type: "line_manager",
-        start_date: "2023-09-01",
+        actorId: U.alice,
+        targetId: U.charlie,
+        relationshipType: "line_manager",
+        startDate: "2023-09-01",
+        organizationId: orgId,
       },
       // Mentoring
       {
-        actor_id: U.alice,
-        target_id: U.bob,
-        relationship_type: "mentor",
-        start_date: "2022-03-01",
+        actorId: U.alice,
+        targetId: U.bob,
+        relationshipType: "mentor",
+        startDate: "2022-03-01",
+        organizationId: orgId,
       },
       {
-        actor_id: U.hannah,
-        target_id: U.george,
-        relationship_type: "mentor",
-        start_date: "2024-10-01",
+        actorId: U.hannah,
+        targetId: U.george,
+        relationshipType: "mentor",
+        startDate: "2024-10-01",
+        organizationId: orgId,
       },
       // Peers
       {
-        actor_id: U.alice,
-        target_id: U.hannah,
-        relationship_type: "peer",
-        start_date: "2023-01-01",
-      },
-    ])
-    .onConflictDoNothing();
-
-  // ── Competencies ──────────────────────────────────────────────────────────────
-  // A spread of technologies, practices, and methodologies across the team.
-  // Dispositions show who wants more of what — useful for resourcing views.
-
-  await db
-    .insert(competenciesTable)
-    .values([
-      // Alice — Senior Developer
-      {
-        user_id: U.alice,
-        organization_id: orgId,
-        name: "TypeScript",
-        competency_type: "technology",
-        proficiency: "leading",
-        disposition: "seeking",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.alice,
-        organization_id: orgId,
-        name: "Node.js",
-        competency_type: "technology",
-        proficiency: "confident",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.alice,
-        organization_id: orgId,
-        name: "React",
-        competency_type: "technology",
-        proficiency: "confident",
-        disposition: "winding_down",
-        last_used_at: "2024-12-01",
-      },
-      {
-        user_id: U.alice,
-        organization_id: orgId,
-        name: "Code Review",
-        competency_type: "practice",
-        proficiency: "leading",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.alice,
-        organization_id: orgId,
-        name: "System Design",
-        competency_type: "practice",
-        proficiency: "confident",
-        disposition: "seeking",
-        last_used_at: "2025-02-01",
-      },
-      {
-        user_id: U.alice,
-        organization_id: orgId,
-        name: "Agile",
-        competency_type: "methodology",
-        proficiency: "confident",
-        disposition: "neutral",
-        last_used_at: "2025-03-01",
-      },
-      // Bob — Mid Developer
-      {
-        user_id: U.bob,
-        organization_id: orgId,
-        name: "TypeScript",
-        competency_type: "technology",
-        proficiency: "practising",
-        disposition: "seeking",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.bob,
-        organization_id: orgId,
-        name: "React",
-        competency_type: "technology",
-        proficiency: "practising",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.bob,
-        organization_id: orgId,
-        name: "PostgreSQL",
-        competency_type: "technology",
-        proficiency: "aware",
-        disposition: "seeking",
-        last_used_at: "2024-11-01",
-      },
-      {
-        user_id: U.bob,
-        organization_id: orgId,
-        name: "Unit Testing",
-        competency_type: "practice",
-        proficiency: "practising",
-        disposition: "open",
-        last_used_at: "2025-02-01",
-      },
-      // Charlie — Junior Developer
-      {
-        user_id: U.charlie,
-        organization_id: orgId,
-        name: "JavaScript",
-        competency_type: "technology",
-        proficiency: "practising",
-        disposition: "seeking",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.charlie,
-        organization_id: orgId,
-        name: "Git",
-        competency_type: "practice",
-        proficiency: "practising",
-        disposition: "neutral",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.charlie,
-        organization_id: orgId,
-        name: "Agile",
-        competency_type: "methodology",
-        proficiency: "aware",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      // Diana — Senior UX Designer
-      {
-        user_id: U.diana,
-        organization_id: orgId,
-        name: "Figma",
-        competency_type: "technology",
-        proficiency: "leading",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.diana,
-        organization_id: orgId,
-        name: "User Research",
-        competency_type: "practice",
-        proficiency: "leading",
-        disposition: "seeking",
-        last_used_at: "2025-02-01",
-      },
-      {
-        user_id: U.diana,
-        organization_id: orgId,
-        name: "Accessibility",
-        competency_type: "practice",
-        proficiency: "confident",
-        disposition: "seeking",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.diana,
-        organization_id: orgId,
-        name: "Design Sprints",
-        competency_type: "methodology",
-        proficiency: "confident",
-        disposition: "neutral",
-        last_used_at: "2024-12-01",
-      },
-      // Ethan — Lead Delivery Manager
-      {
-        user_id: U.ethan,
-        organization_id: orgId,
-        name: "Risk Management",
-        competency_type: "practice",
-        proficiency: "leading",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.ethan,
-        organization_id: orgId,
-        name: "Agile",
-        competency_type: "methodology",
-        proficiency: "leading",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.ethan,
-        organization_id: orgId,
-        name: "JIRA",
-        competency_type: "technology",
-        proficiency: "confident",
-        disposition: "neutral",
-        last_used_at: "2025-03-01",
-      },
-      // Fiona — Data Scientist
-      {
-        user_id: U.fiona,
-        organization_id: orgId,
-        name: "Python",
-        competency_type: "technology",
-        proficiency: "confident",
-        disposition: "seeking",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.fiona,
-        organization_id: orgId,
-        name: "Machine Learning",
-        competency_type: "practice",
-        proficiency: "practising",
-        disposition: "seeking",
-        last_used_at: "2025-02-01",
-      },
-      {
-        user_id: U.fiona,
-        organization_id: orgId,
-        name: "SQL",
-        competency_type: "technology",
-        proficiency: "confident",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      // George — Associate Developer
-      {
-        user_id: U.george,
-        organization_id: orgId,
-        name: "JavaScript",
-        competency_type: "technology",
-        proficiency: "aware",
-        disposition: "seeking",
-        last_used_at: "2025-02-01",
-      },
-      {
-        user_id: U.george,
-        organization_id: orgId,
-        name: "HTML/CSS",
-        competency_type: "technology",
-        proficiency: "practising",
-        disposition: "neutral",
-        last_used_at: "2025-03-01",
-      },
-      // Hannah — Senior Test Engineer
-      {
-        user_id: U.hannah,
-        organization_id: orgId,
-        name: "Playwright",
-        competency_type: "technology",
-        proficiency: "leading",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.hannah,
-        organization_id: orgId,
-        name: "Test Automation",
-        competency_type: "practice",
-        proficiency: "leading",
-        disposition: "seeking",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.hannah,
-        organization_id: orgId,
-        name: "BDD",
-        competency_type: "methodology",
-        proficiency: "confident",
-        disposition: "open",
-        last_used_at: "2025-02-01",
-      },
-      // Ian — Business Analyst
-      {
-        user_id: U.ian,
-        organization_id: orgId,
-        name: "Requirements Elicitation",
-        competency_type: "practice",
-        proficiency: "confident",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.ian,
-        organization_id: orgId,
-        name: "Process Mapping",
-        competency_type: "practice",
-        proficiency: "confident",
-        disposition: "neutral",
-        last_used_at: "2025-01-01",
-      },
-      {
-        user_id: U.ian,
-        organization_id: orgId,
-        name: "Agile",
-        competency_type: "methodology",
-        proficiency: "practising",
-        disposition: "seeking",
-        last_used_at: "2025-03-01",
-      },
-      // Jane — Principal Product Manager
-      {
-        user_id: U.jane,
-        organization_id: orgId,
-        name: "Product Strategy",
-        competency_type: "practice",
-        proficiency: "leading",
-        disposition: "open",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.jane,
-        organization_id: orgId,
-        name: "Stakeholder Management",
-        competency_type: "practice",
-        proficiency: "leading",
-        disposition: "neutral",
-        last_used_at: "2025-03-01",
-      },
-      {
-        user_id: U.jane,
-        organization_id: orgId,
-        name: "OKRs",
-        competency_type: "methodology",
-        proficiency: "confident",
-        disposition: "open",
-        last_used_at: "2025-02-01",
+        actorId: U.alice,
+        targetId: U.hannah,
+        relationshipType: "peer",
+        startDate: "2023-01-01",
+        organizationId: orgId,
       },
     ])
     .onConflictDoNothing();
@@ -1029,39 +729,39 @@ async function main() {
     .insert(credentialsTable)
     .values([
       {
-        user_id: U.alice,
+        userId: U.alice,
         name: "AWS Certified Solutions Architect – Associate",
         issuer: "Amazon Web Services",
-        issued_at: "2023-05-01",
-        expires_at: "2026-05-01",
+        issuedAt: "2023-05-01",
+        expiresAt: "2026-05-01",
       },
       {
-        user_id: U.hannah,
+        userId: U.hannah,
         name: "ISTQB Advanced Level – Test Analyst",
         issuer: "ISTQB",
-        issued_at: "2022-09-01",
-        expires_at: null,
+        issuedAt: "2022-09-01",
+        expiresAt: null,
       },
       {
-        user_id: U.ethan,
+        userId: U.ethan,
         name: "Certified Scrum Master (CSM)",
         issuer: "Scrum Alliance",
-        issued_at: "2020-03-01",
-        expires_at: "2026-03-01",
+        issuedAt: "2020-03-01",
+        expiresAt: "2026-03-01",
       },
       {
-        user_id: U.fiona,
+        userId: U.fiona,
         name: "Google Professional Machine Learning Engineer",
         issuer: "Google Cloud",
-        issued_at: "2023-11-01",
-        expires_at: "2025-11-01",
+        issuedAt: "2023-11-01",
+        expiresAt: "2025-11-01",
       },
       {
-        user_id: U.charlie,
+        userId: U.charlie,
         name: "AWS Cloud Practitioner",
         issuer: "Amazon Web Services",
-        issued_at: "2024-01-01",
-        expires_at: "2027-01-01",
+        issuedAt: "2024-01-01",
+        expiresAt: "2027-01-01",
       },
     ])
     .onConflictDoNothing();
@@ -1074,8 +774,8 @@ async function main() {
     .values([
       // Alice — verified evidence ready to be endorsed
       {
-        user_id: U.alice,
-        project_id: P.apt,
+        userId: U.alice,
+        projectId: P.apt,
         version: 1,
         status: "verified",
         situation:
@@ -1088,8 +788,8 @@ async function main() {
       },
       // Alice — submitted evidence awaiting verification
       {
-        user_id: U.alice,
-        project_id: P.apt,
+        userId: U.alice,
+        projectId: P.apt,
         version: 1,
         status: "submitted",
         situation:
@@ -1102,8 +802,8 @@ async function main() {
       },
       // Bob — draft evidence not yet submitted
       {
-        user_id: U.bob,
-        project_id: P.apt,
+        userId: U.bob,
+        projectId: P.apt,
         version: 1,
         status: "draft",
         situation:
@@ -1116,8 +816,8 @@ async function main() {
       },
       // Hannah — verified evidence
       {
-        user_id: U.hannah,
-        project_id: P.apt,
+        userId: U.hannah,
+        projectId: P.apt,
         version: 1,
         status: "verified",
         situation:
@@ -1130,8 +830,8 @@ async function main() {
       },
       // Ian — submitted evidence from the classified project
       {
-        user_id: U.ian,
-        project_id: P.dil,
+        userId: U.ian,
+        projectId: P.dil,
         version: 1,
         status: "submitted",
         situation:
@@ -1144,15 +844,15 @@ async function main() {
       },
     ])
     .onConflictDoNothing()
-    .returning({ id: evidenceTable.id, user_id: evidenceTable.user_id });
+    .returning({ id: evidenceTable.id, userId: evidenceTable.userId });
 
   // Build an index into the returned evidence rows
   const evidenceByUserAndIndex: Record<string, string[]> = {};
   for (const row of evidenceInserts) {
-    if (!evidenceByUserAndIndex[row.user_id]) {
-      evidenceByUserAndIndex[row.user_id] = [];
+    if (!evidenceByUserAndIndex[row.userId]) {
+      evidenceByUserAndIndex[row.userId] = [];
     }
-    evidenceByUserAndIndex[row.user_id].push(row.id);
+    evidenceByUserAndIndex[row.userId].push(row.id);
   }
 
   const aliceEvidence = evidenceByUserAndIndex[U.alice] ?? [];
@@ -1160,97 +860,16 @@ async function main() {
   const hannahEvidence = evidenceByUserAndIndex[U.hannah] ?? [];
   const ianEvidence = evidenceByUserAndIndex[U.ian] ?? [];
 
-  // ── Evidence competency links ─────────────────────────────────────────────────
-  // Fetching competency IDs to link evidence to demonstrated competencies.
-
-  const allCompetencies = await db
-    .select({
-      id: competenciesTable.id,
-      user_id: competenciesTable.user_id,
-      name: competenciesTable.name,
-    })
-    .from(competenciesTable)
-    .where(eq(competenciesTable.organization_id, orgId));
-
-  const compId = (userId: string, name: string): string | undefined =>
-    allCompetencies.find((c) => c.user_id === userId && c.name === name)?.id;
-
-  const evidenceCompetencyLinks = [
-    // Alice evidence[0] — TypeScript migration
-    aliceEvidence[0] &&
-      compId(U.alice, "TypeScript") && {
-        evidence_id: aliceEvidence[0],
-        competency_id: compId(U.alice, "TypeScript")!,
-        competency_type: "technology" as const,
-      },
-    aliceEvidence[0] &&
-      compId(U.alice, "Code Review") && {
-        evidence_id: aliceEvidence[0],
-        competency_id: compId(U.alice, "Code Review")!,
-        competency_type: "practice" as const,
-      },
-    // Alice evidence[1] — observability
-    aliceEvidence[1] &&
-      compId(U.alice, "Node.js") && {
-        evidence_id: aliceEvidence[1],
-        competency_id: compId(U.alice, "Node.js")!,
-        competency_type: "technology" as const,
-      },
-    aliceEvidence[1] &&
-      compId(U.alice, "System Design") && {
-        evidence_id: aliceEvidence[1],
-        competency_id: compId(U.alice, "System Design")!,
-        competency_type: "practice" as const,
-      },
-    // Bob evidence[0] — pagination
-    bobEvidence[0] &&
-      compId(U.bob, "React") && {
-        evidence_id: bobEvidence[0],
-        competency_id: compId(U.bob, "React")!,
-        competency_type: "technology" as const,
-      },
-    bobEvidence[0] &&
-      compId(U.bob, "TypeScript") && {
-        evidence_id: bobEvidence[0],
-        competency_id: compId(U.bob, "TypeScript")!,
-        competency_type: "technology" as const,
-      },
-    // Hannah evidence[0] — test automation
-    hannahEvidence[0] &&
-      compId(U.hannah, "Playwright") && {
-        evidence_id: hannahEvidence[0],
-        competency_id: compId(U.hannah, "Playwright")!,
-        competency_type: "technology" as const,
-      },
-    hannahEvidence[0] &&
-      compId(U.hannah, "Test Automation") && {
-        evidence_id: hannahEvidence[0],
-        competency_id: compId(U.hannah, "Test Automation")!,
-        competency_type: "practice" as const,
-      },
-    // Ian evidence[0] — requirements workshop
-    ianEvidence[0] &&
-      compId(U.ian, "Requirements Elicitation") && {
-        evidence_id: ianEvidence[0],
-        competency_id: compId(U.ian, "Requirements Elicitation")!,
-        competency_type: "practice" as const,
-      },
-  ].filter(Boolean) as {
-    evidence_id: string;
-    competency_id: string;
-    competency_type: "technology" | "practice" | "methodology";
-  }[];
-
   // ── Endorsements ──────────────────────────────────────────────────────────────
   // Demonstrates the full status range: pending, endorsed, skipped.
 
   type EndorsementRow = {
-    evidence_id: string;
-    endorser_id: string;
-    is_suggested: boolean;
+    evidenceId: string;
+    endorserId: string;
+    isSuggested: boolean;
     status: "pending" | "endorsed" | "skipped" | "flagged";
     note?: string;
-    responded_at?: Date;
+    respondedAt?: Date;
   };
 
   const endorsementRows: EndorsementRow[] = [];
@@ -1259,20 +878,20 @@ async function main() {
     // Alice evidence[0] (verified) — two endorsements, both endorsed
     endorsementRows.push(
       {
-        evidence_id: aliceEvidence[0],
-        endorser_id: U.ethan,
-        is_suggested: true,
+        evidenceId: aliceEvidence[0],
+        endorserId: U.ethan,
+        isSuggested: true,
         status: "endorsed",
         note: "I witnessed the migration first-hand on APT. Alice's approach was methodical and she brought the whole team along. Clear example of technical leadership.",
-        responded_at: new Date("2024-11-15"),
+        respondedAt: new Date("2024-11-15"),
       },
       {
-        evidence_id: aliceEvidence[0],
-        endorser_id: U.hannah,
-        is_suggested: true,
+        evidenceId: aliceEvidence[0],
+        endorserId: U.hannah,
+        isSuggested: true,
         status: "endorsed",
         note: "The TypeScript migration dramatically improved the quality of code review. Strongly endorsed.",
-        responded_at: new Date("2024-11-18"),
+        respondedAt: new Date("2024-11-18"),
       },
     );
   }
@@ -1280,18 +899,18 @@ async function main() {
     // Alice evidence[1] (submitted) — one pending, one skipped
     endorsementRows.push(
       {
-        evidence_id: aliceEvidence[1],
-        endorser_id: U.jane,
-        is_suggested: true,
+        evidenceId: aliceEvidence[1],
+        endorserId: U.jane,
+        isSuggested: true,
         status: "pending",
       },
       {
-        evidence_id: aliceEvidence[1],
-        endorser_id: U.ethan,
-        is_suggested: false,
+        evidenceId: aliceEvidence[1],
+        endorserId: U.ethan,
+        isSuggested: false,
         status: "skipped",
         note: "Not involved in observability implementation, Alice should seek endorsement from the team lead.",
-        responded_at: new Date("2025-01-10"),
+        respondedAt: new Date("2025-01-10"),
       },
     );
   }
@@ -1299,28 +918,28 @@ async function main() {
     // Hannah evidence[0] (verified) — two endorsed
     endorsementRows.push(
       {
-        evidence_id: hannahEvidence[0],
-        endorser_id: U.alice,
-        is_suggested: true,
+        evidenceId: hannahEvidence[0],
+        endorserId: U.alice,
+        isSuggested: true,
         status: "endorsed",
         note: "The Playwright suite has already saved us multiple times in review. Well-structured and easy to extend.",
-        responded_at: new Date("2024-10-05"),
+        respondedAt: new Date("2024-10-05"),
       },
       {
-        evidence_id: hannahEvidence[0],
-        endorser_id: U.ethan,
-        is_suggested: true,
+        evidenceId: hannahEvidence[0],
+        endorserId: U.ethan,
+        isSuggested: true,
         status: "endorsed",
-        responded_at: new Date("2024-10-08"),
+        respondedAt: new Date("2024-10-08"),
       },
     );
   }
   if (ianEvidence[0]) {
     // Ian evidence[0] (submitted) — pending
     endorsementRows.push({
-      evidence_id: ianEvidence[0],
-      endorser_id: U.ethan,
-      is_suggested: true,
+      evidenceId: ianEvidence[0],
+      endorserId: U.ethan,
+      isSuggested: true,
       status: "pending",
     });
   }
@@ -1339,55 +958,55 @@ async function main() {
     .insert(feedbackTable)
     .values([
       {
-        author_id: U.ethan,
-        subject_id: U.alice,
-        project_id: P.apt,
-        is_anonymous: false,
+        authorId: U.ethan,
+        subjectId: U.alice,
+        projectId: P.apt,
+        isAnonymous: false,
         visibility: "published",
         content:
           "Alice consistently raises the bar on technical quality across the APT team. Her TypeScript migration initiative was well-planned, inclusive, and delivered without disruption. She proactively unblocks colleagues and brings a calm, structured approach to complex problems. I would welcome her involvement on any future project.",
-        organization_id: orgId,
+        organizationId: orgId,
       },
       {
-        author_id: U.jane,
-        subject_id: U.diana,
-        project_id: P.cci,
-        is_anonymous: false,
+        authorId: U.jane,
+        subjectId: U.diana,
+        projectId: P.cci,
+        isAnonymous: false,
         visibility: "published",
         content:
           "Diana brings exceptional user empathy to everything she works on. Her accessibility audit on CCI surfaced issues the team hadn't considered, and she handled the stakeholder pushback with professionalism. One area to develop: sharing work-in-progress earlier to create more opportunities for team input.",
-        organization_id: orgId,
+        organizationId: orgId,
       },
       {
-        author_id: U.hannah,
-        subject_id: U.bob,
-        project_id: P.apt,
-        is_anonymous: false,
+        authorId: U.hannah,
+        subjectId: U.bob,
+        projectId: P.apt,
+        isAnonymous: false,
         visibility: "pending_review",
         content:
           "Bob has grown significantly this quarter. His pagination work was solid and well-tested. He's started asking more architectural questions in review, which is exactly the growth I'd expect at his level. Keen to see him take on more end-to-end ownership of features.",
-        organization_id: orgId,
+        organizationId: orgId,
       },
       {
-        author_id: U.alice,
-        subject_id: U.charlie,
-        project_id: P.apt,
-        is_anonymous: false,
+        authorId: U.alice,
+        subjectId: U.charlie,
+        projectId: P.apt,
+        isAnonymous: false,
         visibility: "pending_review",
         content:
           "Charlie has settled in well since joining. Shows strong enthusiasm and asks good questions. Focus area for next quarter: building confidence to push back on requirements and contribute ideas in planning sessions, not just in implementation.",
-        organization_id: orgId,
+        organizationId: orgId,
       },
       // Anonymous feedback — author unknown to subject
       {
-        author_id: U.bob,
-        subject_id: U.alice,
-        project_id: P.apt,
-        is_anonymous: true,
+        authorId: U.bob,
+        subjectId: U.alice,
+        projectId: P.apt,
+        isAnonymous: true,
         visibility: "approved",
         content:
           "Really appreciate the time spent on code reviews. The feedback is always detailed and constructive. Would be great to have slightly more time in 1:1s for longer-term career conversations.",
-        organization_id: orgId,
+        organizationId: orgId,
       },
     ])
     .onConflictDoNothing();
@@ -1398,69 +1017,69 @@ async function main() {
     .insert(goalsTable)
     .values([
       {
-        user_id: U.alice,
+        userId: U.alice,
         title: "Reach principal-level technical leadership",
         description:
           "Build a track record of cross-team technical influence, architectural decisions, and people development to make a case for principal promotion by end of year.",
-        target_date: "2026-12-31",
+        targetDate: "2026-12-31",
         status: "active",
         visibility: "shared_with_manager",
       },
       {
-        user_id: U.bob,
+        userId: U.bob,
         title: "Develop system design fundamentals",
         description:
           "Work through a structured study plan covering distributed systems, API design, and database indexing strategies. Apply learnings on APT where possible.",
-        target_date: "2026-06-30",
+        targetDate: "2026-06-30",
         status: "active",
         visibility: "private",
       },
       {
-        user_id: U.charlie,
+        userId: U.charlie,
         title: "Obtain AWS Certified Developer certification",
         description:
           "Study and pass the AWS Certified Developer – Associate exam.",
-        target_date: "2026-09-30",
+        targetDate: "2026-09-30",
         status: "active",
         visibility: "private",
       },
       {
-        user_id: U.ethan,
+        userId: U.ethan,
         title: "Complete PRINCE2 Practitioner certification",
         description:
           "Supplement agile delivery experience with formal PRINCE2 qualification to support hybrid delivery engagements.",
-        target_date: "2025-03-01",
+        targetDate: "2025-03-01",
         status: "achieved",
         visibility: "shared_with_manager",
       },
       {
-        user_id: U.fiona,
+        userId: U.fiona,
         title: "Lead a machine learning proof-of-concept delivery",
         description:
           "Identify an opportunity within AHD or an internal workstream to take full ownership of an ML PoC from framing to demo.",
-        target_date: "2026-08-31",
+        targetDate: "2026-08-31",
         status: "active",
         visibility: "shared_with_manager",
       },
       {
-        user_id: U.hannah,
+        userId: U.hannah,
         title: "Establish contract testing practice across APT services",
         description:
           "Introduce Pact for consumer-driven contract testing and get buy-in from the APT tech lead and delivery manager.",
-        target_date: "2025-06-30",
+        targetDate: "2025-06-30",
         status: "active",
         visibility: "shared_with_manager",
       },
     ])
     .onConflictDoNothing()
-    .returning({ id: goalsTable.id, user_id: goalsTable.user_id });
+    .returning({ id: goalsTable.id, userId: goalsTable.userId });
 
   // ── Goal evidence links ───────────────────────────────────────────────────────
 
   const goalByUser = new Map<string, string>();
   for (const goal of goalsResult) {
-    if (!goalByUser.has(goal.user_id)) {
-      goalByUser.set(goal.user_id, goal.id);
+    if (!goalByUser.has(goal.userId)) {
+      goalByUser.set(goal.userId, goal.id);
     }
   }
 
@@ -1468,27 +1087,27 @@ async function main() {
     // Alice's goal backed by both her evidence entries
     aliceEvidence[0] &&
       goalByUser.get(U.alice) && {
-        goal_id: goalByUser.get(U.alice)!,
-        evidence_id: aliceEvidence[0],
+        goalId: goalByUser.get(U.alice)!,
+        evidenceId: aliceEvidence[0],
       },
     aliceEvidence[1] &&
       goalByUser.get(U.alice) && {
-        goal_id: goalByUser.get(U.alice)!,
-        evidence_id: aliceEvidence[1],
+        goalId: goalByUser.get(U.alice)!,
+        evidenceId: aliceEvidence[1],
       },
     // Bob's goal backed by his pagination evidence
     bobEvidence[0] &&
       goalByUser.get(U.bob) && {
-        goal_id: goalByUser.get(U.bob)!,
-        evidence_id: bobEvidence[0],
+        goalId: goalByUser.get(U.bob)!,
+        evidenceId: bobEvidence[0],
       },
     // Hannah's goal backed by her E2E automation evidence
     hannahEvidence[0] &&
       goalByUser.get(U.hannah) && {
-        goal_id: goalByUser.get(U.hannah)!,
-        evidence_id: hannahEvidence[0],
+        goalId: goalByUser.get(U.hannah)!,
+        evidenceId: hannahEvidence[0],
       },
-  ].filter(Boolean) as { goal_id: string; evidence_id: string }[];
+  ].filter(Boolean) as { goalId: string; evidenceId: string }[];
 
   if (goalEvidenceLinks.length > 0) {
     await db

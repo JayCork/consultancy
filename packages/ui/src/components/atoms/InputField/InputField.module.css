@@ -15,6 +15,23 @@
   min-height: calc(var(--size-touch-min) - 2px);
 }
 
+.inputWrapper {
+  position: relative;
+}
+
+.startAdornment {
+  position: absolute;
+  left: var(--space-inline-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.inputWithAdornment {
+  padding-left: var(--space-8);
+}
+
 .input:user-invalid {
   border-color: var(--color-error, #c0392b);
   outline-color: var(--color-error, #c0392b);

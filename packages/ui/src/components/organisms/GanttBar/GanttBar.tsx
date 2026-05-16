@@ -14,7 +14,6 @@ export interface GanttBarProps {
   leftPercent: number;
   widthPercent: number;
   milestones: GanttMilestone[];
-  isClassified?: boolean;
 }
 
 export function GanttBar(props: GanttBarProps) {
@@ -27,12 +26,10 @@ export function GanttBar(props: GanttBarProps) {
           width: `${props.widthPercent}%`,
           "background-color": props.statusColor,
         }}
-        title={props.isClassified ? "CLASSIFIED" : props.projectName}
+        title={props.projectName}
       >
         <Show when={props.widthPercent > 5}>
-          <span class={styles.barLabel}>
-            {props.isClassified ? "CLASSIFIED" : props.projectName}
-          </span>
+          <span class={styles.barLabel}>{props.projectName}</span>
         </Show>
       </div>
 

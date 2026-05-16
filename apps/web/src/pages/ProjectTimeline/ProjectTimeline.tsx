@@ -62,11 +62,10 @@ interface Milestone {
 interface Project {
   id: string;
   name: string;
-  short_name: string | null;
-  is_name_classified: boolean;
+  shortName: string | null;
   status: string;
-  start_date: string;
-  end_date: string | null;
+  startDate: string;
+  endDate: string | null;
   milestones: Milestone[];
 }
 
@@ -118,8 +117,8 @@ export function ProjectTimelinePage() {
 
   const timelineProjects = (): TimelineProject[] =>
     (projects() ?? []).map((p) => {
-      const projStart = new Date(p.start_date);
-      const projEnd = p.end_date ? new Date(p.end_date) : windowEnd();
+      const projStart = new Date(p.startDate);
+      const projEnd = p.endDate ? new Date(p.endDate) : windowEnd();
 
       const clampedLeft = Math.max(
         0,
@@ -154,12 +153,11 @@ export function ProjectTimelinePage() {
 
       return {
         id: p.id,
-        projectName: p.short_name ?? p.name,
+        projectName: p.name,
         statusColor: color,
         leftPercent,
         widthPercent,
         milestones,
-        isClassified: p.is_name_classified,
       };
     });
 
