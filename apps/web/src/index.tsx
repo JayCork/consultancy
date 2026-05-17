@@ -13,6 +13,7 @@ import {
   SignIn,
 } from "./pages";
 import { ProjectNewPage } from "./pages/ProjectNew/ProjectNew";
+import { PeoplePage } from "./routes/people";
 
 render(
   () => (
@@ -27,6 +28,7 @@ render(
       <Route path="/peer-review/:id" component={EvidenceReview} />
       <Route path="/projects" component={ProjectTimelinePage} />
       <Route path="/projects/new" component={ProjectNewPage} />
+      <Route path="/people" component={PeoplePage} />
       <Route path="/admin" component={AdminConfig} />
       {/* <Route path="/organization" component={OrganizationPage} /> */}
     </Router>
