@@ -19,7 +19,7 @@ export const getUserByAuthId = async (authId: string) => {
   const user = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.better_auth_id, authId))
+    .where(eq(usersTable.betterAuthId, authId))
     .limit(1);
   return user[0];
 };

@@ -36,7 +36,6 @@ enum endorsement_routing_policy {
   project_and_managers
   project_only
   managers_only
-  org_wide
 }
 
 enum endorsement_status {
@@ -86,6 +85,13 @@ enum invitation_status {
   revoked
 }
 
+enum project_funding_model {
+  time_and_materials
+  fixed_price
+  capped_time_and_materials
+  retainer
+}
+
 enum project_role {
   developer
   tech_lead
@@ -93,6 +99,27 @@ enum project_role {
   analyst
   designer
   project_manager
+}
+
+enum project_status {
+  opportunity
+  qualifying
+  bidding
+  bid_submitted
+  bid_won
+  bid_lost
+  contract_review
+  contract_signed
+  mobilising
+  discovery
+  in_delivery
+  uat
+  hypercare
+  support
+  contract_renewal
+  closing
+  closed
+  cancelled
 }
 
 enum region {
@@ -150,7 +177,7 @@ table bauth_accounts {
 table clearance_levels {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   name text [not null]
-  shortName text [not null]
+  short_name text [not null]
   rank integer [not null, unique]
   description text
   region region [not null, default: 'GBR']
@@ -369,6 +396,22 @@ table job_grades {
   deleted_at "timestamp (6)"
 }
 
+table organization_units {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  organization_id uuid [not null]
+  parent_id uuid
+  name text [not null]
+  unit_type text [not null]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+
+  indexes {
+    (organization_id, name) [name: 'organization_units_organization_id_name_unique', unique]
+    
+  }
+}
+
 table organizations {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   name text [not null]
@@ -379,6 +422,7 @@ table organizations {
   external_id text
   external_source text
   region region [not null, default: 'GBR']
+  target_margin_pct "numeric(5, 2)" [not null, default: '30.00']
   updated_at "timestamp (6)"
   created_at "timestamp (6)" [not null, default: `now()`]
   deleted_at "timestamp (6)"
@@ -388,33 +432,71 @@ table organizations {
   }
 }
 
+table pay_bands {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  organization_id uuid [not null]
+  job_grade_id uuid [not null]
+  band_floor "numeric(10, 2)" [not null]
+  band_ceiling "numeric(10, 2)" [not null]
+  currency varchar(3) [not null, default: 'GBP']
+  effective_from date [not null]
+  effective_to date
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
 table project_members {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   project_id uuid [not null]
   user_id uuid [not null]
-  project_role project_role [not null]
-  start_date date [not null]
-  end_date date
+  projectRole project_role [not null]
+  job_grade_id uuid
+  allocated_hours_per_week "numeric(5, 2)"
+  start_date timestamp [not null]
+  end_date timestamp
 
   indexes {
     (project_id, user_id) [name: 'project_members_active_unique', unique]
   }
 }
 
-table projects {
+table project_milestones {
   id uuid [pk, not null, default: `gen_random_uuid()`]
-  organization_id uuid [not null]
-  name text [not null]
-  short_name text
-  code_name text
-  is_name_classified boolean [not null, default: false]
-  minimum_clearance_id uuid
-  start_date timestamp [not null]
-  end_date timestamp
-  region region [not null, default: 'GBR']
+  project_id uuid [not null]
+  label text [not null]
+  notes text
+  date date [not null]
+  created_by uuid [not null]
   updated_at "timestamp (6)"
   created_at "timestamp (6)" [not null, default: `now()`]
   deleted_at "timestamp (6)"
+}
+
+table projects {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  organization_id uuid [not null]
+  lead_id uuid [not null]
+  name text [not null]
+  short_name text
+  code_name varchar(8)
+  organization_unit_id uuid [not null]
+  minimum_clearance_id uuid
+  funding_model project_funding_model [not null, default: 'time_and_materials']
+  contracted_value "numeric(12, 2)"
+  currency varchar(3) [not null, default: 'GBP']
+  margin_override_pct "numeric(5, 2)"
+  start_date timestamp [not null]
+  end_date timestamp
+  region region [not null, default: 'GBR']
+  status project_status [not null, default: 'opportunity']
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+
+  indexes {
+    code_name [name: 'projects_code_name_unique', unique]
+  }
 }
 
 table reference_frameworks {
@@ -446,6 +528,33 @@ table reference_skills {
   description text
   min_level integer [not null, default: 0]
   max_level integer [not null, default: 7]
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table resource_scenario_assignments {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  scenario_id uuid [not null]
+  user_id uuid
+  project_role project_role [not null]
+  job_grade_id uuid [not null]
+  allocated_hours_per_week "numeric(5, 2)" [not null]
+  start_date date [not null]
+  end_date date
+  notes text
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
+}
+
+table resource_scenarios {
+  id uuid [pk, not null, default: `gen_random_uuid()`]
+  project_id uuid [not null]
+  name text [not null]
+  description text
+  created_by uuid [not null]
+  committed_at "timestamp with time zone"
   updated_at "timestamp (6)"
   created_at "timestamp (6)" [not null, default: `now()`]
   deleted_at "timestamp (6)"
@@ -584,6 +693,10 @@ table users {
   external_id text
   external_source text
   better_auth_id text [not null, unique]
+  contracted_hours_per_week smallint
+  updated_at "timestamp (6)"
+  created_at "timestamp (6)" [not null, default: `now()`]
+  deleted_at "timestamp (6)"
 
   indexes {
     (organization_id, external_source, external_id) [name: 'users_org_external_unique', unique]
@@ -671,17 +784,45 @@ ref job_grades_organization_id_organizations_id_fk: job_grades.organization_id >
 
 ref job_grades_framework_role_id_framework_roles_id_fk: job_grades.framework_role_id > framework_roles.id [delete: no action, update: no action]
 
+ref organization_units_organization_id_organizations_id_fk: organization_units.organization_id > organizations.id [delete: no action, update: no action]
+
+ref organization_units_parent_id_fk: organization_units.parent_id > organization_units.id [delete: no action, update: no action]
+
+ref pay_bands_organization_id_organizations_id_fk: pay_bands.organization_id > organizations.id [delete: no action, update: no action]
+
+ref pay_bands_job_grade_id_job_grades_id_fk: pay_bands.job_grade_id > job_grades.id [delete: no action, update: no action]
+
 ref project_members_project_id_projects_id_fk: project_members.project_id > projects.id [delete: no action, update: no action]
 
 ref project_members_user_id_users_id_fk: project_members.user_id > users.id [delete: no action, update: no action]
 
+ref project_members_job_grade_id_job_grades_id_fk: project_members.job_grade_id > job_grades.id [delete: no action, update: no action]
+
+ref project_milestones_project_id_projects_id_fk: project_milestones.project_id > projects.id [delete: no action, update: no action]
+
+ref project_milestones_created_by_users_id_fk: project_milestones.created_by > users.id [delete: no action, update: no action]
+
 ref projects_organization_id_organizations_id_fk: projects.organization_id > organizations.id [delete: no action, update: no action]
+
+ref projects_lead_id_users_id_fk: projects.lead_id > users.id [delete: no action, update: no action]
+
+ref projects_organization_unit_id_organization_units_id_fk: projects.organization_unit_id > organization_units.id [delete: no action, update: no action]
 
 ref projects_minimum_clearance_id_clearance_levels_id_fk: projects.minimum_clearance_id > clearance_levels.id [delete: no action, update: no action]
 
 ref reference_roles_framework_id_reference_frameworks_id_fk: reference_roles.framework_id > reference_frameworks.id [delete: no action, update: no action]
 
 ref reference_skills_framework_id_reference_frameworks_id_fk: reference_skills.framework_id > reference_frameworks.id [delete: no action, update: no action]
+
+ref resource_scenario_assignments_scenario_id_resource_scenarios_id_fk: resource_scenario_assignments.scenario_id > resource_scenarios.id [delete: no action, update: no action]
+
+ref resource_scenario_assignments_user_id_users_id_fk: resource_scenario_assignments.user_id > users.id [delete: no action, update: no action]
+
+ref resource_scenario_assignments_job_grade_id_job_grades_id_fk: resource_scenario_assignments.job_grade_id > job_grades.id [delete: no action, update: no action]
+
+ref resource_scenarios_project_id_projects_id_fk: resource_scenarios.project_id > projects.id [delete: no action, update: no action]
+
+ref resource_scenarios_created_by_users_id_fk: resource_scenarios.created_by > users.id [delete: no action, update: no action]
 
 ref bauth_sessions_user_id_bauth_users_id_fk: bauth_sessions.user_id > bauth_users.id [delete: cascade, update: no action]
 

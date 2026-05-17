@@ -1,22 +1,30 @@
 import { createResource, createSignal, Show } from "solid-js";
-import { useNavigate, useParams } from "@solidjs/router";
+import { useNavigate, useParams, useSearchParams } from "@solidjs/router";
 import { useAuthGuard } from "../../lib/use-auth-guard";
 import { Button, Container } from "@consultancy/ui";
 import { Shell } from "../../Shell";
-import { type PendingEvidenceEntry } from "../PeerReview/PeerReview";
 import styles from "./EvidenceReview.module.css";
 
 const API = import.meta.env.VITE_API_URL;
 
-const SECTOR_LABELS: Record<string, string> = {
-  central_government: "Central Government",
-  defence: "Defence",
-  health: "Health",
-  justice: "Justice",
-  transport: "Transport",
-  local_government: "Local Government",
-  education: "Education",
-  commercial: "Commercial",
+type EvidenceEntry = {
+  id: string;
+  userId: string;
+  projectId: string | null;
+  parentId: string | null;
+  version: number;
+  situation: string;
+  task: string;
+  action: string;
+  result: string;
+  status: string;
+  dataClassification: string;
+  createdAt: string;
+  updatedAt: string | null;
+  deletedAt: string | null;
+  main_skill_id: string | null;
+  skill_name: string | null;
+  level_claimed: string | null;
 };
 
 const STAR_SECTIONS = [
@@ -26,24 +34,21 @@ const STAR_SECTIONS = [
   { key: "result", label: "Result" },
 ] as const;
 
-function workingDaysSince(createdAt: string): number {
-  const start = new Date(createdAt);
-  start.setHours(0, 0, 0, 0);
-  const end = new Date();
-  end.setHours(0, 0, 0, 0);
-  let count = 0;
-  const current = new Date(start);
-  while (current < end) {
-    current.setDate(current.getDate() + 1);
-    const day = current.getDay();
-    if (day !== 0 && day !== 6) count++;
-  }
-  return count;
-}
+const CLASSIFICATION_LABELS: Record<string, string> = {
+  public: "Public",
+  official: "Official",
+  official_sensitive: "Official Sensitive",
+  secret: "Secret",
+};
 
-function isOverdue(createdAt: string): boolean {
-  return workingDaysSince(createdAt) > 2;
-}
+const LEVEL_LABELS: Record<string, string> = {
+  associate: "Associate",
+  junior: "Junior",
+  mid: "Mid",
+  senior: "Senior",
+  lead: "Lead",
+  principal: "Principal",
+};
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
@@ -56,11 +61,14 @@ function formatDate(iso: string) {
 export function EvidenceReview() {
   useAuthGuard();
   const params = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [approving, setApproving] = createSignal(false);
+  const [submitting, setSubmitting] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
 
-  const [entry] = createResource(
+  const endorsementId = () => searchParams.endorsementId as string | undefined;
+
+  const [evidence] = createResource(
     () => params.id,
     async (id) => {
       const res = await fetch(`${API}/api/v0/evidence/${id}`, {
@@ -68,83 +76,81 @@ export function EvidenceReview() {
       });
       if (!res.ok) return null;
       const json = await res.json();
-      return json.data as PendingEvidenceEntry;
+      return json.data as EvidenceEntry;
     },
   );
 
-  const handleApprove = async () => {
-    setApproving(true);
+  const handleAction = async (status: "endorsed" | "skipped" | "flagged") => {
+    const eid = endorsementId();
+    if (!eid) {
+      setError("Endorsement reference missing — please go back and try again.");
+      return;
+    }
+    setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch(`${API}/api/v0/evidence/${params.id}/status`, {
+      const res = await fetch(`${API}/api/v0/endorsements/${eid}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ status: "verified" }),
+        body: JSON.stringify({ status }),
       });
       if (!res.ok) {
         const json = await res.json();
-        setError(json.error ?? "Failed to approve evidence");
+        setError(json.error ?? "Failed to submit response");
         return;
       }
       navigate("/peer-review");
     } finally {
-      setApproving(false);
+      setSubmitting(false);
     }
   };
 
   return (
     <Shell>
       <Container>
-        <Show when={entry.loading}>
+        <Show when={evidence.loading}>
           <p>Loading…</p>
         </Show>
 
-        <Show when={!entry.loading && !entry()}>
+        <Show when={!evidence.loading && !evidence()}>
           <p>Evidence not found.</p>
         </Show>
 
-        <Show when={entry()}>
+        <Show when={evidence()}>
           {(e) => (
             <div class={styles.layout}>
               <header class={styles.pageHeader}>
                 <div class={styles.titleRow}>
-                  <div class={styles.skillBadge}>
-                    <span class={styles.skillName}>{e().skill_name}</span>
-                    <span class={styles.levelBadge}>Level {e().level_number}</span>
-                  </div>
-                  <Show when={isOverdue(e().created_at)}>
-                    <span class={styles.overdueBadge}>Overdue</span>
+                  <Show when={e().skill_name}>
+                    <div class={styles.skillBadge}>
+                      <span class={styles.skillName}>{e().skill_name}</span>
+                      <Show when={e().level_claimed}>
+                        <span class={styles.levelBadge}>
+                          {LEVEL_LABELS[e().level_claimed!] ?? e().level_claimed}
+                        </span>
+                      </Show>
+                    </div>
                   </Show>
                 </div>
 
                 <dl class={styles.metaGrid}>
                   <div class={styles.metaItem}>
-                    <dt class={styles.metaLabel}>Submitted by</dt>
-                    <dd class={styles.metaValue}>{e().author_name}</dd>
-                  </div>
-                  <Show when={e().project_name}>
-                    <div class={styles.metaItem}>
-                      <dt class={styles.metaLabel}>Project</dt>
-                      <dd class={styles.metaValue}>{e().project_name}</dd>
-                    </div>
-                  </Show>
-                  <Show when={!e().project_name}>
-                    <div class={styles.metaItem}>
-                      <dt class={styles.metaLabel}>Project</dt>
-                      <dd class={styles.metaValue}>Non-project work</dd>
-                    </div>
-                  </Show>
-                  <div class={styles.metaItem}>
                     <dt class={styles.metaLabel}>Date submitted</dt>
-                    <dd class={styles.metaValue}>{formatDate(e().created_at)}</dd>
+                    <dd class={styles.metaValue}>{formatDate(e().createdAt)}</dd>
                   </div>
                   <div class={styles.metaItem}>
-                    <dt class={styles.metaLabel}>Sector</dt>
+                    <dt class={styles.metaLabel}>Classification</dt>
                     <dd class={styles.metaValue}>
-                      {SECTOR_LABELS[e().sector] ?? e().sector}
+                      {CLASSIFICATION_LABELS[e().dataClassification] ?? e().dataClassification}
                     </dd>
                   </div>
+                  <Show when={e().version > 1}>
+                    <div class={styles.metaItem}>
+                      <dt class={styles.metaLabel}>Version</dt>
+                      <dd class={styles.metaValue}>{e().version}</dd>
+                    </div>
+                  </Show>
                 </dl>
               </header>
 
@@ -162,15 +168,27 @@ export function EvidenceReview() {
                   <p class={styles.errorMessage}>{error()}</p>
                 </Show>
                 <div class={styles.buttonRow}>
-                  <Button onClick={() => navigate("/peer-review")}>
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handleApprove}
-                    disabled={approving()}
-                  >
-                    {approving() ? "Approving…" : "Approve"}
-                  </Button>
+                  <Button onClick={() => navigate("/peer-review")}>Back</Button>
+                  <Show when={endorsementId()}>
+                    <Button
+                      onClick={() => handleAction("skipped")}
+                      disabled={submitting()}
+                    >
+                      Skip
+                    </Button>
+                    <Button
+                      onClick={() => handleAction("flagged")}
+                      disabled={submitting()}
+                    >
+                      Flag
+                    </Button>
+                    <Button
+                      onClick={() => handleAction("endorsed")}
+                      disabled={submitting()}
+                    >
+                      {submitting() ? "Submitting…" : "Endorse"}
+                    </Button>
+                  </Show>
                 </div>
               </footer>
             </div>

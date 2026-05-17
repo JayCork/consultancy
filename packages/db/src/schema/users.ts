@@ -4,6 +4,7 @@ import {
   text,
   timestamp,
   uniqueIndex,
+  smallint,
 } from "drizzle-orm/pg-core";
 import { organizationsTable } from "./organizations";
 import { clearanceLevelsTable } from "./reference";
@@ -16,34 +17,36 @@ export const usersTable = pgTable(
   {
     id: uuid().primaryKey().defaultRandom(),
     status: userStatusEnum("status").notNull().default("pending_org"),
-    organization_id: uuid().references(() => organizationsTable.id),
+    organizationId: uuid("organization_id").references(() => organizationsTable.id),
     name: text().notNull(),
     email: text().notNull().unique(),
-    external_id: text(),
-    external_source: text(),
-    better_auth_id: text()
+    externalId: text("external_id"),
+    externalSource: text("external_source"),
+    betterAuthId: text("better_auth_id")
       .notNull()
       .unique()
       .references(() => user.id),
+    contractedHoursPerWeek: smallint("contracted_hours_per_week"),
+    ...timestamps,
   },
   (table) => [
     uniqueIndex("users_org_external_unique").on(
-      table.organization_id,
-      table.external_source,
-      table.external_id,
+      table.organizationId,
+      table.externalSource,
+      table.externalId,
     ),
   ],
 );
 
 export const userClearancesTable = pgTable("user_clearances", {
   id: uuid().primaryKey().defaultRandom(),
-  user_id: uuid()
+  userId: uuid("user_id")
     .notNull()
     .references(() => usersTable.id),
-  clearance_level_id: uuid()
+  clearanceLevelId: uuid("clearance_level_id")
     .notNull()
     .references(() => clearanceLevelsTable.id),
-  granted_at: timestamp().notNull(),
-  expires_at: timestamp(),
+  grantedAt: timestamp("granted_at").notNull(),
+  expiresAt: timestamp("expires_at"),
   ...timestamps,
 });

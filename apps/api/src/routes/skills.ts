@@ -16,11 +16,11 @@ skills.get("/", async (context) => {
   if (!user) {
     return context.json({ ok: false, error: "User not found" }, 404);
   }
-  if (!user.organization_id) {
+  if (!user.organizationId) {
     return context.json({ ok: false, error: "User has no organisation" }, 403);
   }
 
-  const skills = await getAllOrgSkills(user.organization_id);
+  const skills = await getAllOrgSkills(user.organizationId);
   return context.json({ ok: true, data: skills });
 });
 
@@ -31,12 +31,12 @@ skills.get("/:skillId/levels", async (context) => {
   if (!user) {
     return context.json({ ok: false, error: "User not found" }, 404);
   }
-  if (!user.organization_id) {
+  if (!user.organizationId) {
     return context.json({ ok: false, error: "User has no organisation" }, 403);
   }
 
   const { skillId } = context.req.param();
-  const skill = await getOrgSkillById(skillId, user.organization_id);
+  const skill = await getOrgSkillById(skillId, user.organizationId);
   if (!skill) {
     return context.json({ ok: false, error: "Skill not found" }, 404);
   }

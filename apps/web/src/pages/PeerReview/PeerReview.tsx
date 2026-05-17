@@ -8,22 +8,24 @@ import styles from "./PeerReview.module.css";
 
 const API = import.meta.env.VITE_API_URL;
 
-export type PendingEvidenceEntry = {
+export type PendingEndorsement = {
   id: string;
-  situation: string;
-  task: string;
-  action: string;
-  result: string;
-  sector: string;
-  security_context: string;
-  project_id: string | null;
+  evidenceId: string;
+  endorserId: string;
   status: string;
-  created_at: string;
-  skill_name: string;
-  level_number: number;
-  author_id: string;
-  author_name: string;
-  project_name: string | null;
+  isSuggested: boolean;
+  note: string | null;
+  respondedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  evidenceSituation: string;
+  evidenceTask: string;
+  evidenceAction: string;
+  evidenceResult: string;
+  evidenceCreatedAt: string;
+  evidenceDataClassification: string;
+  subjectName: string;
+  projectName: string | null;
 };
 
 function workingDaysSince(createdAt: string): number {
@@ -54,37 +56,36 @@ function formatDate(iso: string) {
 }
 
 interface PendingCardProps {
-  entry: PendingEvidenceEntry;
+  entry: PendingEndorsement;
   onClick: () => void;
 }
 
-function PendingEvidenceCard(props: PendingCardProps) {
-  const overdue = () => isOverdue(props.entry.created_at);
+function PendingEndorsementCard(props: PendingCardProps) {
+  const overdue = () => isOverdue(props.entry.evidenceCreatedAt);
 
   return (
     <button class={styles.card} onClick={props.onClick}>
       <div class={styles.cardHeader}>
         <div class={styles.skillBadge}>
-          <span class={styles.skillName}>{props.entry.skill_name}</span>
-          <span class={styles.levelBadge}>Level {props.entry.level_number}</span>
+          <span class={styles.skillName}>{props.entry.subjectName}</span>
         </div>
         <Show when={overdue()}>
           <span class={styles.overdueBadge}>Overdue</span>
         </Show>
       </div>
       <div class={styles.cardMeta}>
-        <span class={styles.authorName}>{props.entry.author_name}</span>
-        <Show when={props.entry.project_name}>
+        <Show when={props.entry.projectName}>
+          <span class={styles.projectName}>{props.entry.projectName}</span>
           <span class={styles.separator}>·</span>
-          <span class={styles.projectName}>{props.entry.project_name}</span>
         </Show>
-        <span class={styles.separator}>·</span>
-        <time class={styles.date}>{formatDate(props.entry.created_at)}</time>
+        <time class={styles.date}>
+          {formatDate(props.entry.evidenceCreatedAt)}
+        </time>
       </div>
       <p class={styles.preview}>
-        {props.entry.action.length > 160
-          ? props.entry.action.slice(0, 160) + "…"
-          : props.entry.action}
+        {props.entry.evidenceAction.length > 160
+          ? props.entry.evidenceAction.slice(0, 160) + "…"
+          : props.entry.evidenceAction}
       </p>
     </button>
   );
@@ -98,11 +99,11 @@ export function PeerReview() {
   const [entries] = createResource(
     () => session()?.data?.user?.id,
     async () => {
-      const res = await fetch(`${API}/api/v0/evidence/pending`, {
+      const res = await fetch(`${API}/api/v0/endorsements`, {
         credentials: "include",
       });
       const json = await res.json();
-      return json.data as PendingEvidenceEntry[];
+      return json.data as PendingEndorsement[];
     },
   );
 
@@ -119,8 +120,7 @@ export function PeerReview() {
           <div class={styles.emptyState}>
             <p class={styles.emptyTitle}>Nothing to review right now</p>
             <p class={styles.emptySubtitle}>
-              Evidence submitted by your team will appear here once it is ready
-              for verification.
+              Evidence assigned to you for review will appear here.
             </p>
           </div>
         </Show>
@@ -129,9 +129,9 @@ export function PeerReview() {
           <div class={styles.list}>
             <For each={entries()}>
               {(entry) => (
-                <PendingEvidenceCard
+                <PendingEndorsementCard
                   entry={entry}
-                  onClick={() => navigate(`/peer-review/${entry.id}`)}
+                  onClick={() => navigate(`/peer-review/${entry.evidenceId}?endorsementId=${entry.id}`)}
                 />
               )}
             </For>

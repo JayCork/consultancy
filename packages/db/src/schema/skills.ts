@@ -2,7 +2,6 @@ import {
   pgTable,
   uuid,
   text,
-  AnyPgColumn,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { organizationsTable } from "./organizations";
@@ -14,13 +13,13 @@ export const skillsTable = pgTable(
   "skills",
   {
     id: uuid().primaryKey().defaultRandom(),
-    organization_id: uuid().references(() => organizationsTable.id),
+    organizationId: uuid("organization_id").references(() => organizationsTable.id),
     name: text().notNull(),
     description: text(),
     ...timestamps,
   },
   (table) => [
-    uniqueIndex("skills_org_name_unique").on(table.organization_id, table.name),
+    uniqueIndex("skills_org_name_unique").on(table.organizationId, table.name),
   ],
 );
 
@@ -28,7 +27,7 @@ export const skillsLevelsTable = pgTable(
   "skill_levels",
   {
     id: uuid().primaryKey().defaultRandom(),
-    skill_id: uuid()
+    skillId: uuid("skill_id")
       .notNull()
       .references(() => skillsTable.id),
     level: frameworkLevelEnum().notNull(),
@@ -37,7 +36,7 @@ export const skillsLevelsTable = pgTable(
   },
   (table) => [
     uniqueIndex("skill_levels_skill_level_unique").on(
-      table.skill_id,
+      table.skillId,
       table.level,
     ),
   ],
@@ -45,10 +44,10 @@ export const skillsLevelsTable = pgTable(
 
 export const skillFrameworkMappingsTable = pgTable("skill_framework_mappings", {
   id: uuid().primaryKey().defaultRandom(),
-  skill_id: uuid()
+  skillId: uuid("skill_id")
     .notNull()
     .references(() => skillsTable.id),
-  reference_skill_id: uuid()
+  referenceSkillId: uuid("reference_skill_id")
     .notNull()
     .references(() => referenceSkillsTable.id),
   notes: text(), // Any notes about the mapping, e.g. rationale for mapping, areas of partial alignment, etc.

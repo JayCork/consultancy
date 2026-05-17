@@ -15,22 +15,22 @@ export const endorsementsTable = pgTable(
   "endorsements",
   {
     id: uuid().primaryKey().defaultRandom(),
-    evidence_id: uuid()
+    evidenceId: uuid("evidence_id")
       .notNull()
       .references(() => evidenceTable.id),
-    endorser_id: uuid()
+    endorserId: uuid("endorser_id")
       .notNull()
       .references(() => usersTable.id),
-    is_suggested: boolean().notNull().default(true),
+    isSuggested: boolean("is_suggested").notNull().default(true),
     status: endorsementStatusEnum().notNull().default("pending"),
     note: text(),
-    responded_at: timestamp(),
+    respondedAt: timestamp("responded_at"),
     ...timestamps,
   },
   (table) => [
     uniqueIndex("endorsements_evidence_endorser_unique").on(
-      table.evidence_id,
-      table.endorser_id,
+      table.evidenceId,
+      table.endorserId,
     ),
   ],
 );

@@ -41,7 +41,6 @@ export const Default: Story = {
         milestones: [
           { id: "m1", name: "Contract Renewal", date: "2026-07-10", leftPercent: 36 },
         ],
-        isClassified: false,
       },
       {
         id: "2",
@@ -50,7 +49,6 @@ export const Default: Story = {
         leftPercent: 20,
         widthPercent: 35,
         milestones: [],
-        isClassified: false,
       },
       {
         id: "3",
@@ -61,7 +59,6 @@ export const Default: Story = {
         milestones: [
           { id: "m2", name: "Final Demo", date: "2026-09-15", leftPercent: 72 },
         ],
-        isClassified: true,
       },
       {
         id: "4",
@@ -70,7 +67,6 @@ export const Default: Story = {
         leftPercent: 0,
         widthPercent: 100,
         milestones: [],
-        isClassified: false,
       },
     ],
   },

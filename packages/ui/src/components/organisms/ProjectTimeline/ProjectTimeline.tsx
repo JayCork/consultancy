@@ -77,13 +77,8 @@ export function ProjectTimeline(props: ProjectTimelineProps) {
             <For each={props.projects}>
               {(project) => (
                 <>
-                  <div
-                    class={styles.projectName}
-                    title={
-                      project.isClassified ? "CLASSIFIED" : project.projectName
-                    }
-                  >
-                    {project.isClassified ? "CLASSIFIED" : project.projectName}
+                  <div class={styles.projectName} title={project.projectName}>
+                    {project.projectName}
                   </div>
                   <div class={styles.barCell}>
                     <GanttBar {...project} />

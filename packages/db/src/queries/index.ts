@@ -11,7 +11,8 @@ export {
   upsertPrimaryEvidenceSkill,
   getEvidenceStatsByUser,
 } from "./evidence";
-export { getAllProjects, getProjectsWithMilestones } from "./projects";
+export { getAllProjects, getProjectsWithMilestones, createProject, isCodeNameTaken } from "./projects";
+export { getClearanceLevels } from "./reference";
 export {
   getAllSkills,
   getUsersFrameworkSkills,
@@ -22,12 +23,13 @@ export {
 export { getReadinessForUser } from "./readiness";
 export { getCurrentRoleForUser } from "./roles";
 export { getOrgConfig } from "./admin";
-export { getOrganisationCount } from "./organizations";
+export { getOrganisationCount, getOrganizationUnits } from "./organizations";
 export { hasActiveRelationship } from "./relationships";
 export {
   createEndorsements,
   getEndorsementsForEvidence,
   getPendingEndorsementsForEndorser,
+  getEndorsementById,
   updateEndorsement,
   deleteEndorsement,
   addEndorsementToEvidence,

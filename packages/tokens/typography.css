@@ -1,5 +1,9 @@
 :root {
-  --font-family-base: system-ui, -apple-system, sans-serif;
   --font-size-lg: 1.25rem;
   --font-size-base: 1rem;
+  --font-family-body: "Lora", Georgia, "Times New Roman", serif;
+  --font-family-heading:
+    "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-family-mono:
+    "IBM Plex Mono", "Fira Mono", Consolas, "Courier New", monospace;
 }

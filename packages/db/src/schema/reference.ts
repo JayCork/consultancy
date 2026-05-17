@@ -22,12 +22,12 @@ export const referenceFrameworksTable = pgTable("reference_frameworks", {
   ...timestamps,
 });
 
-// DDaT roles, SFIA skills — one table each, distinguished by framework_id.
+// DDaT roles, SFIA skills — one table each, distinguished by frameworkId.
 // Do not add SFIA-specific or DDaT-specific tables alongside these.
 
 export const referenceRolesTable = pgTable("reference_roles", {
   id: uuid().primaryKey().defaultRandom(),
-  framework_id: uuid()
+  frameworkId: uuid("framework_id")
     .notNull()
     .references(() => referenceFrameworksTable.id),
   code: text(), // Framework-assigned code where applicable
@@ -38,14 +38,14 @@ export const referenceRolesTable = pgTable("reference_roles", {
 
 export const referenceSkillsTable = pgTable("reference_skills", {
   id: uuid().primaryKey().defaultRandom(),
-  framework_id: uuid()
+  frameworkId: uuid("framework_id")
     .notNull()
     .references(() => referenceFrameworksTable.id),
   code: text().notNull(), // e.g. "PROG", "DESN", "TEST"
   name: text().notNull(),
   description: text(),
-  min_level: integer().notNull().default(0),
-  max_level: integer().notNull().default(7),
+  minLevel: integer("min_level").notNull().default(0),
+  maxLevel: integer("max_level").notNull().default(7),
   ...timestamps,
 });
 
@@ -53,12 +53,12 @@ export const referenceSkillsTable = pgTable("reference_skills", {
 // User-facing. Everything employees and managers interact with references
 // these tables — never reference_roles or reference_skills directly.
 //
-// organization_id IS NULL     → platform default (ships with the product)
-// organization_id IS NOT NULL → org-defined override or extension
+// organizationId IS NULL     → platform default (ships with the product)
+// organizationId IS NOT NULL → org-defined override or extension
 
 export const frameworkRoleFamiliesTable = pgTable("framework_role_families", {
   id: uuid().primaryKey().defaultRandom(),
-  organization_id: uuid().references(() => organizationsTable.id), // nullable = platform default
+  organizationId: uuid("organization_id").references(() => organizationsTable.id), // nullable = platform default
   name: text().notNull(), // e.g. "Software Developer", "User Researcher"
   description: text(),
   ...timestamps,
@@ -66,12 +66,12 @@ export const frameworkRoleFamiliesTable = pgTable("framework_role_families", {
 
 export const frameworkRolesTable = pgTable("framework_roles", {
   id: uuid().primaryKey().defaultRandom(),
-  organization_id: uuid().references(() => organizationsTable.id), // nullable = platform default
-  family_id: uuid()
+  organizationId: uuid("organization_id").references(() => organizationsTable.id), // nullable = platform default
+  familyId: uuid("family_id")
     .notNull()
     .references(() => frameworkRoleFamiliesTable.id),
   level: frameworkLevelEnum().notNull(),
-  display_name: text().notNull(), // e.g. "Senior Software Developer"
+  displayName: text("display_name").notNull(), // e.g. "Senior Software Developer"
   ...timestamps,
 });
 
@@ -80,13 +80,13 @@ export const frameworkRolesTable = pgTable("framework_roles", {
 
 export const frameworkRoleMappingsTable = pgTable("framework_role_mappings", {
   id: uuid().primaryKey().defaultRandom(),
-  framework_role_id: uuid()
+  frameworkRoleId: uuid("framework_role_id")
     .notNull()
     .references(() => frameworkRolesTable.id),
-  reference_role_id: uuid()
+  referenceRoleId: uuid("reference_role_id")
     .notNull()
     .references(() => referenceRolesTable.id),
-  // Unique constraint in migration: (framework_role_id, reference_role_id)
+  // Unique constraint in migration: (frameworkRoleId, referenceRoleId)
   // One internal role maps to one DDaT role per reference framework.
   ...timestamps,
 });
@@ -95,20 +95,20 @@ export const frameworkRoleSkillExpectationsTable = pgTable(
   "framework_role_skill_expectations",
   {
     id: uuid().primaryKey().defaultRandom(),
-    framework_role_id: uuid()
+    frameworkRoleId: uuid("framework_role_id")
       .notNull()
       .references(() => frameworkRolesTable.id),
-    skill_id: uuid()
+    skillId: uuid("skill_id")
       .notNull()
       .references(() => skillsTable.id),
-    minimum_level: frameworkLevelEnum().notNull(), // Minimum SFIA level expected at this role
-    is_primary: boolean().notNull().default(false),
+    minimumLevel: frameworkLevelEnum("minimum_level").notNull(), // Minimum SFIA level expected at this role
+    isPrimary: boolean("is_primary").notNull().default(false),
     ...timestamps,
   },
   (table) => [
     uniqueIndex("frse_role_skill_unique").on(
-      table.framework_role_id,
-      table.skill_id,
+      table.frameworkRoleId,
+      table.skillId,
     ),
   ],
 );

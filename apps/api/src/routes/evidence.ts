@@ -74,17 +74,17 @@ function parseEvidenceBody(body: Record<string, unknown>) {
     task: task as string | undefined,
     action: action as string | undefined,
     result: result as string | undefined,
-    project_id: (project_id as string | null) ?? null,
-    data_classification: VALID_CLASSIFICATIONS.includes(
+    projectId: (project_id as string | null) ?? null,
+    dataClassification: VALID_CLASSIFICATIONS.includes(
       data_classification as DataClassification,
     )
       ? (data_classification as DataClassification)
       : undefined,
-    endorser_ids: Array.isArray(endorser_ids)
+    endorserIds: Array.isArray(endorser_ids)
       ? (endorser_ids as string[])
       : undefined,
-    main_skill_id: (main_skill_id as string | undefined) ?? null,
-    level_claimed: VALID_LEVELS.includes(level_claimed as FrameworkLevel)
+    mainSkillId: (main_skill_id as string | undefined) ?? null,
+    levelClaimed: VALID_LEVELS.includes(level_claimed as FrameworkLevel)
       ? (level_claimed as FrameworkLevel)
       : null,
     status: status as string | undefined,
@@ -116,8 +116,8 @@ evidence.post("/", async (context) => {
   }
 
   if (
-    (parsed.main_skill_id && !parsed.level_claimed) ||
-    (!parsed.main_skill_id && parsed.level_claimed)
+    (parsed.mainSkillId && !parsed.levelClaimed) ||
+    (!parsed.mainSkillId && parsed.levelClaimed)
   ) {
     return context.json(
       {
@@ -128,7 +128,7 @@ evidence.post("/", async (context) => {
     );
   }
 
-  if (!user.organization_id) {
+  if (!user.organizationId) {
     return context.json(
       { ok: false, error: "User is not assigned to an organisation" },
       403,
@@ -141,45 +141,45 @@ evidence.post("/", async (context) => {
       : "draft";
 
   const entry = await createEvidence({
-    user_id: user.id,
+    userId: user.id,
     situation: parsed.situation,
     task: parsed.task,
     action: parsed.action,
     result: parsed.result,
     status,
-    ...(parsed.project_id ? { project_id: parsed.project_id } : {}),
-    ...(parsed.data_classification
-      ? { data_classification: parsed.data_classification }
+    ...(parsed.projectId ? { projectId: parsed.projectId } : {}),
+    ...(parsed.dataClassification
+      ? { dataClassification: parsed.dataClassification }
       : {}),
   });
 
   const suggestedIds = await getSuggestedEndorsers(
     user.id,
-    user.organization_id,
-    parsed.project_id ?? undefined,
+    user.organizationId,
+    parsed.projectId ?? undefined,
   );
   const suggestedEndorserIds = suggestedIds.map((e) => e.id);
   const suggestedSet = new Set(suggestedEndorserIds);
 
   const finalEndorserIds =
-    parsed.endorser_ids && parsed.endorser_ids.length > 0
-      ? parsed.endorser_ids
+    parsed.endorserIds && parsed.endorserIds.length > 0
+      ? parsed.endorserIds
       : suggestedEndorserIds;
 
   if (finalEndorserIds.length > 0) {
     await createEndorsements(
-      finalEndorserIds.map((endorser_id) => ({
-        evidence_id: entry.id,
-        endorser_id,
-        is_suggested: suggestedSet.has(endorser_id),
+      finalEndorserIds.map((endorserId) => ({
+        evidenceId: entry.id,
+        endorserId,
+        isSuggested: suggestedSet.has(endorserId),
       })),
     );
   }
 
   await upsertPrimaryEvidenceSkill({
     evidenceId: entry.id,
-    skillId: parsed.main_skill_id,
-    levelClaimed: parsed.level_claimed,
+    skillId: parsed.mainSkillId,
+    levelClaimed: parsed.levelClaimed,
   });
 
   return context.json({ ok: true, data: entry }, 201);
@@ -226,8 +226,16 @@ evidence.get("/:id", async (context) => {
   if (!entry) {
     return context.json({ ok: false, error: "Evidence not found" }, 404);
   }
-  if (entry.user_id !== user.id) {
-    return context.json({ ok: false, error: "Unauthorized" }, 403);
+  if (entry.userId !== user.id) {
+    console.log(
+      `User ${user.id} is not the owner of evidence ${id}, checking endorsements...`,
+    );
+    const endorsements = await getEndorsementsForEvidence(id);
+    console.log(`Endorsements for evidence ${id}:`, endorsements);
+    const isEndorser = endorsements.some((e) => e.endorserId === user.id);
+    if (!isEndorser) {
+      return context.json({ ok: false, error: "Unauthorized" }, 403);
+    }
   }
   return context.json({ ok: true, data: entry });
 });
@@ -245,7 +253,7 @@ evidence.patch("/:id", async (context) => {
   if (!entry) {
     return context.json({ ok: false, error: "Evidence not found" }, 404);
   }
-  if (entry.user_id !== user.id) {
+  if (entry.userId !== user.id) {
     return context.json({ ok: false, error: "Unauthorized" }, 403);
   }
   if (entry.status === "verified") {
@@ -275,8 +283,8 @@ evidence.patch("/:id", async (context) => {
   }
 
   if (
-    (parsed.main_skill_id && !parsed.level_claimed) ||
-    (!parsed.main_skill_id && parsed.level_claimed)
+    (parsed.mainSkillId && !parsed.levelClaimed) ||
+    (!parsed.mainSkillId && parsed.levelClaimed)
   ) {
     return context.json(
       {
@@ -298,8 +306,8 @@ evidence.patch("/:id", async (context) => {
       task: parsed.task,
       action: parsed.action,
       result: parsed.result,
-      project_id: parsed.project_id,
-      data_classification: parsed.data_classification ?? "official",
+      projectId: parsed.projectId,
+      dataClassification: parsed.dataClassification ?? "official",
       status: newStatus,
     });
 
@@ -312,22 +320,22 @@ evidence.patch("/:id", async (context) => {
 
     await upsertPrimaryEvidenceSkill({
       evidenceId: id,
-      skillId: parsed.main_skill_id,
-      levelClaimed: parsed.level_claimed,
+      skillId: parsed.mainSkillId,
+      levelClaimed: parsed.levelClaimed,
     });
 
-    if (parsed.endorser_ids !== undefined) {
+    if (parsed.endorserIds !== undefined) {
       const existingEndorsements = await getEndorsementsForEvidence(id);
       const suggestedSet = new Set(
         existingEndorsements
-          .filter((e) => e.is_suggested)
-          .map((e) => e.endorser_id),
+          .filter((e) => e.isSuggested)
+          .map((e) => e.endorserId),
       );
       await replaceEndorsementsForEvidence(
         id,
-        parsed.endorser_ids.map((endorser_id) => ({
-          endorser_id,
-          is_suggested: suggestedSet.has(endorser_id),
+        parsed.endorserIds.map((endorserId) => ({
+          endorserId,
+          isSuggested: suggestedSet.has(endorserId),
         })),
       );
     }
@@ -337,42 +345,42 @@ evidence.patch("/:id", async (context) => {
 
   // submitted → create revision
   const newEntry = await createEvidenceRevision(
-    { id: entry.id, version: entry.version, user_id: entry.user_id },
+    { id: entry.id, version: entry.version, userId: entry.userId },
     {
       situation: parsed.situation,
       task: parsed.task,
       action: parsed.action,
       result: parsed.result,
-      project_id: parsed.project_id,
-      data_classification: parsed.data_classification ?? "official",
+      projectId: parsed.projectId,
+      dataClassification: parsed.dataClassification ?? "official",
     },
   );
 
   await upsertPrimaryEvidenceSkill({
     evidenceId: newEntry.id,
-    skillId: parsed.main_skill_id,
-    levelClaimed: parsed.level_claimed,
+    skillId: parsed.mainSkillId,
+    levelClaimed: parsed.levelClaimed,
   });
 
   // Carry endorsers forward: use the client-provided list if given, otherwise
   // copy from the superseded version.
   const sourceEndorsements = await getEndorsementsForEvidence(entry.id);
   const endorserRecords =
-    parsed.endorser_ids !== undefined
-      ? parsed.endorser_ids.map((endorser_id) => ({
-          endorser_id,
-          is_suggested: sourceEndorsements.some(
-            (e) => e.endorser_id === endorser_id && e.is_suggested,
+    parsed.endorserIds !== undefined
+      ? parsed.endorserIds.map((endorserId) => ({
+          endorserId,
+          isSuggested: sourceEndorsements.some(
+            (e) => e.endorserId === endorserId && e.isSuggested,
           ),
         }))
       : sourceEndorsements.map((e) => ({
-          endorser_id: e.endorser_id,
-          is_suggested: e.is_suggested,
+          endorserId: e.endorserId,
+          isSuggested: e.isSuggested,
         }));
 
   if (endorserRecords.length > 0) {
     await createEndorsements(
-      endorserRecords.map((r) => ({ ...r, evidence_id: newEntry.id })),
+      endorserRecords.map((r) => ({ ...r, evidenceId: newEntry.id })),
     );
   }
 
@@ -392,7 +400,7 @@ evidence.delete("/:id", async (context) => {
   if (!entry) {
     return context.json({ ok: false, error: "Evidence not found" }, 404);
   }
-  if (entry.user_id !== user.id) {
+  if (entry.userId !== user.id) {
     return context.json({ ok: false, error: "Unauthorized" }, 403);
   }
 

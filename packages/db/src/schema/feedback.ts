@@ -10,16 +10,16 @@ export const feedbackTable = pgTable(
   "feedback",
   {
     id: uuid().primaryKey().defaultRandom(),
-    author_id: uuid()
+    authorId: uuid("author_id")
       .notNull()
       .references(() => usersTable.id),
-    subject_id: uuid().references(() => usersTable.id),
-    project_id: uuid().references(() => projectsTable.id),
-    reviewed_by_id: uuid().references(() => usersTable.id),
-    is_anonymous: boolean().notNull().default(false),
+    subjectId: uuid("subject_id").references(() => usersTable.id),
+    projectId: uuid("project_id").references(() => projectsTable.id),
+    reviewedById: uuid("reviewed_by_id").references(() => usersTable.id),
+    isAnonymous: boolean("is_anonymous").notNull().default(false),
     visibility: feedbackVisibilityEnum().notNull().default("pending_review"),
     content: text().notNull(),
-    organization_id: uuid()
+    organizationId: uuid("organization_id")
       .notNull()
       .references(() => organizationsTable.id),
     ...timestamps,
@@ -27,7 +27,7 @@ export const feedbackTable = pgTable(
   (table) => [
     check(
       "subject_or_project_required",
-      sql`${table.subject_id} IS NOT NULL OR ${table.project_id} IS NOT NULL`,
+      sql`${table.subjectId} IS NOT NULL OR ${table.projectId} IS NOT NULL`,
     ),
   ],
 );

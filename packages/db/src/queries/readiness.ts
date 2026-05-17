@@ -41,7 +41,7 @@ export const getReadinessForUser = async (
   internalUserId: string,
 ): Promise<ReadinessData> => {
   const [user] = await db
-    .select({ organization_id: usersTable.organization_id })
+    .select({ organizationId: usersTable.organizationId })
     .from(usersTable)
     .where(eq(usersTable.id, internalUserId))
     .limit(1);
@@ -59,36 +59,36 @@ export const getReadinessForUser = async (
 
   const [org] = await db
     .select({
-      endorsements_required: organizationsTable.endorsements_required,
-      promotion_threshold: organizationsTable.promotion_threshold,
+      endorsementsRequired: organizationsTable.endorsementsRequired,
+      promotionThreshold: organizationsTable.promotionThreshold,
     })
     .from(organizationsTable)
-    .where(eq(organizationsTable.id, user.organization_id))
+    .where(eq(organizationsTable.id, user.organizationId))
     .limit(1);
 
-  const endorsementsRequired = org?.endorsements_required ?? 2;
-  const promotionThreshold = org?.promotion_threshold ?? 80;
+  const endorsementsRequired = org?.endorsementsRequired ?? 2;
+  const promotionThreshold = org?.promotionThreshold ?? 80;
 
   const [assignment] = await db
     .select({
-      display_name: frameworkRolesTable.display_name,
+      displayName: frameworkRolesTable.displayName,
       level: frameworkRolesTable.level,
-      family_id: frameworkRolesTable.family_id,
-      organization_id: frameworkRolesTable.organization_id,
+      familyId: frameworkRolesTable.familyId,
+      organizationId: frameworkRolesTable.organizationId,
     })
     .from(userGradeAssignmentsTable)
     .innerJoin(
       jobGradesTable,
-      eq(userGradeAssignmentsTable.job_grade_id, jobGradesTable.id),
+      eq(userGradeAssignmentsTable.jobGradeId, jobGradesTable.id),
     )
     .innerJoin(
       frameworkRolesTable,
-      eq(jobGradesTable.framework_role_id, frameworkRolesTable.id),
+      eq(jobGradesTable.frameworkRoleId, frameworkRolesTable.id),
     )
     .where(
       and(
-        eq(userGradeAssignmentsTable.user_id, internalUserId),
-        isNull(userGradeAssignmentsTable.end_date),
+        eq(userGradeAssignmentsTable.userId, internalUserId),
+        isNull(userGradeAssignmentsTable.endDate),
       ),
     )
     .limit(1);
@@ -115,7 +115,7 @@ export const getReadinessForUser = async (
 
   if (!nextLevel) {
     return {
-      current_role: { display_name: assignment.display_name, level: assignment.level },
+      current_role: { display_name: assignment.displayName, level: assignment.level },
       next_role: null,
       required_skills: [],
       endorsements_required: endorsementsRequired,
@@ -124,20 +124,20 @@ export const getReadinessForUser = async (
     };
   }
 
-  const orgCondition = assignment.organization_id
-    ? eq(frameworkRolesTable.organization_id, assignment.organization_id)
-    : isNull(frameworkRolesTable.organization_id);
+  const orgCondition = assignment.organizationId
+    ? eq(frameworkRolesTable.organizationId, assignment.organizationId)
+    : isNull(frameworkRolesTable.organizationId);
 
   const [nextRole] = await db
     .select({
       id: frameworkRolesTable.id,
-      display_name: frameworkRolesTable.display_name,
+      displayName: frameworkRolesTable.displayName,
       level: frameworkRolesTable.level,
     })
     .from(frameworkRolesTable)
     .where(
       and(
-        eq(frameworkRolesTable.family_id, assignment.family_id),
+        eq(frameworkRolesTable.familyId, assignment.familyId),
         eq(frameworkRolesTable.level, nextLevel),
         orgCondition,
       ),
@@ -146,7 +146,7 @@ export const getReadinessForUser = async (
 
   if (!nextRole) {
     return {
-      current_role: { display_name: assignment.display_name, level: assignment.level },
+      current_role: { display_name: assignment.displayName, level: assignment.level },
       next_role: null,
       required_skills: [],
       endorsements_required: endorsementsRequired,
@@ -157,16 +157,16 @@ export const getReadinessForUser = async (
 
   const required_skills = await db
     .select({
-      skill_id: frameworkRoleSkillExpectationsTable.skill_id,
+      skill_id: frameworkRoleSkillExpectationsTable.skillId,
       skill_name: skillsTable.name,
-      required_level: frameworkRoleSkillExpectationsTable.minimum_level,
+      required_level: frameworkRoleSkillExpectationsTable.minimumLevel,
       endorsed_count: sql<number>`(
         SELECT COUNT(DISTINCT ev.id)::int
         FROM evidence ev
         INNER JOIN evidence_skills es ON es.evidence_id = ev.id
         WHERE ev.user_id = ${internalUserId}
-          AND es.skill_id = ${frameworkRoleSkillExpectationsTable.skill_id}
-          AND es.level_claimed >= ${frameworkRoleSkillExpectationsTable.minimum_level}
+          AND es.skill_id = ${frameworkRoleSkillExpectationsTable.skillId}
+          AND es.level_claimed >= ${frameworkRoleSkillExpectationsTable.minimumLevel}
           AND ev.deleted_at IS NULL
           AND (
             SELECT COUNT(*)
@@ -179,10 +179,10 @@ export const getReadinessForUser = async (
     .from(frameworkRoleSkillExpectationsTable)
     .innerJoin(
       skillsTable,
-      eq(frameworkRoleSkillExpectationsTable.skill_id, skillsTable.id),
+      eq(frameworkRoleSkillExpectationsTable.skillId, skillsTable.id),
     )
     .where(
-      eq(frameworkRoleSkillExpectationsTable.framework_role_id, nextRole.id),
+      eq(frameworkRoleSkillExpectationsTable.frameworkRoleId, nextRole.id),
     );
 
   const totalSkills = required_skills.length;
@@ -191,8 +191,8 @@ export const getReadinessForUser = async (
     totalSkills === 0 ? 0 : Math.round((coveredSkills / totalSkills) * 100);
 
   return {
-    current_role: { display_name: assignment.display_name, level: assignment.level },
-    next_role: { display_name: nextRole.display_name, level: nextRole.level },
+    current_role: { display_name: assignment.displayName, level: assignment.level },
+    next_role: { display_name: nextRole.displayName, level: nextRole.level },
     required_skills,
     endorsements_required: endorsementsRequired,
     promotion_threshold: promotionThreshold,

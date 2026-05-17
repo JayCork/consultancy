@@ -17,6 +17,7 @@ import {
   endorsementsTable,
   userRelationshipsTable,
   projectMembersTable,
+  projectsTable,
   organizationsTable,
   usersTable,
   evidenceTable,
@@ -24,7 +25,7 @@ import {
 
 type NewEndorsement = Omit<
   InferInsertModel<typeof endorsementsTable>,
-  "id" | "created_at" | "updated_at"
+  "id" | "createdAt" | "updatedAt"
 >;
 
 export const createEndorsements = async (records: NewEndorsement[]) => {
@@ -40,34 +41,62 @@ export const getEndorsementsForEvidence = async (evidenceId: string) => {
       endorser_email: usersTable.email,
     })
     .from(endorsementsTable)
-    .innerJoin(usersTable, eq(endorsementsTable.endorser_id, usersTable.id))
-    .where(eq(endorsementsTable.evidence_id, evidenceId));
+    .innerJoin(usersTable, eq(endorsementsTable.endorserId, usersTable.id))
+    .where(eq(endorsementsTable.evidenceId, evidenceId));
 };
 
 export const getPendingEndorsementsForEndorser = async (endorserId: string) => {
   return db
     .select({
       ...getTableColumns(endorsementsTable),
-      evidence_situation: evidenceTable.situation,
-      evidence_task: evidenceTable.task,
-      evidence_action: evidenceTable.action,
-      evidence_result: evidenceTable.result,
-      evidence_created_at: evidenceTable.created_at,
-      subject_name: usersTable.name,
+      evidenceSituation: evidenceTable.situation,
+      evidenceTask: evidenceTable.task,
+      evidenceAction: evidenceTable.action,
+      evidenceResult: evidenceTable.result,
+      evidenceCreatedAt: evidenceTable.createdAt,
+      subjectName: usersTable.name,
     })
     .from(endorsementsTable)
     .innerJoin(
       evidenceTable,
-      eq(endorsementsTable.evidence_id, evidenceTable.id),
+      eq(endorsementsTable.evidenceId, evidenceTable.id),
     )
-    .innerJoin(usersTable, eq(evidenceTable.user_id, usersTable.id))
+    .innerJoin(usersTable, eq(evidenceTable.userId, usersTable.id))
     .where(
       and(
-        eq(endorsementsTable.endorser_id, endorserId),
+        eq(endorsementsTable.endorserId, endorserId),
         eq(endorsementsTable.status, "pending"),
-        isNull(evidenceTable.deleted_at),
+        isNull(evidenceTable.deletedAt),
       ),
     );
+};
+
+export const getEndorsementById = async (id: string, endorserId: string) => {
+  const [row] = await db
+    .select({
+      ...getTableColumns(endorsementsTable),
+      evidenceSituation: evidenceTable.situation,
+      evidenceTask: evidenceTable.task,
+      evidenceAction: evidenceTable.action,
+      evidenceResult: evidenceTable.result,
+      evidenceCreatedAt: evidenceTable.createdAt,
+      evidenceDataClassification: evidenceTable.dataClassification,
+      subjectName: usersTable.name,
+      projectName: projectsTable.name,
+    })
+    .from(endorsementsTable)
+    .innerJoin(evidenceTable, eq(endorsementsTable.evidenceId, evidenceTable.id))
+    .innerJoin(usersTable, eq(evidenceTable.userId, usersTable.id))
+    .leftJoin(projectsTable, eq(evidenceTable.projectId, projectsTable.id))
+    .where(
+      and(
+        eq(endorsementsTable.id, id),
+        eq(endorsementsTable.endorserId, endorserId),
+        isNull(evidenceTable.deletedAt),
+      ),
+    )
+    .limit(1);
+  return row ?? null;
 };
 
 export const updateEndorsement = async (
@@ -80,13 +109,13 @@ export const updateEndorsement = async (
     .set({
       status: data.status,
       note: data.note ?? null,
-      responded_at: new Date(),
-      updated_at: new Date(),
+      respondedAt: new Date(),
+      updatedAt: new Date(),
     })
     .where(
       and(
         eq(endorsementsTable.id, id),
-        eq(endorsementsTable.endorser_id, endorserId),
+        eq(endorsementsTable.endorserId, endorserId),
       ),
     )
     .returning();
@@ -98,8 +127,8 @@ export const deleteEndorsement = async (id: string, requesterId: string) => {
   // Allow removal by either the endorser or the evidence owner
   const [endorsement] = await db
     .select({
-      evidence_id: endorsementsTable.evidence_id,
-      endorser_id: endorsementsTable.endorser_id,
+      evidenceId: endorsementsTable.evidenceId,
+      endorserId: endorsementsTable.endorserId,
     })
     .from(endorsementsTable)
     .where(eq(endorsementsTable.id, id))
@@ -108,15 +137,15 @@ export const deleteEndorsement = async (id: string, requesterId: string) => {
   if (!endorsement) return null;
 
   const [evidence] = await db
-    .select({ user_id: evidenceTable.user_id })
+    .select({ userId: evidenceTable.userId })
     .from(evidenceTable)
-    .where(eq(evidenceTable.id, endorsement.evidence_id))
+    .where(eq(evidenceTable.id, endorsement.evidenceId))
     .limit(1);
 
   if (!evidence) return null;
 
-  const isEndorser = endorsement.endorser_id === requesterId;
-  const isEvidenceOwner = evidence.user_id === requesterId;
+  const isEndorser = endorsement.endorserId === requesterId;
+  const isEvidenceOwner = evidence.userId === requesterId;
 
   if (!isEndorser && !isEvidenceOwner) return null;
 
@@ -134,19 +163,19 @@ export const addEndorsementToEvidence = async (
 ) => {
   // Verify requester owns the evidence
   const [evidence] = await db
-    .select({ user_id: evidenceTable.user_id })
+    .select({ userId: evidenceTable.userId })
     .from(evidenceTable)
     .where(eq(evidenceTable.id, evidenceId))
     .limit(1);
 
-  if (!evidence || evidence.user_id !== ownerId) return null;
+  if (!evidence || evidence.userId !== ownerId) return null;
 
   const [created] = await db
     .insert(endorsementsTable)
     .values({
-      evidence_id: evidenceId,
-      endorser_id: endorserId,
-      is_suggested: false,
+      evidenceId,
+      endorserId,
+      isSuggested: false,
     })
     .onConflictDoNothing()
     .returning();
@@ -157,18 +186,18 @@ export const addEndorsementToEvidence = async (
 // the user edits endorser selections on a draft or creates a revision.
 export const replaceEndorsementsForEvidence = async (
   evidenceId: string,
-  records: Omit<NewEndorsement, "evidence_id">[],
+  records: Omit<NewEndorsement, "evidenceId">[],
 ) => {
   return db.transaction(async (tx) => {
     await tx
       .delete(endorsementsTable)
-      .where(eq(endorsementsTable.evidence_id, evidenceId));
+      .where(eq(endorsementsTable.evidenceId, evidenceId));
 
     if (records.length === 0) return [];
 
     return tx
       .insert(endorsementsTable)
-      .values(records.map((r) => ({ ...r, evidence_id: evidenceId })))
+      .values(records.map((r) => ({ ...r, evidenceId })))
       .returning();
   });
 };
@@ -179,7 +208,7 @@ export const getSuggestedEndorsers = async (
   projectId?: string,
 ): Promise<{ id: string; name: string }[]> => {
   const [org] = await db
-    .select({ policy: organizationsTable.endorsement_routing_policy })
+    .select({ policy: organizationsTable.endorsementRoutingPolicy })
     .from(organizationsTable)
     .where(eq(organizationsTable.id, orgId))
     .limit(1);
@@ -187,33 +216,31 @@ export const getSuggestedEndorsers = async (
   if (!org) return [];
 
   const endorserMap = new Map<string, string>();
-  const today = new Date().toISOString().split("T")[0];
+  const todayStr = new Date().toISOString().split("T")[0]; // for date columns (userRelationshipsTable)
+  const todayDate = new Date(); // for timestamp columns (projectMembersTable)
 
   if (org.policy === "managers_only" || org.policy === "project_and_managers") {
     const managers = await db
       .select({
-        target_id: userRelationshipsTable.target_id,
+        targetId: userRelationshipsTable.targetId,
         name: usersTable.name,
       })
       .from(userRelationshipsTable)
-      .innerJoin(
-        usersTable,
-        eq(userRelationshipsTable.target_id, usersTable.id),
-      )
+      .innerJoin(usersTable, eq(userRelationshipsTable.targetId, usersTable.id))
       .where(
         and(
-          eq(userRelationshipsTable.actor_id, userId),
-          inArray(userRelationshipsTable.relationship_type, [
+          eq(userRelationshipsTable.actorId, userId),
+          inArray(userRelationshipsTable.relationshipType, [
             "line_manager",
             "technical_manager",
           ]),
           or(
-            isNull(userRelationshipsTable.end_date),
-            gt(userRelationshipsTable.end_date, today),
+            isNull(userRelationshipsTable.endDate),
+            gt(userRelationshipsTable.endDate, todayStr),
           ),
         ),
       );
-    managers.forEach((m) => endorserMap.set(m.target_id, m.name));
+    managers.forEach((m) => endorserMap.set(m.targetId, m.name));
   }
 
   if (
@@ -221,21 +248,21 @@ export const getSuggestedEndorsers = async (
     projectId
   ) {
     const peers = await db
-      .select({ user_id: projectMembersTable.user_id, name: usersTable.name })
+      .select({ userId: projectMembersTable.userId, name: usersTable.name })
       .from(projectMembersTable)
-      .innerJoin(usersTable, eq(projectMembersTable.user_id, usersTable.id))
+      .innerJoin(usersTable, eq(projectMembersTable.userId, usersTable.id))
       .where(
         and(
-          eq(projectMembersTable.project_id, projectId),
-          ne(projectMembersTable.user_id, userId),
-          lte(projectMembersTable.start_date, today),
+          eq(projectMembersTable.projectId, projectId),
+          ne(projectMembersTable.userId, userId),
+          lte(projectMembersTable.startDate, todayDate),
           or(
-            isNull(projectMembersTable.end_date),
-            gte(projectMembersTable.end_date, today),
+            isNull(projectMembersTable.endDate),
+            gte(projectMembersTable.endDate, todayDate),
           ),
         ),
       );
-    peers.forEach((p) => endorserMap.set(p.user_id, p.name));
+    peers.forEach((p) => endorserMap.set(p.userId, p.name));
   }
 
   return Array.from(endorserMap.entries()).map(([id, name]) => ({ id, name }));

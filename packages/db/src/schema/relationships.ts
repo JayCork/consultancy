@@ -5,15 +5,15 @@ import { timestamps } from "../columns.helpers";
 
 export const userRelationshipsTable = pgTable("user_relationships", {
   id: uuid().primaryKey().defaultRandom(),
-  actor_id: uuid()
+  actorId: uuid("actor_id")
     .notNull()
     .references(() => usersTable.id),
-  target_id: uuid()
+  targetId: uuid("target_id")
     .notNull()
     .references(() => usersTable.id),
-  relationship_type: userRelationshipTypeEnum().notNull(),
-  start_date: date().notNull(),
-  end_date: date(),
-  organization_id: uuid().notNull(), // to support organization-specific relationships (e.g. manager, mentor) without needing global relationship types
+  relationshipType: userRelationshipTypeEnum("relationship_type").notNull(),
+  startDate: date("start_date").notNull(),
+  endDate: date("end_date"),
+  organizationId: uuid("organization_id").notNull(), // to support organization-specific relationships (e.g. manager, mentor) without needing global relationship types
   ...timestamps,
 });

@@ -1,15 +1,15 @@
 import { varchar, timestamp } from "drizzle-orm/pg-core";
 
 export const timestamps = {
-  updated_at: timestamp({ precision: 6 }),
-  created_at: timestamp({ precision: 6 }).defaultNow().notNull(),
-  deleted_at: timestamp({ precision: 6 }),
+  updatedAt: timestamp("updated_at", { precision: 6 }),
+  createdAt: timestamp("created_at", { precision: 6 }).defaultNow().notNull(),
+  deletedAt: timestamp("deleted_at", { precision: 6 }),
 };
 
 export const address = {
-  street_address: varchar({ length: 255 }).notNull(),
-  city: varchar({ length: 255 }),
-  state: varchar({ length: 255 }),
-  area_code: varchar({ length: 10 }).notNull(),
-  country: varchar({ length: 255 }).notNull(),
+  streetAddress: varchar("street_address", { length: 255 }).notNull(),
+  city: varchar("city", { length: 255 }),
+  state: varchar("state", { length: 255 }),
+  areaCode: varchar("area_code", { length: 10 }).notNull(),
+  country: varchar("country", { length: 255 }).notNull(),
 };
