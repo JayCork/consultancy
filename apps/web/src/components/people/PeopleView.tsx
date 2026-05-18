@@ -1,13 +1,28 @@
 import type { JSX } from "solid-js";
-import { createSignal, createMemo, For, Show } from "solid-js";
+import { createSignal, createMemo, createResource, For, Show } from "solid-js";
 import { enrichPerson, sortPeople } from "../../lib/people/enrichment";
 import { buildWindow } from "../../lib/people/dateHelpers";
-import { MOCK_PEOPLE } from "../../lib/people/mockData";
+import type { Person } from "../../lib/people/types";
 import { StatCard } from "./StatCard";
 import { FilterChip } from "./FilterChip";
 import { TimelineView } from "./TimelineView";
 import { TableView } from "./TableView";
 import styles from "./PeopleView.module.css";
+
+const API = import.meta.env.VITE_API_URL as string;
+
+async function fetchPeople(): Promise<Person[]> {
+  const res = await fetch(`${API}/api/v0/people`, { credentials: "include" });
+  const json = await res.json() as { ok: boolean; data: unknown[] };
+  return (json.data as Person[]).map((p) => ({
+    ...p,
+    assignments: p.assignments.map((a) => ({
+      ...a,
+      startDate: new Date(a.startDate),
+      endDate: new Date(a.endDate),
+    })),
+  }));
+}
 
 type AvailFilter =
   | "ALL"
@@ -19,33 +34,46 @@ type AvailFilter =
   | "ROTATION"
   | "CLEARANCE";
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-const { windowStart, windowEnd } = buildWindow(today);
-
-const ALL_ENRICHED = sortPeople(
-  MOCK_PEOPLE.map((p) => enrichPerson(p, windowStart, windowEnd, today)),
-);
-
 export function PeopleView(): JSX.Element {
-  const [viewMode, setViewMode] = createSignal<"timeline" | "table">("timeline");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const { windowStart, windowEnd } = buildWindow(today);
+
+  const [rawPeople] = createResource(fetchPeople);
+
+  const allEnriched = createMemo(() => {
+    const people = rawPeople();
+    if (!people) return [];
+    return sortPeople(
+      people.map((p) => enrichPerson(p, windowStart, windowEnd, today)),
+    );
+  });
+
+  const [viewMode, setViewMode] = createSignal<"timeline" | "table">(
+    "timeline",
+  );
   const [search, setSearch] = createSignal("");
   const [availFilter, setAvailFilter] = createSignal<AvailFilter>("ALL");
   const [clearanceFilter, setClearanceFilter] = createSignal("");
   const [gradeFilter, setGradeFilter] = createSignal("");
 
   const stats = createMemo(() => {
-    const bench = ALL_ENRICHED.filter((p) => p.flags.has("BENCH")).length;
-    const partial = ALL_ENRICHED.filter((p) => p.flags.has("PARTIAL")).length;
-    const free4w = ALL_ENRICHED.filter(
+    const all = allEnriched();
+    const bench = all.filter((p) => p.flags.has("BENCH")).length;
+    const partial = all.filter((p) => p.flags.has("PARTIAL")).length;
+    const free4w = all.filter(
       (p) => p.daysUntilFree !== null && p.daysUntilFree <= 28,
     ).length;
-    const free8w = ALL_ENRICHED.filter(
+    const free8w = all.filter(
       (p) => p.daysUntilFree !== null && p.daysUntilFree <= 56,
     ).length;
-    const freeQuarter = ALL_ENRICHED.filter((p) => p.freeQuarterDays > 0).length;
-    const rotation = ALL_ENRICHED.filter((p) => p.flags.has("ROTATION")).length;
-    const clearance = ALL_ENRICHED.filter((p) => p.flags.has("CLEARANCE")).length;
+    const freeQuarter = all.filter(
+      (p) => p.freeQuarterDays > 0,
+    ).length;
+    const rotation = all.filter((p) => p.flags.has("ROTATION")).length;
+    const clearance = all.filter((p) =>
+      p.flags.has("CLEARANCE"),
+    ).length;
     return { bench, partial, free4w, free8w, freeQuarter, rotation, clearance };
   });
 
@@ -55,7 +83,7 @@ export function PeopleView(): JSX.Element {
     const cf = clearanceFilter();
     const gf = gradeFilter();
 
-    return ALL_ENRICHED.filter((p) => {
+    return allEnriched().filter((p) => {
       if (q) {
         const haystack = [
           p.name,
@@ -166,8 +194,12 @@ export function PeopleView(): JSX.Element {
       </div>
 
       <div class={styles.meta}>
-        {filtered().length} of {ALL_ENRICHED.length} people
+        {filtered().length} of {allEnriched().length} people
       </div>
+
+      <Show when={rawPeople.loading}>
+        <p class={styles.empty}>Loading…</p>
+      </Show>
 
       <div class={styles.toggleRow}>
         <button
@@ -186,7 +218,7 @@ export function PeopleView(): JSX.Element {
         </button>
       </div>
 
-      <Show when={filtered().length === 0}>
+      <Show when={!rawPeople.loading && filtered().length === 0}>
         <p class={styles.empty}>No people match the current filters.</p>
       </Show>
 
