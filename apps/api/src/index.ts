@@ -11,8 +11,8 @@ import { cors } from "hono/cors";
 import { env, auth, requireAuth } from "./lib";
 import setupRoutes from "./routes/setup";
 import endorsementsRoutes from "./routes/endorsements";
-import organizationUnitsRoutes from "./routes/organization-units";
 import peopleRoutes from "./routes/people";
+import organizationUnitsRoutes from "./routes/organization-units";
 
 const PORT = process.env.PORT || 5173;
 
