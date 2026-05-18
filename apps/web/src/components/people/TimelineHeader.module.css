@@ -1,0 +1,97 @@
+.header {
+  display: flex;
+  border-bottom: 2px solid var(--color-border-strong);
+  background: var(--color-container);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.spacer {
+  flex-shrink: 0;
+  border-right: 1px solid var(--color-border);
+}
+
+.timeline {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.monthRow {
+  position: relative;
+  height: 1.75rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.month {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  border-right: 1px solid var(--color-border);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.todayMarker {
+  position: absolute;
+  top: 0;
+  bottom: -1.5rem; /* extend into week row */
+  width: 2px;
+  background: var(--color-accent);
+  z-index: var(--z-raised);
+  pointer-events: none;
+}
+
+.todayLabel {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.weekRow {
+  position: relative;
+  height: 1.5rem;
+  background: var(--color-container);
+}
+
+.weekMark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.weekLabel {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.pastShade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: oklch(0% 0 0 / 4%);
+  pointer-events: none;
+}

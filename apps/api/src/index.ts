@@ -10,7 +10,8 @@ import { logger } from "hono/logger";
 import { cors } from "hono/cors";
 import { env, auth, requireAuth } from "./lib";
 import setupRoutes from "./routes/setup";
-import endorsmentsRoutes from "./routes/endorsements";
+import endorsementsRoutes from "./routes/endorsements";
+import peopleRoutes from "./routes/people";
 import organizationUnitsRoutes from "./routes/organization-units";
 
 const PORT = process.env.PORT || 5173;
@@ -45,8 +46,9 @@ api.route("/v0/skills", skillRoutes);
 api.route("/v0/readiness", readinessRoutes);
 api.route("/v0/admin", adminRoutes);
 api.route("/v0/setup", setupRoutes);
-api.route("/v0/endorsements", endorsmentsRoutes);
+api.route("/v0/endorsements", endorsementsRoutes);
 api.route("/v0/organization-units", organizationUnitsRoutes);
+api.route("/v0/people", peopleRoutes);
 
 api.get("/v0/health", (c) => {
   return c.json({

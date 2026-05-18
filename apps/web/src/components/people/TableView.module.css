@@ -1,0 +1,222 @@
+.wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.th {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  border-bottom: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  white-space: nowrap;
+}
+
+.tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background var(--duration-fast) var(--ease-default);
+}
+
+.tr:last-child {
+  border-bottom: none;
+}
+
+.tr:hover {
+  background: var(--color-surface);
+}
+
+.td {
+  padding: var(--space-2) var(--space-3);
+  vertical-align: middle;
+  color: var(--color-text-primary);
+}
+
+.personCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-avatar);
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.personName {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.personGrade {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.assignmentStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.assignmentRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.assignmentProject {
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.utilChip {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-1);
+}
+
+.bench {
+  color: var(--color-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.tenure {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.rotation {
+  color: var(--color-warning);
+}
+
+.rotationFlag {
+  font-size: var(--font-size-md);
+}
+
+.freeNow {
+  color: var(--color-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+.weekCount {
+  margin-left: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.partial {
+  color: var(--color-warning);
+}
+
+.none {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.clearanceBadge {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-badge);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.clearanceWarn {
+  background: var(--color-error-subtle);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.clearanceExpiry {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.skillTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.skillTag {
+  font-size: var(--font-size-xs);
+  font-family: var(--font-mono);
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.flagBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.flag {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-mono);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-badge);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.flagBENCH {
+  background: var(--color-success-subtle);
+  color: var(--color-on-success-subtle);
+}
+
+.flagPARTIAL {
+  background: var(--color-warning-subtle);
+  color: var(--color-on-warning-subtle);
+}
+
+.flagROTATION {
+  background: var(--color-warning-subtle);
+  color: var(--color-on-warning-subtle);
+}
+
+.flagCLEARANCE {
+  background: var(--color-error-subtle);
+  color: var(--color-error);
+}

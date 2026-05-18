@@ -7,6 +7,7 @@ import Archive from "lucide-solid/icons/archive";
 import Users from "lucide-solid/icons/users";
 import CalendarRange from "lucide-solid/icons/calendar-range";
 import Settings from "lucide-solid/icons/settings";
+import UserSearch from "lucide-solid/icons/user-search";
 
 interface NavEntry {
   id: number;
@@ -48,6 +49,13 @@ const NAV_ITEMS: NavEntry[] = [
   },
   {
     id: 5,
+    href: "/people",
+    label: "People",
+    icon: UserSearch,
+    match: "prefix",
+  },
+  {
+    id: 6,
     href: "/admin",
     label: "Admin",
     icon: Settings,

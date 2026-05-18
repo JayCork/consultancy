@@ -25,6 +25,7 @@ export { getCurrentRoleForUser } from "./roles";
 export { getOrgConfig } from "./admin";
 export { getOrganisationCount, getOrganizationUnits } from "./organizations";
 export { hasActiveRelationship } from "./relationships";
+export { getPeopleForPlanning } from "./people";
 export {
   createEndorsements,
   getEndorsementsForEvidence,
