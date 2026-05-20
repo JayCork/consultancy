@@ -97,7 +97,7 @@ export function GanttRow(props: GanttRowProps): JSX.Element {
         {(lane, laneIndex) => (
           <For each={lane}>
             {(bar) => {
-              const colors = getProjectColors(bar.assignment.project);
+              const colors = getProjectColors(bar.assignment.projectStatus);
               const top =
                 PADDING_V + laneIndex() * (LANE_HEIGHT + LANE_GAP);
               const isSecondary = laneIndex() > 0;
@@ -142,16 +142,7 @@ export function GanttRow(props: GanttRowProps): JSX.Element {
         )}
       </For>
 
-      {/* Layer 5: Clearance expiry marker */}
-      <Show when={p().clearanceExpiryPercent !== null}>
-        <div
-          class={styles.clearanceMarker}
-          style={{ left: `${p().clearanceExpiryPercent}%` }}
-          title={`Clearance expires in ${p().clearanceExpiryDays} days`}
-        />
-      </Show>
-
-      {/* Layer 6: Today line */}
+      {/* Layer 5: Today line */}
       <div
         class={styles.todayLine}
         style={{ left: `${p().todayPercent}%` }}

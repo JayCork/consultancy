@@ -1,4 +1,4 @@
-export { getAllUsers, getUserById, getUserByAuthId } from "./users";
+export { getAllUsers, getUserById, getUserByAuthId, getUserClearanceByAuthId } from "./users";
 export {
   createEvidence,
   getEvidenceByUser,
@@ -17,6 +17,7 @@ export {
   getAllSkills,
   getUsersFrameworkSkills,
   getAllOrgSkills,
+  getSkillsForOrg,
   getSkillLevels,
   getOrgSkillById,
 } from "./skills";

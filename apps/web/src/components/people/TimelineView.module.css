@@ -5,6 +5,50 @@
   background: var(--color-surface);
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-container);
+}
+
+.navBtn {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background 120ms, border-color 120ms;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: var(--color-container);
+  border-color: var(--color-border-strong);
+}
+
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.navBtnActive {
+  background: var(--color-container);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-secondary);
+}
+
+.navPeriod {
+  flex: 1;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--color-text-secondary);
+}
+
 .rows {
   overflow-x: auto;
 }
@@ -17,4 +61,31 @@
 .row:last-child .gantt,
 .row:last-child > :last-child {
   border-bottom: none;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-container);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
 }

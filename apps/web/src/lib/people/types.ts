@@ -1,21 +1,27 @@
-export type ClearanceLevel = "BPSS" | "SC" | "DV";
-
 export interface Assignment {
   project: string;
   role: string;
   startDate: Date;
-  endDate: Date;
+  endDate: Date | null;
   sector: string;
+  projectStatus: string;
   confirmed: boolean;
   utilisation: number; // 0–100
 }
+
+export type FrameworkLevel =
+  | "associate"
+  | "junior"
+  | "mid"
+  | "senior"
+  | "lead"
+  | "principal";
 
 export interface Person {
   name: string;
   initials: string;
   grade: string;
-  clearance: ClearanceLevel;
-  clearanceExpiryDays: number | null;
+  level: FrameworkLevel | null;
   skills: string[];
   assignments: Assignment[];
 }
@@ -43,13 +49,11 @@ export interface EnrichedPerson extends Person {
   nextFreeDate: Date | null;
   daysUntilFree: number | null;
   freeQuarterDays: number;
-  flags: Set<"BENCH" | "PARTIAL" | "ROTATION" | "CLEARANCE">;
+  flags: Set<"UNBILLED" | "PARTIAL" | "ROTATION">;
   bars: Bar[];
   lanes: Bar[][];
   laneCount: number;
-  // Pre-computed percentages for rendering
   todayPercent: number;
-  clearanceExpiryPercent: number | null;
   windowStart: Date;
   today: Date;
 }

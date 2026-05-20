@@ -5,12 +5,7 @@ import type {
   Bar,
   AvailabilityPeriod,
 } from "./types";
-import {
-  daysBetween,
-  toPercent,
-  clamp,
-  monthsBetween,
-} from "./dateHelpers";
+import { daysBetween, toPercent, clamp, monthsBetween } from "./dateHelpers";
 
 function buildBars(
   assignments: Assignment[],
@@ -18,19 +13,29 @@ function buildBars(
   windowEnd: Date,
 ): Bar[] {
   return assignments
-    .filter((a) => a.startDate < windowEnd && a.endDate > windowStart)
+    .filter(
+      (a) =>
+        a.startDate < windowEnd &&
+        (a.endDate == null || a.endDate > windowStart),
+    )
     .map((a) => {
       const clippedLeft = a.startDate < windowStart;
-      const clippedRight = a.endDate > windowEnd;
+      const clippedRight = a.endDate == null || a.endDate > windowEnd;
 
       const effectiveStart = clippedLeft ? windowStart : a.startDate;
-      const effectiveEnd = clippedRight ? windowEnd : a.endDate;
+      const effectiveEnd = clippedRight ? windowEnd : a.endDate!;
 
       const leftPercent = clamp(toPercent(effectiveStart, windowStart), 0, 100);
       const rightPercent = clamp(toPercent(effectiveEnd, windowStart), 0, 100);
       const widthPercent = Math.max(0.5, rightPercent - leftPercent);
 
-      return { assignment: a, leftPercent, widthPercent, clippedLeft, clippedRight };
+      return {
+        assignment: a,
+        leftPercent,
+        widthPercent,
+        clippedLeft,
+        clippedRight,
+      };
     });
 }
 
@@ -74,10 +79,11 @@ function computeAvailabilityPeriods(
   const events: Event[] = [];
 
   for (const a of assignments) {
-    if (a.endDate <= today) continue;
+    if (a.endDate != null && a.endDate <= today) continue;
 
     const startClamped = a.startDate < today ? today : a.startDate;
-    const endClamped = a.endDate > windowEnd ? windowEnd : a.endDate;
+    const endClamped =
+      a.endDate == null || a.endDate > windowEnd ? windowEnd : a.endDate;
 
     if (startClamped >= windowEnd) continue;
 
@@ -138,7 +144,7 @@ export function enrichPerson(
   today: Date,
 ): EnrichedPerson {
   const currentAssignments = person.assignments.filter(
-    (a) => a.startDate <= today && a.endDate > today,
+    (a) => a.startDate <= today && (a.endDate == null || a.endDate > today),
   );
 
   const currentUtilisation = currentAssignments.reduce(
@@ -166,26 +172,13 @@ export function enrichPerson(
 
   const freeQuarterDays = countFreeQuarterDays(availabilityPeriods);
 
-  const flags = new Set<"BENCH" | "PARTIAL" | "ROTATION" | "CLEARANCE">();
-  if (currentUtilisation === 0) flags.add("BENCH");
+  const flags = new Set<"UNBILLED" | "PARTIAL" | "ROTATION">();
+  if (currentUtilisation === 0) flags.add("UNBILLED");
   if (currentUtilisation > 0 && currentUtilisation < 100) flags.add("PARTIAL");
   if (primaryProjectMonths >= 12) flags.add("ROTATION");
-  if (person.clearanceExpiryDays !== null && person.clearanceExpiryDays <= 90) {
-    flags.add("CLEARANCE");
-  }
 
   const bars = buildBars(person.assignments, windowStart, windowEnd);
   const lanes = assignLanes(bars);
-
-  const clearanceExpiryDate =
-    person.clearanceExpiryDays !== null
-      ? new Date(today.getTime() + person.clearanceExpiryDays * 86_400_000)
-      : null;
-
-  const clearanceExpiryPercent =
-    clearanceExpiryDate !== null
-      ? clamp(toPercent(clearanceExpiryDate, windowStart), 0, 100)
-      : null;
 
   const todayPercent = clamp(toPercent(today, windowStart), 0, 100);
 
@@ -203,7 +196,6 @@ export function enrichPerson(
     lanes,
     laneCount: lanes.length || 1,
     todayPercent,
-    clearanceExpiryPercent,
     windowStart,
     today,
   };
@@ -211,8 +203,8 @@ export function enrichPerson(
 
 export function sortPeople(people: EnrichedPerson[]): EnrichedPerson[] {
   return [...people].sort((a, b) => {
-    const aBench = a.flags.has("BENCH") ? 0 : 1;
-    const bBench = b.flags.has("BENCH") ? 0 : 1;
+    const aBench = a.flags.has("UNBILLED") ? 0 : 1;
+    const bBench = b.flags.has("UNBILLED") ? 0 : 1;
     if (aBench !== bBench) return aBench - bBench;
 
     const aPartial = a.flags.has("PARTIAL") ? 0 : 1;

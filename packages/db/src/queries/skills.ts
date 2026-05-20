@@ -1,4 +1,4 @@
-import { eq, isNull, asc, and } from "drizzle-orm";
+import { eq, isNull, asc, and, or } from "drizzle-orm";
 import {
   competenciesTable,
   db,
@@ -6,7 +6,6 @@ import {
   jobGradesTable,
   frameworkRolesTable,
   frameworkRoleSkillExpectationsTable,
-  referenceSkillsTable,
   skillsTable,
   skillsLevelsTable,
 } from "..";
@@ -21,7 +20,7 @@ export const getAllSkills = async () => {
 export const getUsersFrameworkSkills = async (internalUserId: string) => {
   return db
     .select({
-      skill: referenceSkillsTable,
+      skill: skillsTable,
       minimumLevel: frameworkRoleSkillExpectationsTable.minimumLevel,
       isPrimary: frameworkRoleSkillExpectationsTable.isPrimary,
     })
@@ -42,11 +41,8 @@ export const getUsersFrameworkSkills = async (internalUserId: string) => {
       ),
     )
     .innerJoin(
-      referenceSkillsTable,
-      eq(
-        frameworkRoleSkillExpectationsTable.referenceSkillId,
-        referenceSkillsTable.id,
-      ),
+      skillsTable,
+      eq(frameworkRoleSkillExpectationsTable.skillId, skillsTable.id),
     )
     .where(
       and(
@@ -54,7 +50,7 @@ export const getUsersFrameworkSkills = async (internalUserId: string) => {
         isNull(userGradeAssignmentsTable.endDate),
       ),
     )
-    .orderBy(asc(referenceSkillsTable.name));
+    .orderBy(asc(skillsTable.name));
 };
 
 export const getAllOrgSkills = async (orgId: string) => {
@@ -80,4 +76,14 @@ export const getSkillLevels = async (skillId: string) => {
     .from(skillsLevelsTable)
     .where(eq(skillsLevelsTable.skillId, skillId))
     .orderBy(asc(skillsLevelsTable.level));
+};
+
+// Returns platform default skills (null org_id) plus any org-specific skills.
+// Additive: org customs never replace the defaults, only extend them.
+export const getSkillsForOrg = async (orgId: string) => {
+  return db
+    .select()
+    .from(skillsTable)
+    .where(or(isNull(skillsTable.organizationId), eq(skillsTable.organizationId, orgId)))
+    .orderBy(asc(skillsTable.name));
 };

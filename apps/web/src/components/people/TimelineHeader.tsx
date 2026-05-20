@@ -1,6 +1,10 @@
 import type { JSX } from "solid-js";
 import { For } from "solid-js";
-import { toPercent, clamp, formatShortDate } from "../../lib/people/dateHelpers";
+import {
+  toPercent,
+  clamp,
+  formatShortDate,
+} from "../../lib/people/dateHelpers";
 import styles from "./TimelineHeader.module.css";
 
 const INFO_CELL_WIDTH = 200; // must match InfoCell width
@@ -29,7 +33,10 @@ function buildMonthSpans(windowStart: Date, windowEnd: Date): MonthSpan[] {
     const right = clamp(toPercent(spanEnd, windowStart), 0, 100);
 
     spans.push({
-      label: cursor.toLocaleDateString("en-GB", { month: "short", year: "numeric" }),
+      label: cursor.toLocaleDateString("en-GB", {
+        month: "short",
+        year: "numeric",
+      }),
       leftPercent: left,
       widthPercent: right - left,
     });
@@ -47,7 +54,10 @@ function buildWeekMarks(windowStart: Date, windowEnd: Date): WeekMark[] {
   cursor.setDate(cursor.getDate() + daysToMonday);
 
   while (cursor <= windowEnd) {
-    marks.push({ label: formatShortDate(cursor), leftPercent: clamp(toPercent(cursor, windowStart), 0, 100) });
+    marks.push({
+      label: formatShortDate(cursor),
+      leftPercent: clamp(toPercent(cursor, windowStart), 0, 100),
+    });
     cursor.setDate(cursor.getDate() + 7);
   }
   return marks;
@@ -73,7 +83,10 @@ export function TimelineHeader(props: TimelineHeaderProps): JSX.Element {
             {(m) => (
               <div
                 class={styles.month}
-                style={{ left: `${m.leftPercent}%`, width: `${m.widthPercent}%` }}
+                style={{
+                  left: `${m.leftPercent}%`,
+                  width: `${m.widthPercent}%`,
+                }}
               >
                 {m.label}
               </div>
@@ -83,9 +96,7 @@ export function TimelineHeader(props: TimelineHeaderProps): JSX.Element {
           <div
             class={styles.todayMarker}
             style={{ left: `${props.todayPercent}%` }}
-          >
-            <span class={styles.todayLabel}>Today</span>
-          </div>
+          />
         </div>
 
         {/* Week row */}

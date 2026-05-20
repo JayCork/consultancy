@@ -10,6 +10,7 @@
  *   pnpm --filter @consultancy/db db:seed
  */
 import { drizzle } from "drizzle-orm/node-postgres";
+import { eq, isNull, sql } from "drizzle-orm";
 import {
   clearanceLevelsTable,
   frameworkRoleFamiliesTable,
@@ -241,7 +242,16 @@ async function seedClearanceLevels() {
 async function seedReferenceFrameworks() {
   console.log("  Seeding reference frameworks...");
 
-  const [sfia, ddat] = await db
+  const existing = await db.select().from(referenceFrameworksTable);
+  const existingSfia = existing.find((f) => f.name.includes("Information Age"));
+  const existingDdat = existing.find((f) => f.name.includes("Digital and Data"));
+
+  if (existingSfia && existingDdat) {
+    console.log("    ↩ Already seeded, skipping");
+    return { sfiaId: existingSfia.id, ddatId: existingDdat.id };
+  }
+
+  await db
     .insert(referenceFrameworksTable)
     .values([
       {
@@ -254,12 +264,16 @@ async function seedReferenceFrameworks() {
         version: "2024",
         url: "https://ddat-capability-framework.service.gov.uk",
       },
-    ])
-    .onConflictDoNothing()
-    .returning();
+    ]);
+
+  const frameworks = await db.select().from(referenceFrameworksTable);
+  const sfia = frameworks.find((f) => f.name.includes("Information Age"));
+  const ddat = frameworks.find((f) => f.name.includes("Digital and Data"));
+
+  if (!sfia || !ddat) throw new Error("Could not resolve framework IDs after insert");
 
   console.log("    ✓ SFIA 9, DDaT frameworks");
-  return { sfiaId: sfia?.id, ddatId: ddat?.id };
+  return { sfiaId: sfia.id, ddatId: ddat.id };
 }
 
 // ---------------------------------------------------------------------------
@@ -269,22 +283,32 @@ async function seedReferenceFrameworks() {
 async function seedReferenceSkills(sfiaId: string, ddatId: string) {
   console.log("  Seeding reference skills...");
 
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(referenceSkillsTable)
+    .where(eq(referenceSkillsTable.frameworkId, sfiaId));
+
+  if (count > 0) {
+    console.log("    ↩ Already seeded, skipping");
+    return;
+  }
+
   const sfiaValues = sfiaNineSkills.map((s) => ({
-    framework_id: sfiaId,
+    frameworkId: sfiaId,
     code: s.code,
     name: s.name,
     description: s.description ?? null,
-    min_level: s.min_level ?? 0,
-    max_level: s.max_level,
+    minLevel: s.min_level ?? 0,
+    maxLevel: s.max_level,
   }));
 
   const ddatValues = ddatSkills.map((s) => ({
-    framework_id: ddatId,
+    frameworkId: ddatId,
     code: s.code ?? toDdatCode(s.name),
     name: s.name,
     description: s.description ?? null,
-    min_level: 0,
-    max_level: s.max_level ?? 4,
+    minLevel: 0,
+    maxLevel: s.max_level ?? 4,
   }));
 
   await db
@@ -303,6 +327,17 @@ async function seedReferenceSkills(sfiaId: string, ddatId: string) {
 
 async function seedReferenceRoles(ddatId: string) {
   console.log("  Seeding reference roles (DDaT)...");
+
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(referenceRolesTable)
+    .where(eq(referenceRolesTable.frameworkId, ddatId));
+
+  if (count > 0) {
+    console.log("    ↩ Already seeded, skipping");
+    return;
+  }
+
 
   // Canonical DDaT job roles from the capability framework
   const ddatRoles = [
@@ -355,7 +390,7 @@ async function seedReferenceRoles(ddatId: string) {
     .insert(referenceRolesTable)
     .values(
       ddatRoles.map((r) => ({
-        framework_id: ddatId,
+        frameworkId: ddatId,
         code: r.code,
         name: r.name,
       })),
@@ -375,6 +410,19 @@ async function seedReferenceRoles(ddatId: string) {
 
 async function seedInternalSkills() {
   console.log("  Seeding internal platform skills...");
+
+  // onConflictDoNothing() is insufficient here: PostgreSQL unique indexes treat
+  // NULL != NULL, so (null, name) never conflicts. Pre-check instead.
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(skillsTable)
+    .where(isNull(skillsTable.organizationId));
+
+  if (count > 0) {
+    const allSkills = await db.select().from(skillsTable).where(isNull(skillsTable.organizationId));
+    console.log(`    ↩ ${allSkills.length} platform skills already exist, skipping`);
+    return allSkills;
+  }
 
   const skills = [
     // Software delivery
@@ -548,20 +596,24 @@ async function seedInternalSkills() {
     },
   ];
 
-  const inserted = await db
+  await db
     .insert(skillsTable)
     .values(
       skills.map((s) => ({
-        organization_id: null,
+        organizationId: null,
         name: s.name,
         description: s.description,
       })),
     )
-    .onConflictDoNothing()
-    .returning();
+    .onConflictDoNothing();
 
-  console.log(`    ✓ ${inserted.length} internal platform skills`);
-  return inserted;
+  const allSkills = await db
+    .select()
+    .from(skillsTable)
+    .where(isNull(skillsTable.organizationId));
+
+  console.log(`    ✓ ${allSkills.length} internal platform skills`);
+  return allSkills;
 }
 
 // ---------------------------------------------------------------------------
@@ -575,6 +627,16 @@ async function seedSkillFrameworkMappings(
   internalSkills: Array<{ id: string; name: string }>,
 ) {
   console.log("  Seeding skill → SFIA 9 mappings...");
+
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(skillFrameworkMappingsTable);
+
+  if (count > 0) {
+    console.log("    ↩ Already seeded, skipping");
+    return;
+  }
+
 
   // Fetch all SFIA reference skills indexed by code for lookup
   const sfiaSkills = await db.select().from(referenceSkillsTable);
@@ -628,7 +690,7 @@ async function seedSkillFrameworkMappings(
         );
         return null;
       }
-      return { skill_id: skillId, reference_skill_id: referenceSkillId };
+      return { skillId, referenceSkillId };
     })
     .filter((v): v is NonNullable<typeof v> => v !== null);
 
@@ -646,6 +708,17 @@ async function seedSkillFrameworkMappings(
 
 async function seedTags() {
   console.log("  Seeding platform default tags...");
+
+  // Same NULL uniqueness issue as skills — pre-check instead of onConflictDoNothing.
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(tagsTable)
+    .where(isNull(tagsTable.organizationId));
+
+  if (count > 0) {
+    console.log("    ↩ Platform tags already exist, skipping");
+    return;
+  }
 
   const tags: Array<{
     name: string;
@@ -726,7 +799,7 @@ async function seedTags() {
 
   await db
     .insert(tagsTable)
-    .values(tags.map((t) => ({ ...t, organization_id: null })))
+    .values(tags.map((t) => ({ name: t.name, tagType: t.tag_type, organizationId: null })))
     .onConflictDoNothing();
 
   console.log(`    ✓ ${tags.length} platform default tags`);
@@ -739,18 +812,41 @@ async function seedTags() {
 async function seedInternalFramework() {
   console.log("  Seeding internal framework role families and roles...");
 
-  // Insert families — organization_id IS NULL = platform default
+  const [{ count: familyCount }] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(frameworkRoleFamiliesTable)
+    .where(isNull(frameworkRoleFamiliesTable.organizationId));
+
+  if (familyCount > 0) {
+    console.log("    ↩ Already seeded, skipping");
+    const families = await db
+      .select()
+      .from(frameworkRoleFamiliesTable)
+      .where(isNull(frameworkRoleFamiliesTable.organizationId));
+    const roles = await db
+      .select()
+      .from(frameworkRolesTable)
+      .where(isNull(frameworkRolesTable.organizationId));
+    const familyByName = Object.fromEntries(families.map((f) => [f.name, f.id]));
+    return { families, roles, familyByName };
+  }
+
+  // Insert families — organizationId IS NULL = platform default
   const familyValues = roleFamilyDefinitions.map((f) => ({
-    organization_id: null,
+    organizationId: null,
     name: f.name,
     description: f.description || null,
   }));
 
-  const families = await db
+  await db
     .insert(frameworkRoleFamiliesTable)
     .values(familyValues)
-    .onConflictDoNothing()
-    .returning();
+    .onConflictDoNothing();
+
+  const families = await db
+    .select()
+    .from(frameworkRoleFamiliesTable)
+    .where(isNull(frameworkRoleFamiliesTable.organizationId));
 
   const familyByName = Object.fromEntries(families.map((f) => [f.name, f.id]));
 
@@ -765,10 +861,10 @@ async function seedInternalFramework() {
   ] as const;
 
   const roleValues: Array<{
-    organization_id: null;
-    family_id: string;
+    organizationId: null;
+    familyId: string;
     level: (typeof levels)[number];
-    display_name: string;
+    displayName: string;
   }> = [];
 
   for (const family of roleFamilyDefinitions) {
@@ -778,19 +874,23 @@ async function seedInternalFramework() {
     for (const level of levels) {
       const capitalised = level.charAt(0).toUpperCase() + level.slice(1);
       roleValues.push({
-        organization_id: null,
-        family_id: familyId,
+        organizationId: null,
+        familyId,
         level,
-        display_name: `${capitalised} ${family.name}`,
+        displayName: `${capitalised} ${family.name}`,
       });
     }
   }
 
-  const roles = await db
+  await db
     .insert(frameworkRolesTable)
     .values(roleValues)
-    .onConflictDoNothing()
-    .returning();
+    .onConflictDoNothing();
+
+  const roles = await db
+    .select()
+    .from(frameworkRolesTable)
+    .where(isNull(frameworkRolesTable.organizationId));
 
   console.log(
     `    ✓ ${families.length} role families, ${roles.length} framework roles`,
@@ -807,6 +907,16 @@ async function seedFrameworkRoleMappings(
   families: Array<{ id: string; name: string }>,
 ) {
   console.log("  Seeding framework role → DDaT mappings...");
+
+  const [{ count }] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(frameworkRoleMappingsTable);
+
+  if (count > 0) {
+    console.log("    ↩ Already seeded, skipping");
+    return;
+  }
+
 
   // Fetch all DDaT reference roles indexed by code
   const refRoles = await db.select().from(referenceRolesTable);
@@ -838,20 +948,20 @@ async function seedFrameworkRoleMappings(
   const familyById = Object.fromEntries(families.map((f) => [f.id, f.name]));
 
   const mappingValues: Array<{
-    framework_role_id: string;
-    reference_role_id: string;
+    frameworkRoleId: string;
+    referenceRoleId: string;
   }> = [];
 
   for (const role of frameworkRoles) {
-    const familyName = familyById[role.family_id];
+    const familyName = familyById[role.familyId];
     if (!familyName) continue;
     const ddatCode = familyToDdatCode[familyName];
     if (!ddatCode) continue;
     const referenceRoleId = refRoleByCode[ddatCode];
     if (!referenceRoleId) continue;
     mappingValues.push({
-      framework_role_id: role.id,
-      reference_role_id: referenceRoleId,
+      frameworkRoleId: role.id,
+      referenceRoleId,
     });
   }
 
@@ -1087,15 +1197,14 @@ async function seedSkillExpectations(
   };
 
   const expectationValues: Array<{
-    framework_role_id: string;
-    skill_id: string;
-    minimum_level: "associate" | "junior" | "mid" | "senior" | "lead" | "principal";
-    is_primary: boolean;
+    frameworkRoleId: string;
+    skillId: string;
+    minimumLevel: "associate" | "junior" | "mid" | "senior" | "lead" | "principal";
+    isPrimary: boolean;
   }> = [];
 
   for (const role of roles) {
-    const familyId = role.family_id;
-    const family = families.find((f) => f.id === familyId);
+    const family = families.find((f) => f.id === role.familyId);
     if (!family) continue;
 
     const familyExpectations = expectations[family.name];
@@ -1122,10 +1231,10 @@ async function seedSkillExpectations(
 
       if (roleLevel >= minLevel) {
         expectationValues.push({
-          framework_role_id: role.id,
-          skill_id: skillId,
-          minimum_level: exp.minimumLevel,
-          is_primary: exp.isPrimary,
+          frameworkRoleId: role.id,
+          skillId,
+          minimumLevel: exp.minimumLevel,
+          isPrimary: exp.isPrimary,
         });
       }
     }
@@ -1212,7 +1321,7 @@ async function seedSkillLevels(
   };
 
   const levelValues: Array<{
-    skill_id: string;
+    skillId: string;
     level: (typeof levels)[number];
     description: string | null;
   }> = [];
@@ -1221,7 +1330,7 @@ async function seedSkillLevels(
     const skillDescriptors = descriptors[skill.name] ?? {};
     for (const level of levels) {
       levelValues.push({
-        skill_id: skill.id,
+        skillId: skill.id,
         level,
         description: skillDescriptors[level] ?? null,
       });
@@ -1244,39 +1353,17 @@ async function seed() {
     await seedClearanceLevels();
 
     const { sfiaId, ddatId } = await seedReferenceFrameworks();
+    await seedReferenceSkills(sfiaId, ddatId);
+    await seedReferenceRoles(ddatId);
 
-    if (!sfiaId || !ddatId) {
-      // Already seeded — fetch the IDs
-      const frameworks = await db.select().from(referenceFrameworksTable);
-      const sfia = frameworks.find((f) => f.name.includes("SFIA"));
-      const ddat = frameworks.find((f) => f.name.includes("Digital and Data"));
-      if (!sfia || !ddat)
-        throw new Error("Could not resolve framework IDs after insert");
+    const internalSkills = await seedInternalSkills();
+    await seedSkillFrameworkMappings(internalSkills);
+    await seedTags();
 
-      await seedReferenceSkills(sfia.id, ddat.id);
-      await seedReferenceRoles(ddat.id);
-
-      const internalSkills = await seedInternalSkills();
-      await seedSkillFrameworkMappings(internalSkills);
-      await seedTags();
-
-      const { families } = await seedInternalFramework();
-      await seedFrameworkRoleMappings(families);
-      await seedSkillExpectations(internalSkills);
-      await seedSkillLevels(internalSkills);
-    } else {
-      await seedReferenceSkills(sfiaId, ddatId);
-      await seedReferenceRoles(ddatId);
-
-      const internalSkills = await seedInternalSkills();
-      await seedSkillFrameworkMappings(internalSkills);
-      await seedTags();
-
-      const { families } = await seedInternalFramework();
-      await seedFrameworkRoleMappings(families);
-      await seedSkillExpectations(internalSkills);
-      await seedSkillLevels(internalSkills);
-    }
+    const { families } = await seedInternalFramework();
+    await seedFrameworkRoleMappings(families);
+    await seedSkillExpectations(internalSkills);
+    await seedSkillLevels(internalSkills);
 
     console.log("\n✅ Seed complete.");
   } catch (err) {

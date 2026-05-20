@@ -77,31 +77,6 @@
   text-overflow: ellipsis;
 }
 
-.badge {
-  flex-shrink: 0;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  font-family: var(--font-mono);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-badge);
-  letter-spacing: var(--letter-spacing-wide);
-}
-
-.badgeDv {
-  background: var(--color-error-subtle);
-  color: var(--color-error);
-}
-
-.badgeSc {
-  background: var(--color-warning-subtle);
-  color: var(--color-on-warning-subtle);
-}
-
-.badgeBpss {
-  background: var(--color-accent-subtle);
-  color: var(--color-accent);
-}
-
 .utilBar {
   display: flex;
   align-items: center;

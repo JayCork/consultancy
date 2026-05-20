@@ -8,16 +8,9 @@ interface InfoCellProps {
   height: number;
 }
 
-function clearanceBadgeClass(clearance: string): string {
-  if (clearance === "DV") return styles.badgeDv;
-  if (clearance === "SC") return styles.badgeSc;
-  return styles.badgeBpss;
-}
-
 function borderClass(person: EnrichedPerson): string {
-  if (person.flags.has("CLEARANCE")) return styles.borderDanger;
   if (person.flags.has("ROTATION")) return styles.borderWarning;
-  if (person.flags.has("BENCH")) return styles.borderBench;
+  if (person.flags.has("UNBILLED")) return styles.borderBench;
   return styles.borderDefault;
 }
 
@@ -36,9 +29,6 @@ export function InfoCell(props: InfoCellProps): JSX.Element {
           <span class={styles.name}>{p().name}</span>
           <span class={styles.grade}>{p().grade}</span>
         </div>
-        <span class={`${styles.badge} ${clearanceBadgeClass(p().clearance)}`}>
-          {p().clearance}
-        </span>
       </div>
 
       <Show when={p().flags.has("PARTIAL")}>
@@ -57,7 +47,10 @@ export function InfoCell(props: InfoCellProps): JSX.Element {
         <div class={styles.pills}>
           <For each={p().currentAssignments}>
             {(a) => (
-              <span class={styles.pill} title={`${a.project} (${a.utilisation}%)`}>
+              <span
+                class={styles.pill}
+                title={`${a.project} (${a.utilisation}%)`}
+              >
                 {a.project.split(" ").slice(0, 2).join(" ")} {a.utilisation}%
               </span>
             )}

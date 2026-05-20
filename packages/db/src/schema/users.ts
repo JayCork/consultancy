@@ -9,7 +9,7 @@ import {
 import { organizationsTable } from "./organizations";
 import { clearanceLevelsTable } from "./reference";
 import { user } from "./auth";
-import { userStatusEnum } from "./enums";
+import { userStatusEnum, platformRoleEnum } from "./enums";
 import { timestamps } from "../columns.helpers";
 
 export const usersTable = pgTable(
@@ -27,6 +27,7 @@ export const usersTable = pgTable(
       .unique()
       .references(() => user.id),
     contractedHoursPerWeek: smallint("contracted_hours_per_week"),
+    platformRole: platformRoleEnum("platform_role").notNull().default("member"),
     ...timestamps,
   },
   (table) => [

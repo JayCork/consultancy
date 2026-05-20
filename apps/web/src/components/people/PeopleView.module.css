@@ -18,6 +18,12 @@
   gap: var(--space-3);
 }
 
+.filterLabel {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
 .search {
   flex: 1;
   min-width: 14rem;

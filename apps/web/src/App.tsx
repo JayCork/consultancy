@@ -4,6 +4,7 @@ import { Button, Container } from "@consultancy/ui";
 import { Shell } from "./Shell";
 import { EvidenceStats } from "./components/EvidenceStats";
 import { CareerProgress } from "./components/CareerProgress";
+import { MyClearancePanel } from "./components/MyClearancePanel";
 import { useAuthGuard } from "./lib/use-auth-guard";
 
 export function App() {
@@ -15,6 +16,7 @@ export function App() {
       <Shell>
         <Container>
           <h2>Welcome back, {session()?.data?.user?.name}</h2>
+          <MyClearancePanel />
           <EvidenceStats />
           <CareerProgress />
           <p>

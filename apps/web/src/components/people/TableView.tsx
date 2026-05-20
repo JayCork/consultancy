@@ -11,7 +11,7 @@ interface TableViewProps {
 function NextFreeCell(props: { person: EnrichedPerson }): JSX.Element {
   const p = props.person;
 
-  if (p.flags.has("BENCH")) {
+  if (p.flags.has("UNBILLED")) {
     return <span class={styles.freeNow}>Free now</span>;
   }
 
@@ -25,7 +25,10 @@ function NextFreeCell(props: { person: EnrichedPerson }): JSX.Element {
     );
   }
 
-  if (p.freeQuarterDays > 0 && p.availabilityPeriods.some(ap => ap.utilisation === 0)) {
+  if (
+    p.freeQuarterDays > 0 &&
+    p.availabilityPeriods.some((ap) => ap.utilisation === 0)
+  ) {
     return <span class={styles.partial}>Partial only</span>;
   }
 
@@ -42,7 +45,6 @@ export function TableView(props: TableViewProps): JSX.Element {
             <th class={styles.th}>Assignment(s)</th>
             <th class={styles.th}>Tenure</th>
             <th class={styles.th}>Next Free</th>
-            <th class={styles.th}>Clearance</th>
             <th class={styles.th}>Skills</th>
             <th class={styles.th}>Flags</th>
           </tr>
@@ -66,15 +68,19 @@ export function TableView(props: TableViewProps): JSX.Element {
                 <td class={styles.td}>
                   <Show
                     when={person.currentAssignments.length > 0}
-                    fallback={<span class={styles.bench}>Bench</span>}
+                    fallback={<span class={styles.unbilled}>Unbilled</span>}
                   >
                     <div class={styles.assignmentStack}>
                       <For each={person.currentAssignments}>
                         {(a) => (
                           <div class={styles.assignmentRow}>
-                            <span class={styles.assignmentProject}>{a.project}</span>
+                            <span class={styles.assignmentProject}>
+                              {a.project}
+                            </span>
                             <Show when={a.utilisation < 100}>
-                              <span class={styles.utilChip}>{a.utilisation}%</span>
+                              <span class={styles.utilChip}>
+                                {a.utilisation}%
+                              </span>
                             </Show>
                           </div>
                         )}
@@ -98,20 +104,6 @@ export function TableView(props: TableViewProps): JSX.Element {
                 {/* Next free */}
                 <td class={styles.td}>
                   <NextFreeCell person={person} />
-                </td>
-
-                {/* Clearance */}
-                <td class={styles.td}>
-                  <span
-                    class={`${styles.clearanceBadge} ${person.flags.has("CLEARANCE") ? styles.clearanceWarn : ""}`}
-                  >
-                    {person.clearance}
-                  </span>
-                  <Show when={person.flags.has("CLEARANCE") && person.clearanceExpiryDays !== null}>
-                    <div class={styles.clearanceExpiry}>
-                      {person.clearanceExpiryDays}d left
-                    </div>
-                  </Show>
                 </td>
 
                 {/* Skills */}

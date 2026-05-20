@@ -17,10 +17,9 @@
     "db:start": "set -a && [ -f ../../.env ] && . ../../.env; docker run --name consultancy_hub -e POSTGRES_USER=$DB_USER -e POSTGRES_PASSWORD=$DB_PASSWORD -e POSTGRES_DB=$DB_NAME -d -p 5432:5432 postgres",
     "db:view": "dotenvx run --env-file=../../.env -- drizzle-kit studio",
     "db:seed": "dotenvx run --env-file=../../.env -- tsx src/scripts/seed-reference-data.ts",
-    "db:seed-test-data":  "dotenvx run --env-file=../../.env -- tsx src/scripts/dev/fixtures.ts",
     "db:seed-dev": "dotenvx run --env-file=../../.env -- tsx src/scripts/dev/seed-dev-data.ts",
-    "db:seed-endorsement-batch": "dotenvx run --env-file=../../.env -- tsx src/scripts/dev/seed-endorsement-batch.ts",
-    "db:seed-my-user": "dotenvx run --env-file=../../.env -- tsx src/scripts/dev/seed-my-user.ts",
+    "db:seed-e2e": "dotenvx run --env-file=../../.env -- tsx src/scripts/seed-e2e.ts",
+    "db:reset-e2e": "dotenvx run --env-file=../../.env -- tsx src/scripts/reset-e2e.ts",
     "db:dbml": "tsx src/scripts/generate-dbml.ts",
     "build": "tsc --outDir dist --declaration false"
   },

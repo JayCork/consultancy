@@ -2,10 +2,9 @@ import { eq, inArray, isNull, and } from "drizzle-orm";
 import { db } from "..";
 import {
   usersTable,
-  userClearancesTable,
   userGradeAssignmentsTable,
   jobGradesTable,
-  clearanceLevelsTable,
+  frameworkRolesTable,
   projectMembersTable,
   projectsTable,
   organizationUnitsTable,
@@ -41,16 +40,21 @@ export const getPeopleForPlanning = async () => {
 
   const userIds = users.map((u) => u.id);
 
-  const [gradeRows, clearanceRows, memberRows, skillRows] = await Promise.all([
+  const [gradeRows, memberRows, skillRows] = await Promise.all([
     db
       .select({
         userId: userGradeAssignmentsTable.userId,
         gradeName: jobGradesTable.name,
+        level: frameworkRolesTable.level,
       })
       .from(userGradeAssignmentsTable)
       .innerJoin(
         jobGradesTable,
         eq(userGradeAssignmentsTable.jobGradeId, jobGradesTable.id),
+      )
+      .innerJoin(
+        frameworkRolesTable,
+        eq(jobGradesTable.frameworkRoleId, frameworkRolesTable.id),
       )
       .where(
         and(
@@ -61,25 +65,12 @@ export const getPeopleForPlanning = async () => {
 
     db
       .select({
-        userId: userClearancesTable.userId,
-        shortName: clearanceLevelsTable.shortName,
-        expiresAt: userClearancesTable.expiresAt,
-        grantedAt: userClearancesTable.grantedAt,
-      })
-      .from(userClearancesTable)
-      .innerJoin(
-        clearanceLevelsTable,
-        eq(userClearancesTable.clearanceLevelId, clearanceLevelsTable.id),
-      )
-      .where(inArray(userClearancesTable.userId, userIds)),
-
-    db
-      .select({
         userId: projectMembersTable.userId,
         projectName: projectsTable.name,
         projectRole: projectMembersTable.projectRole,
         startDate: projectMembersTable.startDate,
         endDate: projectMembersTable.endDate,
+        projectEndDate: projectsTable.endDate,
         allocatedHoursPerWeek: projectMembersTable.allocatedHoursPerWeek,
         sector: organizationUnitsTable.name,
         projectStatus: projectsTable.status,
@@ -105,37 +96,9 @@ export const getPeopleForPlanning = async () => {
       .where(inArray(competenciesTable.userId, userIds)),
   ]);
 
-  const gradeByUser = new Map(gradeRows.map((r) => [r.userId, r.gradeName]));
-
-  // For each user, pick the most recently granted clearance
-  const clearanceByUser = new Map<
-    string,
-    { shortName: string; expiresAt: Date | null }
-  >();
-  for (const row of clearanceRows) {
-    const existing = clearanceByUser.get(row.userId);
-    if (!existing || row.grantedAt > (existing as { grantedAt?: Date }).grantedAt!) {
-      clearanceByUser.set(row.userId, {
-        shortName: row.shortName,
-        expiresAt: row.expiresAt,
-      });
-    }
-  }
-  // Re-build with grantedAt so the comparison above works correctly
-  const clearanceFullByUser = new Map<
-    string,
-    { shortName: string; expiresAt: Date | null; grantedAt: Date }
-  >();
-  for (const row of clearanceRows) {
-    const existing = clearanceFullByUser.get(row.userId);
-    if (!existing || row.grantedAt > existing.grantedAt) {
-      clearanceFullByUser.set(row.userId, {
-        shortName: row.shortName,
-        expiresAt: row.expiresAt,
-        grantedAt: row.grantedAt,
-      });
-    }
-  }
+  const gradeByUser = new Map(
+    gradeRows.map((r) => [r.userId, { name: r.gradeName, level: r.level }]),
+  );
 
   const membersByUser = new Map<string, typeof memberRows>();
   for (const row of memberRows) {
@@ -151,19 +114,8 @@ export const getPeopleForPlanning = async () => {
     skillsByUser.set(row.userId, list);
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
   return users.map((user) => {
-    const clearance = clearanceFullByUser.get(user.id);
     const members = membersByUser.get(user.id) ?? [];
-
-    const clearanceExpiryDays = clearance?.expiresAt
-      ? Math.round(
-          (clearance.expiresAt.getTime() - today.getTime()) /
-            (1000 * 60 * 60 * 24),
-        )
-      : null;
 
     const assignments = members.map((m) => {
       const allocated = m.allocatedHoursPerWeek
@@ -179,19 +131,21 @@ export const getPeopleForPlanning = async () => {
         project: m.projectName,
         role: m.projectRole.replace(/_/g, " "),
         startDate: m.startDate,
-        endDate: m.endDate,
+        endDate: m.endDate ?? m.projectEndDate,
         sector: m.sector,
+        projectStatus: m.projectStatus,
         confirmed: CONFIRMED_STATUSES.has(m.projectStatus),
         utilisation,
       };
     });
 
+    const gradeInfo = gradeByUser.get(user.id);
+
     return {
       name: user.name,
       initials: toInitials(user.name),
-      grade: gradeByUser.get(user.id) ?? "Unknown",
-      clearance: (clearance?.shortName ?? "BPSS") as "BPSS" | "SC" | "DV",
-      clearanceExpiryDays,
+      grade: gradeInfo?.name ?? "Unknown",
+      level: gradeInfo?.level ?? null,
       skills: skillsByUser.get(user.id) ?? [],
       assignments,
     };

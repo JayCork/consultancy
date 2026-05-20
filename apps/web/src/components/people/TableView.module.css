@@ -106,7 +106,7 @@
   padding: 1px var(--space-1);
 }
 
-.bench {
+.unbilled {
   color: var(--color-success);
   font-weight: var(--font-weight-semibold);
 }
@@ -144,30 +144,6 @@
 .none {
   color: var(--color-text-muted);
   font-style: italic;
-}
-
-.clearanceBadge {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-badge);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-}
-
-.clearanceWarn {
-  background: var(--color-error-subtle);
-  border-color: var(--color-error);
-  color: var(--color-error);
-}
-
-.clearanceExpiry {
-  font-size: var(--font-size-xs);
-  color: var(--color-error);
-  font-family: var(--font-mono);
-  margin-top: 2px;
 }
 
 .skillTags {

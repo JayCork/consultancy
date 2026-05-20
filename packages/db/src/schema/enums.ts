@@ -52,6 +52,13 @@ export const regionEnum = pgEnum("region", [
   "IRL",
 ]);
 
+// Platform access roles — controls visibility of sensitive data (e.g. clearance levels)
+export const platformRoleEnum = pgEnum("platform_role", [
+  "member",
+  "leadership_team",
+  "admin",
+]);
+
 // Users
 export const userRelationshipTypeEnum = pgEnum("user_relationship_type", [
   "line_manager",

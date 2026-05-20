@@ -1,0 +1,54 @@
+.panel {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-container);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-4);
+}
+
+.panelExpiring {
+  background: var(--color-error-subtle);
+  border-color: var(--color-error);
+}
+
+.label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.level {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.levelExpiring {
+  color: var(--color-error);
+}
+
+.levelName {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.expiry {
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+.expiryWarn {
+  color: var(--color-error);
+}
