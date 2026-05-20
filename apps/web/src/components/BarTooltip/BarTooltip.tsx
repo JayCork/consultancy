@@ -1,6 +1,10 @@
 import type { JSX } from "solid-js";
 import type { Bar } from "../../lib/people/types";
-import { formatDate, weeksUntil, daysBetween } from "../../lib/people/dateHelpers";
+import {
+  formatDate,
+  weeksUntil,
+  daysBetween,
+} from "../../lib/people/dateHelpers";
 import styles from "./BarTooltip.module.css";
 
 interface BarTooltipProps {
@@ -9,38 +13,43 @@ interface BarTooltipProps {
 }
 
 export function BarTooltip(props: BarTooltipProps): JSX.Element {
-  const a = () => props.bar.assignment;
-  const isPast = () => a().endDate <= props.today;
+  const getBarAssignment = () => props.bar.assignment;
+  const endDate = () => getBarAssignment().endDate;
+  const isPast = () => endDate() != null && endDate()! <= props.today;
   const weeksLabel = () => {
+    const end = endDate();
+    if (end == null) return "Ongoing — no end date set";
     if (isPast()) {
-      const daysAgo = daysBetween(a().endDate, props.today);
+      const daysAgo = daysBetween(end, props.today);
       return `Ended ${Math.round(daysAgo / 7)} week${Math.round(daysAgo / 7) !== 1 ? "s" : ""} ago`;
     }
-    const weeks = weeksUntil(props.today, a().endDate);
+    const weeks = weeksUntil(props.today, end);
     return `${weeks} week${weeks !== 1 ? "s" : ""} remaining`;
   };
 
   return (
     <div class={styles.tooltip}>
-      <div class={styles.project}>{a().project}</div>
+      <div class={styles.project}>{getBarAssignment().project}</div>
       <div class={styles.meta}>
-        {a().role} · {a().sector}
+        {getBarAssignment().role} · {getBarAssignment().sector}
       </div>
       <div class={styles.row}>
         <span class={styles.utilLabel}>Utilisation</span>
-        <span class={styles.utilValue}>{a().utilisation}%</span>
+        <span class={styles.utilValue}>{getBarAssignment().utilisation}%</span>
       </div>
       <div class={styles.row}>
         <span class={styles.utilLabel}>Status</span>
         <span
-          class={`${styles.badge} ${a().confirmed ? styles.confirmed : styles.tentative}`}
+          class={`${styles.badge} ${getBarAssignment().confirmed ? styles.confirmed : styles.tentative}`}
         >
-          {a().confirmed ? "Confirmed" : "Tentative"}
+          {getBarAssignment().confirmed ? "Confirmed" : "Tentative"}
         </span>
       </div>
       <div class={styles.row}>
         <span class={styles.utilLabel}>Ends</span>
-        <span class={styles.utilValue}>{formatDate(a().endDate)}</span>
+        <span class={styles.utilValue}>
+          {endDate() != null ? formatDate(endDate()!) : "Ongoing"}
+        </span>
       </div>
       <div class={styles.weeks}>{weeksLabel()}</div>
     </div>

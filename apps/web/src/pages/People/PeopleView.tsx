@@ -1,18 +1,12 @@
 import type { JSX } from "solid-js";
-import {
-  createSignal,
-  createMemo,
-  createResource,
-  For,
-  Show,
-} from "solid-js";
+import { createSignal, createMemo, createResource, For, Show } from "solid-js";
 import { enrichPerson, sortPeople } from "../../lib/people/enrichment";
 import { buildWindow, addDays } from "../../lib/people/dateHelpers";
 import type { Person } from "../../lib/people/types";
-import { StatCard } from "./StatCard";
-import { FilterChip } from "./FilterChip";
-import { TimelineView } from "./TimelineView";
-import { TableView } from "./TableView";
+import { StatCard } from "../../components/StatCard/StatCard";
+import { FilterChip } from "../../components/FilterChip/FilterChip";
+import { TimelineView } from "../../templates/PeopleTimelineView/TimelineView";
+import { TableView } from "../../templates/PeopleTableView/TableView";
 import styles from "./PeopleView.module.css";
 
 const API = import.meta.env.VITE_API_URL as string;
@@ -82,7 +76,13 @@ export function PeopleView(): JSX.Element {
   });
 
   const STATUS_GROUPS: Record<string, string[]> = {
-    PRE_CONTRACT: ["opportunity", "qualifying", "bidding", "bid_submitted", "bid_won"],
+    PRE_CONTRACT: [
+      "opportunity",
+      "qualifying",
+      "bidding",
+      "bid_submitted",
+      "bid_won",
+    ],
     CONTRACT: ["contract_review", "contract_signed", "mobilising"],
     DELIVERY: ["discovery", "in_delivery", "uat", "hypercare"],
     SUSTAIN: ["support", "contract_renewal"],
@@ -113,7 +113,9 @@ export function PeopleView(): JSX.Element {
 
       if (sf !== "ALL") {
         const allowed = STATUS_GROUPS[sf] ?? [];
-        const hasMatch = p.assignments.some((a) => allowed.includes(a.projectStatus));
+        const hasMatch = p.assignments.some((a) =>
+          allowed.includes(a.projectStatus),
+        );
         if (!hasMatch) return false;
       }
 
@@ -149,6 +151,9 @@ export function PeopleView(): JSX.Element {
 
   return (
     <div class={styles.view}>
+      <a href="/projects/new" class={styles.newProjectBtn}>
+        + New Project
+      </a>
       <div class={styles.statsBar}>
         <StatCard label="Unbilled" value={stats().unbilled} prominent />
         <StatCard label="Split" value={stats().partial} />

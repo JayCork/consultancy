@@ -3,8 +3,8 @@ import { For, Show, createSignal } from "solid-js";
 import type { EnrichedPerson, Bar } from "../../lib/people/types";
 import { getProjectColors } from "../../lib/people/projectColors";
 import { toPercent, clamp, weeksUntil } from "../../lib/people/dateHelpers";
-import { BarTooltip } from "./BarTooltip";
 import styles from "./GanttRow.module.css";
+import { BarTooltip } from "../BarTooltip/BarTooltip";
 
 const LANE_HEIGHT = 36; // px per lane
 const LANE_GAP = 4;
@@ -50,18 +50,12 @@ export function GanttRow(props: GanttRowProps): JSX.Element {
       {/* Layer 1: Week boundary lines */}
       <For each={weekLines()}>
         {(line) => (
-          <div
-            class={styles.weekLine}
-            style={{ left: `${line.pct}%` }}
-          />
+          <div class={styles.weekLine} style={{ left: `${line.pct}%` }} />
         )}
       </For>
 
       {/* Layer 2: Past region shade */}
-      <div
-        class={styles.pastShade}
-        style={{ width: `${p().todayPercent}%` }}
-      />
+      <div class={styles.pastShade} style={{ width: `${p().todayPercent}%` }} />
 
       {/* Layer 3: Availability strips */}
       <For each={p().availabilityPeriods}>
@@ -98,8 +92,7 @@ export function GanttRow(props: GanttRowProps): JSX.Element {
           <For each={lane}>
             {(bar) => {
               const colors = getProjectColors(bar.assignment.projectStatus);
-              const top =
-                PADDING_V + laneIndex() * (LANE_HEIGHT + LANE_GAP);
+              const top = PADDING_V + laneIndex() * (LANE_HEIGHT + LANE_GAP);
               const isSecondary = laneIndex() > 0;
               const showLabel = bar.widthPercent > 12;
 
@@ -143,10 +136,7 @@ export function GanttRow(props: GanttRowProps): JSX.Element {
       </For>
 
       {/* Layer 5: Today line */}
-      <div
-        class={styles.todayLine}
-        style={{ left: `${p().todayPercent}%` }}
-      />
+      <div class={styles.todayLine} style={{ left: `${p().todayPercent}%` }} />
     </div>
   );
 }

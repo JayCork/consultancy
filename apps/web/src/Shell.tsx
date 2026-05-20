@@ -5,12 +5,11 @@ import { useSession, signOut } from "./lib/auth-client";
 import LayoutDashboard from "lucide-solid/icons/layout-dashboard";
 import Archive from "lucide-solid/icons/archive";
 import Users from "lucide-solid/icons/users";
-import CalendarRange from "lucide-solid/icons/calendar-range";
 import Settings from "lucide-solid/icons/settings";
 import UserSearch from "lucide-solid/icons/user-search";
 
 interface NavEntry {
-  id: number;
+  id: string;
   href: string;
   label: string;
   icon: Component;
@@ -20,42 +19,35 @@ interface NavEntry {
 
 const NAV_ITEMS: NavEntry[] = [
   {
-    id: 1,
+    id: "dashboard",
     href: "/",
     label: "Dashboard",
     icon: LayoutDashboard,
     match: "exact",
   },
   {
-    id: 2,
+    id: "evidence",
     href: "/evidence",
     label: "My Evidence",
     icon: Archive,
     match: "prefix",
   },
   {
-    id: 3,
+    id: "peer-review",
     href: "/peer-review",
     label: "Peer Review",
     icon: Users,
     match: "prefix",
   },
   {
-    id: 4,
-    href: "/projects",
-    label: "Projects",
-    icon: CalendarRange,
-    match: "prefix",
-  },
-  {
-    id: 5,
+    id: "people",
     href: "/people",
     label: "People",
     icon: UserSearch,
     match: "prefix",
   },
   {
-    id: 6,
+    id: "admin",
     href: "/admin",
     label: "Admin",
     icon: Settings,

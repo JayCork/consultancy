@@ -1,6 +1,6 @@
 import type { JSX } from "solid-js";
 import { Shell } from "../Shell";
-import { PeopleView } from "../components/people/PeopleView";
+import { PeopleView } from "../pages/People/PeopleView";
 import { useAuthGuard } from "../lib/use-auth-guard";
 
 export function PeoplePage(): JSX.Element {

@@ -4,9 +4,9 @@ import type { EnrichedPerson } from "../../lib/people/types";
 import { addDays, formatShortDate } from "../../lib/people/dateHelpers";
 import { WINDOW_TOTAL } from "../../lib/people/dateHelpers";
 import { STATUS_LEGEND } from "../../lib/people/projectColors";
-import { TimelineHeader } from "./TimelineHeader";
-import { InfoCell } from "./InfoCell";
-import { GanttRow, rowHeight } from "./GanttRow";
+import { TimelineHeader } from "../../components/TimelineHeader/TimelineHeader";
+import { InfoCell } from "../../components/InfoCell/InfoCell";
+import { GanttRow, rowHeight } from "../../components/GanttRow/GanttRow";
 import styles from "./TimelineView.module.css";
 
 interface TimelineViewProps {
@@ -27,7 +27,12 @@ export function TimelineView(props: TimelineViewProps): JSX.Element {
   return (
     <div class={styles.container}>
       <div class={styles.nav}>
-        <button class={styles.navBtn} onClick={props.onPrev} type="button" aria-label="Previous period">
+        <button
+          class={styles.navBtn}
+          onClick={props.onPrev}
+          type="button"
+          aria-label="Previous period"
+        >
           ‹ Prev
         </button>
         <button
@@ -39,7 +44,12 @@ export function TimelineView(props: TimelineViewProps): JSX.Element {
           Today
         </button>
         <span class={styles.navPeriod}>{periodLabel()}</span>
-        <button class={styles.navBtn} onClick={props.onNext} type="button" aria-label="Next period">
+        <button
+          class={styles.navBtn}
+          onClick={props.onNext}
+          type="button"
+          aria-label="Next period"
+        >
           Next ›
         </button>
       </div>
@@ -69,7 +79,7 @@ export function TimelineView(props: TimelineViewProps): JSX.Element {
                 class={styles.legendSwatch}
                 style={{
                   background: entry.fill,
-                  ...(("border" in entry && entry.border)
+                  ...("border" in entry && entry.border
                     ? { border: "1.5px solid var(--color-border-strong)" }
                     : {}),
                 }}

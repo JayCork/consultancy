@@ -8,7 +8,6 @@ import {
   EvidenceList,
   EvidenceReview,
   PeerReview,
-  ProjectTimelinePage,
   Register,
   SignIn,
 } from "./pages";
@@ -26,7 +25,6 @@ render(
       <Route path="/evidence/:id/edit" component={AddEvidence} />
       <Route path="/peer-review" component={PeerReview} />
       <Route path="/peer-review/:id" component={EvidenceReview} />
-      <Route path="/projects" component={ProjectTimelinePage} />
       <Route path="/projects/new" component={ProjectNewPage} />
       <Route path="/people" component={PeoplePage} />
       <Route path="/admin" component={AdminConfig} />
