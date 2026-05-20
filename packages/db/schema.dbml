@@ -85,6 +85,12 @@ enum invitation_status {
   revoked
 }
 
+enum platform_role {
+  member
+  leadership_team
+  admin
+}
+
 enum project_funding_model {
   time_and_materials
   fixed_price
@@ -177,7 +183,7 @@ table bauth_accounts {
 table clearance_levels {
   id uuid [pk, not null, default: `gen_random_uuid()`]
   name text [not null]
-  short_name text [not null]
+  shortName text [not null]
   rank integer [not null, unique]
   description text
   region region [not null, default: 'GBR']
@@ -694,6 +700,7 @@ table users {
   external_source text
   better_auth_id text [not null, unique]
   contracted_hours_per_week smallint
+  platform_role platform_role [not null, default: 'member']
   updated_at "timestamp (6)"
   created_at "timestamp (6)" [not null, default: `now()`]
   deleted_at "timestamp (6)"
