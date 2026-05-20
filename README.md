@@ -14,7 +14,7 @@ Consultants log STAR-format evidence entries, peers verify them, and verified ev
 - [Database Setup](#database-setup)
 - [Quick Start](#quick-start)
 - [Seeding the Database](#seeding-the-database)
-- [Creating Your User Account](#creating-your-user-account)
+- [Signing In](#signing-in)
 - [Running the App](#running-the-app)
 - [Project Structure](#project-structure)
 - [Available Scripts](#available-scripts)
@@ -67,14 +67,7 @@ BETTER_AUTH_SECRET=your_secret_here
 WEB_URL=http://localhost:3000
 
 # Tells the web app where the API lives
-VITE_API_URL=http://localhost:3000
-
-# Organisation ID for the dev seed scripts.
-# Set this after your first registration — find the ID in Drizzle Studio (db:view).
-ORG_ID=your-org-uuid-here
-
-# Your registered email — used by db:seed-my-user to link your account into the dev hierarchy.
-MY_USER_EMAIL=you@example.com
+VITE_API_URL=http://localhost:5173
 ```
 
 **Generating `BETTER_AUTH_SECRET`:**
@@ -136,21 +129,20 @@ pnpm --filter @consultancy/db db:push
 # 5. Seed reference data (frameworks, clearance levels, skills taxonomy)
 pnpm --filter @consultancy/db db:seed
 
-# 6. Start all services
+# 6. Seed representative dev data (Zaizi org + 48 users + projects)
+pnpm --filter @consultancy/db db:seed-dev
+
+# 7. Start all services
 pnpm dev
 
-# 7. Register your account at http://localhost:3000/register
-#    This creates your org — note the org ID from Drizzle Studio (db:view)
-
-# 8. Add ORG_ID to your .env, then seed representative dev data
-ORG_ID=<your-org-id> pnpm --filter @consultancy/db db:seed-dev
+# 8. Sign in at http://localhost:3000 using any seed user (see Signing In below)
 ```
 
 ---
 
 ## Seeding the Database
 
-There are two separate seeding steps with different purposes.
+There are three separate seeding steps with different purposes.
 
 ### 1. Reference data (`db:seed`)
 
@@ -162,7 +154,7 @@ Seeds global, organisation-agnostic data that the application depends on:
 - Platform default framework role families and roles
 - Default tags (technologies, tools, practices, methodologies, domains)
 
-This is safe to run in any environment and is idempotent.
+This is safe to run in any environment and is idempotent — running it multiple times will not create duplicate records.
 
 ```bash
 pnpm --filter @consultancy/db db:seed
@@ -170,106 +162,78 @@ pnpm --filter @consultancy/db db:seed
 
 ### 2. Dev data (`db:seed-dev`)
 
-Seeds representative data for a fictional small consultancy that has been using the platform for approximately a year. Requires an existing organisation — pass the org ID via the `ORG_ID` environment variable.
+Seeds representative data for the Zaizi consultancy. The script is self-contained — it creates the organisation, clubs, and all users automatically. No environment variables required beyond `DATABASE_URL`.
 
 ```bash
-# Using an env var in .env
 pnpm --filter @consultancy/db db:seed-dev
-
-# Or inline
-ORG_ID=9d193e54-74bd-40d5-ba48-bf0c338e6f8a pnpm --filter @consultancy/db db:seed-dev
 ```
 
 **What gets created:**
 
 | Entity | Count | Notes |
 |--------|-------|-------|
-| Users | 12 | 2 PMs, 1 delivery manager, 1 BA, 2 senior devs, 2 mid devs, 2 junior devs, 1 associate dev |
-| User relationships | 19 | Full line management chain, mentoring pairs, peer links |
-| Org skills | 20 | Concrete technology and practice skills scoped to the org |
-| Competencies | 36 | Skill proficiency records per user |
-| Projects | 6 | Two closed, two in delivery, one mobilising, one bidding |
-| Project memberships | 33 | Includes staff rotations between projects |
-| Evidence entries | 20 | Spread of draft / submitted / verified across the project timeline |
-| Evidence–skill links | 37 | Skills claimed per evidence entry with proficiency level |
-| Endorsements | 35 | All statuses represented: endorsed, pending, skipped, flagged |
+| Organisation | 1 | Zaizi |
+| Clubs (org units) | 5 | Club Arran, Rum, Islay, Jura, Applied AI |
+| Users | 48 | 44 Club Arran + 4 placeholder leads for other clubs |
+| Auth accounts | 48 | All sign in with `Password123!` |
+| Job grades | ~25 | Zaizi grade names mapped to platform framework roles |
+| Grade assignments | 48 | One per user |
+| Line management relationships | 46 | Full Club Arran hierarchy |
+| Projects | 6 | Across all delivery lifecycle statuses |
+| Project memberships | ~25 | Current team assignments |
+| Evidence entries | 11 | STAR format across 5 users, all statuses |
+| Endorsements | ~18 | All statuses: endorsed, pending, skipped, flagged |
 
-The script is idempotent and can be re-run safely. Use `--only` to re-seed a specific section without touching the rest:
+The script is idempotent — re-running it skips sections where data already exists.
 
-```bash
-# Re-seed only evidence (useful when iterating on evidence features)
-ORG_ID=<uuid> pnpm --filter @consultancy/db db:seed-dev -- --only=evidence
+### 3. E2E test baseline (`db:seed-e2e`)
 
-# Available sections: skills, users, grades, relationships, projects, members, competencies, evidence
-```
-
-### 3. Link your own account (`db:seed-my-user`)
-
-After registering via the web app, run this to slot your account into the seeded hierarchy. It creates line management and mentor relationships between your real user and the seed users, and adds you to a project.
+Seeds a small, stable, predictable dataset for automated end-to-end tests in a separate "Acme Consulting E2E" organisation. Uses fixed auth IDs so tests can make reliable assertions.
 
 ```bash
-# Defaults: James Okafor manages you, you manage Connor Walsh, joined to NPP as developer
-MY_USER_EMAIL=you@example.com ORG_ID=<uuid> pnpm --filter @consultancy/db db:seed-my-user
-
-# Choose your own manager, report, project, and role
-MY_USER_EMAIL=you@example.com \
-MY_MANAGER_EMAIL=rachel.torres@dev-seed.com \
-MY_REPORT_EMAIL=tom.bradley@dev-seed.com \
-MY_PROJECT=FCT \
-MY_PROJECT_ROLE=tech_lead \
-ORG_ID=<uuid> pnpm --filter @consultancy/db db:seed-my-user
-
-# No report (you're at the bottom of the chain)
-MY_USER_EMAIL=you@example.com MY_REPORT_EMAIL=none ORG_ID=<uuid> pnpm --filter @consultancy/db db:seed-my-user
+pnpm --filter @consultancy/db db:seed-e2e
 ```
 
-The script is safe to re-run — it checks for existing relationships before inserting.
+**What gets created:**
 
-| Env var | Default | Options |
-|---------|---------|---------|
-| `MY_USER_EMAIL` | — (required) | Your registered email |
-| `MY_MANAGER_EMAIL` | `james.okafor@dev-seed.com` | Any seed user email |
-| `MY_REPORT_EMAIL` | `connor.walsh@dev-seed.com` | Any seed user email, or `none` |
-| `MY_PROJECT` | `NPP` | `DTP`, `SCAP`, `NPP`, `FCT`, `RAP`, `GDE` |
-| `MY_PROJECT_ROLE` | `developer` | `developer`, `tech_lead`, `delivery_manager`, `analyst`, `designer`, `project_manager` |
+| Entity | Detail |
+|--------|--------|
+| Organisation | Acme Consulting E2E |
+| Users | 4 — admin, manager, mentor, consultant |
+| Projects | 2 — Alpha Project (in_delivery), Beta Project (bidding) |
+| Evidence | 8 entries across draft / submitted / verified |
+| Endorsements | 9 — all statuses represented |
 
-### 4. Endorsement batch (`db:seed-endorsement-batch`)
-
-Creates a small set of evidence entries in `submitted` status with `pending` endorsements, ready to walk through the endorsement review flow. Run this when developing or testing the endorsement feature without re-seeding everything.
+**To reset the E2E data back to baseline** (wipes all E2E org data, then re-seeds):
 
 ```bash
-pnpm --filter @consultancy/db db:seed-endorsement-batch
+pnpm --filter @consultancy/db db:reset-e2e
 ```
-
-Configurable via environment variables:
-
-```bash
-# Use a different user as the evidence subject
-SUBJECT_EMAIL=priya.sharma@dev-seed.com \
-ORG_ID=<uuid> pnpm --filter @consultancy/db db:seed-endorsement-batch
-
-# Full configuration
-SUBJECT_EMAIL=priya.sharma@dev-seed.com \
-ENDORSER_1_EMAIL=rachel.torres@dev-seed.com \
-ENDORSER_2_EMAIL=james.okafor@dev-seed.com \
-ORG_ID=<uuid> pnpm --filter @consultancy/db db:seed-endorsement-batch
-```
-
-The created evidence IDs are printed to stdout so you can navigate to them directly.
 
 ---
 
-## Creating Your User Account
+## Signing In
 
-After seeding, register an account through the web app.
+### Dev seed users
 
-1. Start the dev servers: `pnpm dev`
-2. Open `http://localhost:3000/register`
-3. Enter your name, email, and a password
+All dev seed users have emails in the format `firstname@zaizi.com` and the password `Password123!`. You can sign in as any of them to explore the app from different roles and seniority levels.
 
-When you register, the API automatically creates your user profile and associates you with the organisation.
+```
+gordon@zaizi.com   — Club Executive (SFIA 7)
+nikki@zaizi.com    — Head of Product (SFIA 7)
+seyed@zaizi.com    — Head of Engineering (SFIA 6)
+jay@zaizi.com      — Lead Software Developer (SFIA 5)
+trusha@zaizi.com   — Lead Delivery Manager (SFIA 5)
+bradley@zaizi.com  — Senior Business Analyst (SFIA 4)
+joek@zaizi.com     — Software Developer (SFIA 3)
+asha@zaizi.com     — Test Engineer (Junior, SFIA 2)
+```
 
-To sign in as a dev seed user (e.g. to see what the app looks like from a specific role), you will need to set a password for that account via the database or use the auth reset flow — the seed users are created without passwords since they represent existing platform users, not local auth accounts.
+See [Dev Seed Reference](#dev-seed-reference) for the full list.
+
+### Registering your own account
+
+You can also register a new account via `http://localhost:3000/register`. Your account will be created in a pending state — an admin will need to assign it to an organisation, or you can update the record directly in Drizzle Studio (`db:view`).
 
 ---
 
@@ -283,12 +247,12 @@ pnpm dev
 
 This starts in parallel:
 
-| Service   | URL                   | Description         |
-| --------- | --------------------- | ------------------- |
-| Web app   | http://localhost:3000 | SolidJS frontend    |
-| API       | http://localhost:5173 | Hono REST API       |
-| Storybook | http://localhost:6006 | Component explorer  |
-| Database  | localhost:5432        | PostgreSQL (Docker) |
+| Service   | URL                    | Description         |
+| --------- | ---------------------- | ------------------- |
+| Web app   | http://localhost:3000  | SolidJS frontend    |
+| API       | http://localhost:5173  | Hono REST API       |
+| Storybook | http://localhost:6006  | Component explorer  |
+| Database  | localhost:5432         | PostgreSQL (Docker) |
 
 **Start services individually:**
 
@@ -348,14 +312,14 @@ pnpm dev:ui           # Storybook only
 ### Database
 
 ```bash
-pnpm --filter @consultancy/db db:push                  # Push schema changes to the database
-pnpm --filter @consultancy/db db:generate              # Generate a migration file from schema changes
-pnpm --filter @consultancy/db db:apply-migrations      # Apply pending migrations
-pnpm --filter @consultancy/db db:view                  # Open Drizzle Studio at http://localhost:4983
-pnpm --filter @consultancy/db db:seed                  # Seed reference data (frameworks, clearances, skills)
-pnpm --filter @consultancy/db db:seed-dev              # Seed representative dev data (requires ORG_ID)
-pnpm --filter @consultancy/db db:seed-endorsement-batch  # Create a small endorsement test batch (requires ORG_ID)
-pnpm --filter @consultancy/db db:seed-my-user           # Link your registered account into the dev hierarchy (requires MY_USER_EMAIL + ORG_ID)
+pnpm --filter @consultancy/db db:push              # Push schema changes to the database
+pnpm --filter @consultancy/db db:generate          # Generate a migration file from schema changes
+pnpm --filter @consultancy/db db:apply-migrations  # Apply pending migrations
+pnpm --filter @consultancy/db db:view              # Open Drizzle Studio at http://localhost:4983
+pnpm --filter @consultancy/db db:seed              # Seed reference data (frameworks, clearances, skills)
+pnpm --filter @consultancy/db db:seed-dev          # Seed Zaizi dev data (org + 48 users + projects)
+pnpm --filter @consultancy/db db:seed-e2e          # Seed E2E test baseline
+pnpm --filter @consultancy/db db:reset-e2e         # Wipe and re-seed E2E baseline
 ```
 
 ### Code Quality
@@ -374,66 +338,3 @@ pnpm gen:ui atoms InputField
 pnpm gen:ui molecules SkillCard
 ```
 
----
-
-## Dev Seed Reference
-
-### Users
-
-All dev seed users have emails in the format `{firstname}.{lastname}@dev-seed.com`.
-
-| Name | Email | Role | Grade |
-|------|-------|------|-------|
-| Sarah Chen | sarah.chen@dev-seed.com | Principal PM | Principal Product Manager |
-| Marcus Webb | marcus.webb@dev-seed.com | Senior PM | Lead Product Manager |
-| Kate Morrison | kate.morrison@dev-seed.com | Lead Delivery Manager | Lead Agile Delivery Manager |
-| Rachel Torres | rachel.torres@dev-seed.com | Lead Developer | Lead Software Developer |
-| James Okafor | james.okafor@dev-seed.com | Senior Developer | Senior Software Developer |
-| Priya Sharma | priya.sharma@dev-seed.com | Senior Developer | Senior Software Developer |
-| Tom Bradley | tom.bradley@dev-seed.com | Mid Developer | Software Developer |
-| Aisha Johnson | aisha.johnson@dev-seed.com | Mid Developer | Software Developer |
-| Connor Walsh | connor.walsh@dev-seed.com | Junior Developer | Junior Software Developer |
-| Elena Petrov | elena.petrov@dev-seed.com | Junior Developer | Junior Software Developer |
-| Dev Martinez | dev.martinez@dev-seed.com | Associate Developer | Associate Software Developer |
-| Liam Chen | liam.chen@dev-seed.com | Business Analyst | Business Analyst |
-
-### Line Management Hierarchy
-
-```
-Sarah Chen (Principal PM)
-├── Marcus Webb (Lead PM)
-│   └── Rachel Torres (Lead Developer)
-│       ├── James Okafor (Senior Developer)
-│       │   ├── Tom Bradley (Mid Developer)
-│       │   └── Connor Walsh (Junior Developer)
-│       └── Priya Sharma (Senior Developer)
-│           ├── Aisha Johnson (Mid Developer)
-│           ├── Elena Petrov (Junior Developer)
-│           └── Dev Martinez (Associate Developer)
-└── Kate Morrison (Lead Delivery Manager)
-    └── Liam Chen (Business Analyst)
-```
-
-### Projects
-
-| Project | Short | Status | Period |
-|---------|-------|--------|--------|
-| Digital Transformation Portal | DTP | Closed | Mar 2025 – Oct 2025 |
-| Smart City Analytics Platform | SCAP | Closed | Jul 2025 – Feb 2026 |
-| NHS Patient Portal | NPP | In delivery | Oct 2025 – present |
-| Financial Compliance Tracker | FCT | In delivery | Jan 2026 – present |
-| Retail AI Platform | RAP | Mobilising | Apr 2026 – present |
-| Government Data Exchange | GDE | Bidding | Jul 2026 (planned) |
-
-### Evidence and Endorsement States
-
-The seed data covers the full evidence lifecycle:
-
-| Project | Evidence status | Endorsement status |
-|---------|----------------|-------------------|
-| DTP (closed 7 months ago) | `verified` | All `endorsed`, with notes |
-| SCAP (closed 2 months ago) | `verified` and `submitted` | Mix of `endorsed` and `pending` |
-| NPP / FCT (active 4–8 months) | `submitted` | Mix of `pending`, one `endorsed`, one `skipped` |
-| RAP (just started) | `draft` | None |
-
-One endorsement is set to `flagged` (on Priya's FCT rule engine evidence) — useful for testing the flagged review flow.
